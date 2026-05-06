@@ -1,40 +1,118 @@
 extends Node
 
+const MAX_UPGRADE_LEVEL := 3
+const BASE_UPGRADE_MULTIPLIER := 0.10
+const INPUT_CRITICAL_THRESHOLD := 0.25
+const POPULATION_TICK_DAYS := 30
+
+const GOODS: Dictionary = {
+	"wheat": {
+		"category": "survival",
+		"stock_cap": 220,
+		"stock_cap_base_cost": 40,
+		"production_base_cost": 35,
+		"production_interval_days": 1,
+	},
+	"wood": {
+		"category": "production_input",
+		"stock_cap": 180,
+		"stock_cap_base_cost": 50,
+		"production_base_cost": 45,
+		"production_interval_days": 1,
+	},
+	"flour": {
+		"category": "production_input",
+		"stock_cap": 160,
+		"stock_cap_base_cost": 55,
+		"production_base_cost": 70,
+		"production_interval_days": 1,
+	},
+	"bread": {
+		"category": "survival",
+		"stock_cap": 160,
+		"stock_cap_base_cost": 60,
+		"production_base_cost": 80,
+		"production_interval_days": 1,
+	},
+	"iron_ore": {
+		"category": "production_input",
+		"stock_cap": 200,
+		"stock_cap_base_cost": 65,
+		"production_base_cost": 60,
+		"production_interval_days": 1,
+	},
+	"iron_bar": {
+		"category": "production_input",
+		"stock_cap": 180,
+		"stock_cap_base_cost": 90,
+		"production_base_cost": 120,
+		"production_interval_days": 2,
+	},
+	"sword": {
+		"category": "comfort",
+		"stock_cap": 80,
+		"stock_cap_base_cost": 120,
+		"production_base_cost": 220,
+		"production_interval_days": 2,
+	},
+	"tool": {
+		"category": "production_input",
+		"stock_cap": 120,
+		"stock_cap_base_cost": 95,
+		"production_base_cost": 140,
+		"production_interval_days": 1,
+	},
+	"grapes": {
+		"category": "comfort",
+		"stock_cap": 180,
+		"stock_cap_base_cost": 45,
+		"production_base_cost": 40,
+		"production_interval_days": 1,
+	},
+	"must": {
+		"category": "production_input",
+		"stock_cap": 140,
+		"stock_cap_base_cost": 85,
+		"production_base_cost": 100,
+		"production_interval_days": 1,
+	},
+	"wine": {
+		"category": "comfort",
+		"stock_cap": 90,
+		"stock_cap_base_cost": 140,
+		"production_base_cost": 240,
+		"production_interval_days": 3,
+	},
+}
+
 const RECIPES: Dictionary = {
-	"flour":     { "inputs": {"wheat": 2},     "time": 1 },
-	"bread":     { "inputs": {"flour": 2},     "time": 1 },
-	"iron_bar":  { "inputs": {"iron_ore": 2},  "time": 2 },
-	"sword":     { "inputs": {"iron_bar": 2},  "time": 2 },
-	"tool":      { "inputs": {"iron_bar": 1},  "time": 1 },
-	"plank":     { "inputs": {"wood": 2},      "time": 1 },
-	"furniture": { "inputs": {"plank": 3},     "time": 2 },
-	"must":      { "inputs": {"grapes": 3},    "time": 1 },
-	"wine":      { "inputs": {"must": 2},      "time": 3 },
+	"flour": {"inputs": {"wheat": 2}},
+	"bread": {"inputs": {"flour": 2}},
+	"iron_bar": {"inputs": {"iron_ore": 2}},
+	"sword": {"inputs": {"iron_bar": 2}},
+	"tool": {"inputs": {"iron_bar": 1}},
+	"must": {"inputs": {"grapes": 3}},
+	"wine": {"inputs": {"must": 2}},
 }
 
 const BASE_PRICES: Dictionary = {
-	"wheat":     3,
-	"flour":     6,
-	"bread":     10,
-	"iron_ore":  5,
-	"iron_bar":  12,
-	"sword":     30,
-	"tool":      18,
-	"wood":      4,
-	"plank":     8,
-	"furniture": 25,
-	"grapes":    4,
-	"must":      9,
-	"wine":      20,
+	"wheat": 3, "flour": 6, "bread": 10, "iron_ore": 5, "iron_bar": 12,
+	"sword": 30, "tool": 18, "wood": 4, "grapes": 4, "must": 9, "wine": 20,
+}
+
+const SEASON_MULTIPLIERS := {
+	"spring": {"wheat": 1.15, "grapes": 1.10, "wood": 1.00},
+	"summer": {"wheat": 1.10, "grapes": 1.20, "wood": 0.95},
+	"autumn": {"wheat": 1.00, "grapes": 0.95, "wood": 1.05},
+	"winter": {"wheat": 0.70, "grapes": 0.60, "wood": 1.10},
 }
 
 var towns: Dictionary = {}
+var current_day := 1
 
 signal economy_updated
 
 var _player: Node
-
-# -----------------------------------------------
 
 func _ready() -> void:
 	_player = get_node("/root/PlayerData")
@@ -43,34 +121,25 @@ func _ready() -> void:
 func _init_towns() -> void:
 	towns = {
 		"Ashford": {
-			"name": "Ashford",
-			"faction": "Northern Kingdom",
-			"population": 120,
-			"inventory": { "wheat": 80, "flour": 20, "wood": 40 },
-			"produced": { "wheat": 12, "wood": 8 },
-			"consumed": { "bread": 6, "tool": 1 },
-			"prices": {},
-			"position": Vector2(480, 360),
+			"name": "Ashford", "faction": "Northern Kingdom", "population": 120, "population_cap": 180,
+			"inventory": {"wheat": 80, "flour": 20, "wood": 40}, "prices": {}, "position": Vector2(480, 360),
+			"production_plan": {"wheat": 12, "wood": 8, "flour": 4},
+			"consumption_rules": {"bread": 0.05, "tool": 0.006},
+			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 		"Ironmere": {
-			"name": "Ironmere",
-			"faction": "Merchants Guild",
-			"population": 200,
-			"inventory": { "iron_ore": 60, "iron_bar": 15, "sword": 5 },
-			"produced": { "iron_ore": 10, "iron_bar": 5 },
-			"consumed": { "wheat": 8, "flour": 4, "wood": 5 },
-			"prices": {},
-			"position": Vector2(2200, 440),
+			"name": "Ironmere", "faction": "Merchants Guild", "population": 200, "population_cap": 280,
+			"inventory": {"iron_ore": 60, "iron_bar": 15, "sword": 5}, "prices": {}, "position": Vector2(2200, 440),
+			"production_plan": {"iron_ore": 10, "iron_bar": 5, "tool": 3, "sword": 2},
+			"consumption_rules": {"wheat": 0.04, "flour": 0.03, "wood": 0.025},
+			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 		"Stonebridge": {
-			"name": "Stonebridge",
-			"faction": "Merchants Guild",
-			"population": 160,
-			"inventory": { "grapes": 60, "must": 20, "wine": 10, "wood": 30 },
-			"produced": { "grapes": 15, "wood": 6 },
-			"consumed": { "wheat": 6, "bread": 4, "iron_bar": 2 },
-			"prices": {},
-			"position": Vector2(1380, 1080),
+			"name": "Stonebridge", "faction": "Merchants Guild", "population": 160, "population_cap": 240,
+			"inventory": {"grapes": 60, "must": 20, "wine": 10, "wood": 30}, "prices": {}, "position": Vector2(1380, 1080),
+			"production_plan": {"grapes": 15, "must": 4, "wine": 2, "wood": 6},
+			"consumption_rules": {"wheat": 0.03, "bread": 0.02, "iron_bar": 0.015},
+			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 	}
 	_recalculate_all_prices()
@@ -78,21 +147,53 @@ func _init_towns() -> void:
 func get_town(town_name: String) -> Dictionary:
 	return towns.get(town_name, {})
 
-func get_price(town_name: String, item: String) -> float:
-	var town = towns.get(town_name, {})
-	return town.get("prices", {}).get(item, BASE_PRICES.get(item, 0))
+func get_town_report(town_name: String) -> Dictionary:
+	return towns.get(town_name, {}).get("report", {})
 
-func _calculate_price(town: Dictionary, item: String) -> float:
-	var base = BASE_PRICES.get(item, 0)
-	if base == 0:
-		return 0.0
-	var stock = town["inventory"].get(item, 0)
-	var max_stock = town["population"] * 0.5
-	var demand = town["consumed"].get(item, 0)
-	var supply = town["produced"].get(item, 0)
-	var pressure = (demand - supply) / max(max_stock, 1.0)
-	var price = base * (1.0 + clamp(pressure - (stock / max(max_stock, 1.0)), -0.6, 1.5))
-	return max(price, base * 0.3)
+func get_goods_category(item: String) -> String:
+	return GOODS.get(item, {}).get("category", "unknown")
+
+func get_price(town_name: String, item: String) -> float:
+	return towns.get(town_name, {}).get("prices", {}).get(item, BASE_PRICES.get(item, 0.0))
+
+func _get_season() -> String:
+	var idx = int(((current_day - 1) / 30) % 4)
+	return ["spring", "summer", "autumn", "winter"][idx]
+
+func _get_season_multiplier(item: String) -> float:
+	return SEASON_MULTIPLIERS.get(_get_season(), {}).get(item, 1.0)
+
+func _get_upgrade_level(upgrades: Dictionary, item: String) -> int:
+	return int(clamp(upgrades.get(item, 0), 0, MAX_UPGRADE_LEVEL))
+
+func get_upgrade_cost(item: String, level: int, stock_upgrade := false) -> int:
+	var goods_data = GOODS.get(item, {})
+	var base_key = "stock_cap_base_cost" if stock_upgrade else "production_base_cost"
+	var base_cost = int(goods_data.get(base_key, 0))
+	return int(base_cost * pow(2, level))
+
+func _calculate_effective_output(base_output: float, season_multiplier: float, efficiency: float, upgrade_level: int) -> float:
+	var upgrade_multiplier = 1.0 + (BASE_UPGRADE_MULTIPLIER * upgrade_level)
+	return base_output * season_multiplier * efficiency * upgrade_multiplier
+
+func _calculate_input_efficiency(town: Dictionary, item: String, planned_batches: float) -> Dictionary:
+	if not RECIPES.has(item):
+		return {"efficiency": 1.0, "critical": false, "consume_ratio": 1.0}
+	var recipe_inputs: Dictionary = RECIPES[item].get("inputs", {})
+	var ratio := 1.0
+	for input_item in recipe_inputs:
+		var required_total = float(recipe_inputs[input_item]) * planned_batches
+		if required_total <= 0.0:
+			continue
+		var in_stock = float(town["inventory"].get(input_item, 0))
+		ratio = min(ratio, in_stock / required_total)
+	ratio = clamp(ratio, 0.0, 1.0)
+	return {"efficiency": ratio, "critical": ratio <= INPUT_CRITICAL_THRESHOLD, "consume_ratio": ratio}
+
+func _get_stock_cap(town: Dictionary, item: String) -> int:
+	var base_cap = int(GOODS.get(item, {}).get("stock_cap", 100))
+	var upgrade_level = _get_upgrade_level(town.get("stock_cap_upgrades", {}), item)
+	return int(round(base_cap * (1.0 + (BASE_UPGRADE_MULTIPLIER * upgrade_level))))
 
 func _recalculate_all_prices() -> void:
 	for town_name in towns:
@@ -101,19 +202,86 @@ func _recalculate_all_prices() -> void:
 		for item in BASE_PRICES:
 			town["prices"][item] = _calculate_price(town, item)
 
+func _calculate_price(town: Dictionary, item: String) -> float:
+	var base = BASE_PRICES.get(item, 0.0)
+	if base <= 0.0:
+		return 0.0
+	var stock = float(town["inventory"].get(item, 0))
+	var demand = float(_estimate_daily_consumption(town, item))
+	var supply = float(town.get("production_plan", {}).get(item, 0))
+	var max_stock = max(float(_get_stock_cap(town, item)), 1.0)
+	var pressure = (demand - supply) / max_stock
+	var scarcity = stock / max_stock
+	return max(base * (1.0 + clamp(pressure - scarcity, -0.6, 1.5)), base * 0.3)
+
+func _estimate_daily_consumption(town: Dictionary, item: String) -> int:
+	var per_capita = float(town.get("consumption_rules", {}).get(item, 0.0))
+	return int(round(town.get("population", 0) * per_capita))
+
 func advance_day() -> void:
+	current_day += 1
 	for town_name in towns:
-		var town = towns[town_name]
-		for item in town["produced"]:
-			var qty = town["produced"][item]
-			town["inventory"][item] = town["inventory"].get(item, 0) + qty
-		for item in town["consumed"]:
-			var qty = town["consumed"][item]
-			var current = town["inventory"].get(item, 0)
-			town["inventory"][item] = max(current - qty, 0)
+		_process_town_production(towns[town_name])
+		_process_town_consumption(towns[town_name])
 	_npc_trade_cycle()
+	if current_day % POPULATION_TICK_DAYS == 0:
+		for town_name in towns:
+			_process_population_change(towns[town_name])
 	_recalculate_all_prices()
 	emit_signal("economy_updated")
+
+func _process_town_production(town: Dictionary) -> void:
+	var report = {
+		"season": _get_season(),
+		"base_production": {},
+		"final_production": {},
+		"missing_input_efficiency": {},
+		"stock_blocked": {},
+		"critical_consumption_issues": [],
+	}
+	for item in town.get("production_plan", {}):
+		var interval = int(GOODS.get(item, {}).get("production_interval_days", 1))
+		if interval <= 0 or current_day % interval != 0:
+			continue
+		var base_output = float(town["production_plan"][item])
+		report["base_production"][item] = base_output
+		var input_state = _calculate_input_efficiency(town, item, base_output)
+		var upgrade_level = _get_upgrade_level(town.get("production_upgrades", {}), item)
+		var final_output = _calculate_effective_output(base_output, _get_season_multiplier(item), input_state["efficiency"], upgrade_level)
+		var stock_cap = _get_stock_cap(town, item)
+		var in_stock = int(town["inventory"].get(item, 0))
+		var free_space = max(stock_cap - in_stock, 0)
+		var actual = int(min(round(final_output), free_space))
+		var blocked = max(int(round(final_output)) - actual, 0)
+		town["inventory"][item] = in_stock + actual
+		report["final_production"][item] = actual
+		report["missing_input_efficiency"][item] = input_state["efficiency"]
+		report["stock_blocked"][item] = blocked
+
+		if RECIPES.has(item):
+			for input_item in RECIPES[item]["inputs"]:
+				var needed = RECIPES[item]["inputs"][input_item] * actual
+				var current_stock = int(town["inventory"].get(input_item, 0))
+				town["inventory"][input_item] = max(current_stock - needed, 0)
+	town["report"] = report
+
+func _process_town_consumption(town: Dictionary) -> void:
+	for item in town.get("consumption_rules", {}):
+		var consume_amount = _estimate_daily_consumption(town, item)
+		if consume_amount <= 0:
+			continue
+		var current_stock = int(town["inventory"].get(item, 0))
+		if current_stock < consume_amount:
+			town["report"]["critical_consumption_issues"].append(item)
+		town["inventory"][item] = max(current_stock - consume_amount, 0)
+
+func _process_population_change(town: Dictionary) -> void:
+	var change := 0
+	if town["report"].get("critical_consumption_issues", []).has("bread"):
+		change -= int(ceil(town["population"] * 0.03))
+	if town["inventory"].get("bread", 0) > 20:
+		change += int(ceil(town["population"] * 0.01))
+	town["population"] = clamp(town["population"] + change, 10, town.get("population_cap", 200))
 
 func _npc_trade_cycle() -> void:
 	var town_list = towns.keys()
@@ -130,22 +298,17 @@ func _npc_trade_cycle() -> void:
 					a["inventory"][item] -= transfer
 					b["inventory"][item] = b["inventory"].get(item, 0) + transfer
 				elif surplus < -10:
-					var transfer = int(-surplus * 0.2)
-					b["inventory"][item] -= transfer
-					a["inventory"][item] = a["inventory"].get(item, 0) + transfer
+					var transfer2 = int(-surplus * 0.2)
+					b["inventory"][item] -= transfer2
+					a["inventory"][item] = a["inventory"].get(item, 0) + transfer2
 
 func player_buy(town_name: String, item: String, qty: int) -> bool:
 	var town = towns.get(town_name, {})
-	if town.is_empty():
-		return false
-	var stock = town["inventory"].get(item, 0)
-	if stock < qty:
+	if town.is_empty() or town["inventory"].get(item, 0) < qty:
 		return false
 	var price = get_price(town_name, item) * qty
-	var rep = _player.get_faction_rep(town.get("faction", ""))
-	var discount = rep * 0.001
-	price = price * (1.0 - discount)
-	if not _player.remove_gold(price):
+	var discount = _player.get_faction_rep(town.get("faction", "")) * 0.001
+	if not _player.remove_gold(price * (1.0 - discount)):
 		return false
 	town["inventory"][item] -= qty
 	if town["inventory"][item] == 0:
@@ -156,15 +319,12 @@ func player_buy(town_name: String, item: String, qty: int) -> bool:
 
 func player_sell(town_name: String, item: String, qty: int) -> bool:
 	var town = towns.get(town_name, {})
-	if town.is_empty():
-		return false
-	if not _player.remove_item(item, qty):
+	if town.is_empty() or not _player.remove_item(item, qty):
 		return false
 	var price = get_price(town_name, item) * qty
-	var rep = _player.get_faction_rep(town.get("faction", ""))
-	var bonus = rep * 0.001
-	price = price * (1.0 + bonus)
-	_player.add_gold(price)
-	town["inventory"][item] = town["inventory"].get(item, 0) + qty
+	var bonus = _player.get_faction_rep(town.get("faction", "")) * 0.001
+	_player.add_gold(price * (1.0 + bonus))
+	var cap = _get_stock_cap(town, item)
+	town["inventory"][item] = min(town["inventory"].get(item, 0) + qty, cap)
 	_recalculate_all_prices()
 	return true

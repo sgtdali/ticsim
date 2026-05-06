@@ -248,17 +248,39 @@ Your reputation: %s (%.0f)
 Travel tax rate: %.0f%%
 
 Produces: %s
-Consumes: %s""" % [
+Consumes: %s
+
+Last production report:
+%s""" % [
 		town_name,
 		faction_name,
 		town.get("population", 0),
 		faction_data.get("description", ""),
 		_faction.get_relation_description(rep), rep,
 		tax * 100.0,
-		", ".join(town.get("produced", {}).keys()),
-		", ".join(town.get("consumed", {}).keys()),
+		", ".join(town.get("production_plan", {}).keys()),
+		", ".join(town.get("consumption_rules", {}).keys()),
+		_format_town_report(_economy.get_town_report(town_name)),
 	]
 
 func _on_close() -> void:
 	emit_signal("closed")
 	queue_free()
+
+func _format_town_report(report: Dictionary) -> String:
+	if report.is_empty():
+		return "No report yet."
+	var lines: Array[String] = []
+	lines.append("Season: %s" % report.get("season", "unknown"))
+	var final_prod: Dictionary = report.get("final_production", {})
+	if final_prod.is_empty():
+		lines.append("No production in this period.")
+	else:
+		for item in final_prod:
+			var eff = report.get("missing_input_efficiency", {}).get(item, 1.0)
+			var blocked = report.get("stock_blocked", {}).get(item, 0)
+			lines.append("- %s: +%d (eff %.0f%%, blocked %d)" % [item, final_prod[item], eff * 100.0, blocked])
+	var issues = report.get("critical_consumption_issues", [])
+	if not issues.is_empty():
+		lines.append("Critical shortages: %s" % ", ".join(issues))
+	return "\n".join(lines)
