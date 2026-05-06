@@ -2,3 +2,21 @@
 .godot/
 /android/
 .claude/
+
+# Asset planning/source files
+assets/ui_kit/*.xlsx
+assets/map_kit/*.xlsx
+
+# Large raw UI exports. Keep trimmed runtime-ready PNGs.
+assets/ui_kit/*.png
+assets/ui_kit/*.png.import
+!assets/ui_kit/*_trimmed.png
+!assets/ui_kit/*_trimmed.png.import
+
+# Large raw map marker exports. Keep runtime map and trimmed marker PNGs.
+assets/map_kit/MAP-*.png
+assets/map_kit/MAP-*.png.import
+!assets/map_kit/*_trimmed.png
+!assets/map_kit/*_trimmed.png.import
+!assets/map_kit/WORLD-*.png
+!assets/map_kit/WORLD-*.png.import

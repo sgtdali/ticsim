@@ -15,10 +15,12 @@ var town_buttons: Dictionary = {}
 var game_speed: int = 1
 const DAY_INTERVAL: float = 3.0
 
-const MAP_W: float = 2816.0
-const MAP_H: float = 1536.0
+const MAP_W: float = 1672.0
+const MAP_H: float = 941.0
+const TOWN_COORD_W: float = 2816.0
+const TOWN_COORD_H: float = 1536.0
 
-# City circle radius in screen pixels
+# City interaction radius in screen pixels
 const CITY_R: float = 14.0
 
 # Calculated once in _setup_view
@@ -55,10 +57,17 @@ func _setup_view() -> void:
 	if map_sprite:
 		map_sprite.scale    = Vector2(_map_scale, _map_scale)
 		map_sprite.position = _map_offset
+	var player = get_node_or_null("Player")
+	if player:
+		player.z_index = 3
 
 # Map (world) coordinate → screen coordinate
 func _map_to_screen(map_pos: Vector2) -> Vector2:
-	return _map_offset + map_pos * _map_scale
+	var texture_pos = Vector2(
+		map_pos.x / TOWN_COORD_W * MAP_W,
+		map_pos.y / TOWN_COORD_H * MAP_H
+	)
+	return _map_offset + texture_pos * _map_scale
 
 func _setup_day_timer() -> void:
 	_day_timer = Timer.new()
@@ -89,41 +98,6 @@ func _set_speed(speed: int) -> void:
 		_day_timer.wait_time = DAY_INTERVAL / float(speed)
 
 # -----------------------------------------------
-# City markers + roads drawn in SCREEN space.
-# WorldMap has no transform so local space == screen space.
-
-func _draw() -> void:
-	var towns = _economy.towns
-	var town_names = towns.keys()
-
-	# Roads
-	for i in range(town_names.size()):
-		for j in range(i + 1, town_names.size()):
-			var pa = _map_to_screen(towns[town_names[i]].get("position", Vector2.ZERO))
-			var pb = _map_to_screen(towns[town_names[j]].get("position", Vector2.ZERO))
-			draw_line(pa, pb, Color(0.55, 0.45, 0.25, 0.7), 3.0)
-
-	# City circles
-	for town_name in town_names:
-		var sp = _map_to_screen(towns[town_name].get("position", Vector2.ZERO))
-		var is_current: bool = (town_name == _player_data.current_town)
-		var is_dest: bool    = (town_name == travel_destination)
-
-		# Shadow ring
-		draw_circle(sp, CITY_R + 5.0, Color(0.0, 0.0, 0.0, 0.4))
-		# Fill
-		var col: Color
-		if is_current:
-			col = Color(0.2, 0.85, 0.2)
-		elif is_dest:
-			col = Color(0.9, 0.65, 0.1)
-		else:
-			col = Color(0.85, 0.75, 0.25)
-		draw_circle(sp, CITY_R, col)
-		# Dark border ring (drawn as slightly smaller shadow-colored disk on top perimeter)
-		draw_arc(sp, CITY_R, 0.0, TAU, 32, Color(0.1, 0.1, 0.1, 0.9), 2.0)
-
-# -----------------------------------------------
 
 func _process(delta: float) -> void:
 	queue_redraw()
@@ -150,15 +124,11 @@ func _on_day_tick() -> void:
 # -----------------------------------------------
 
 func _build_town_buttons() -> void:
-	var ui_layer = get_node("UI")
 	for town_name in _economy.towns:
-		var sp: Vector2 = _map_to_screen(_economy.towns[town_name].get("position", Vector2.ZERO))
-		var btn := Button.new()
-		btn.text = town_name
-		btn.custom_minimum_size = Vector2(120, 36)
-		btn.position = sp - Vector2(60, CITY_R + 44)  # above city circle
+		var btn := get_node_or_null("TownButtons/%sBtn" % town_name) as Button
+		if btn == null:
+			continue
 		btn.pressed.connect(_on_town_pressed.bind(town_name))
-		ui_layer.add_child(btn)
 		town_buttons[town_name] = btn
 	_refresh_buttons()
 

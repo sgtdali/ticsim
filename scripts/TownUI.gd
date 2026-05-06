@@ -1,5 +1,9 @@
 extends Control
 
+const PRIMARY_BUTTON_TEXTURE: Texture2D = preload("res://assets/ui_kit/UI-003_Primary Button_trimmed.png")
+const SECONDARY_BUTTON_TEXTURE: Texture2D = preload("res://assets/ui_kit/UI-004_Secondary Button_trimmed.png")
+const DISABLED_BUTTON_TEXTURE: Texture2D = preload("res://assets/ui_kit/UI-005_Disabled Button_trimmed.png")
+
 var town_name: String = ""
 
 signal closed
@@ -10,9 +14,15 @@ var _faction: Node
 
 var _active_tab: String = "market"
 
+var _primary_button_style: StyleBoxTexture
+var _secondary_button_style: StyleBoxTexture
+var _disabled_button_style: StyleBoxTexture
+
 # -----------------------------------------------
 
 func _ready() -> void:
+	_build_button_styles()
+
 	_player  = get_node("/root/PlayerData")
 	_economy = get_node("/root/EconomyManager")
 	_faction = get_node("/root/FactionManager")
@@ -28,16 +38,77 @@ func _ready() -> void:
 	$TabBar/InfoBtn.pressed.connect(_show_tab.bind("info"))
 	$CloseBtn.pressed.connect(_on_close)
 
+	_apply_secondary_button_style($CloseBtn)
+
 func _show_tab(tab: String) -> void:
 	_active_tab = tab
 	$MarketPanel.visible = (tab == "market")
 	$NPCPanel.visible    = (tab == "npc")
 	$InfoPanel.visible   = (tab == "info")
+	_update_tab_button_styles()
 
 	match tab:
 		"market": _build_market()
 		"npc":    _build_npc()
 		"info":   _build_info()
+
+func _update_tab_button_styles() -> void:
+	$TabBar.custom_minimum_size = Vector2(340, 42)
+	$TabBar.size = Vector2(340, 42)
+	_apply_tab_button_style($TabBar/MarketBtn, _active_tab == "market")
+	_apply_tab_button_style($TabBar/NPCBtn, _active_tab == "npc")
+	_apply_tab_button_style($TabBar/InfoBtn, _active_tab == "info")
+
+func _apply_tab_button_style(button: Button, active: bool) -> void:
+	if active:
+		_apply_primary_button_style(button)
+	else:
+		_apply_secondary_button_style(button)
+	button.custom_minimum_size = Vector2(104, 42)
+
+func _build_button_styles() -> void:
+	_primary_button_style = _make_button_style(PRIMARY_BUTTON_TEXTURE)
+	_secondary_button_style = _make_button_style(SECONDARY_BUTTON_TEXTURE)
+	_disabled_button_style = _make_button_style(DISABLED_BUTTON_TEXTURE)
+
+func _make_button_style(texture: Texture2D) -> StyleBoxTexture:
+	var style = StyleBoxTexture.new()
+	style.texture = texture
+	style.content_margin_left = 18.0
+	style.content_margin_top = 10.0
+	style.content_margin_right = 18.0
+	style.content_margin_bottom = 10.0
+	return style
+
+func _apply_primary_button_style(button: Button) -> void:
+	button.custom_minimum_size = Vector2(96, 42)
+	button.add_theme_color_override("font_color", Color(1.0, 0.82, 0.36))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.9, 0.55))
+	button.add_theme_color_override("font_pressed_color", Color(0.78, 0.55, 0.2))
+	button.add_theme_color_override("font_disabled_color", Color(0.48, 0.42, 0.32, 0.85))
+	button.add_theme_color_override("font_shadow_color", Color(0.06, 0.03, 0.012, 0.95))
+	button.add_theme_constant_override("shadow_offset_x", 1)
+	button.add_theme_constant_override("shadow_offset_y", 2)
+	button.add_theme_font_size_override("font_size", 13)
+	button.add_theme_stylebox_override("normal", _primary_button_style)
+	button.add_theme_stylebox_override("hover", _primary_button_style)
+	button.add_theme_stylebox_override("pressed", _primary_button_style)
+	button.add_theme_stylebox_override("disabled", _disabled_button_style)
+
+func _apply_secondary_button_style(button: Button) -> void:
+	button.custom_minimum_size = Vector2(96, 42)
+	button.add_theme_color_override("font_color", Color(0.82, 0.65, 0.36))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.82, 0.42))
+	button.add_theme_color_override("font_pressed_color", Color(0.68, 0.48, 0.2))
+	button.add_theme_color_override("font_disabled_color", Color(0.48, 0.42, 0.32, 0.85))
+	button.add_theme_color_override("font_shadow_color", Color(0.06, 0.03, 0.012, 0.95))
+	button.add_theme_constant_override("shadow_offset_x", 1)
+	button.add_theme_constant_override("shadow_offset_y", 2)
+	button.add_theme_font_size_override("font_size", 13)
+	button.add_theme_stylebox_override("normal", _secondary_button_style)
+	button.add_theme_stylebox_override("hover", _secondary_button_style)
+	button.add_theme_stylebox_override("pressed", _secondary_button_style)
+	button.add_theme_stylebox_override("disabled", _disabled_button_style)
 
 # ---- MARKET ----
 
@@ -94,12 +165,14 @@ func _build_market() -> void:
 		var buy_btn = Button.new()
 		buy_btn.text = "Buy 1"
 		buy_btn.disabled = (town_stock == 0 or _player.gold < price or _player.get_free_capacity() < 1)
+		_apply_primary_button_style(buy_btn)
 		buy_btn.pressed.connect(_on_buy.bind(item, 1))
 		row.add_child(buy_btn)
 
 		var sell_btn = Button.new()
 		sell_btn.text = "Sell 1 (%d)" % player_has
 		sell_btn.disabled = (player_has == 0)
+		_apply_secondary_button_style(sell_btn)
 		sell_btn.pressed.connect(_on_sell.bind(item, 1))
 		row.add_child(sell_btn)
 

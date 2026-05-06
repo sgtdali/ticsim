@@ -1,99 +1,157 @@
 [gd_scene format=3 uid="uid://mainmenu"]
 
-[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="1"]
+[ext_resource type="Script" uid="uid://0kfmv0fvur7f" path="res://scripts/MainMenu.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://cgi212ljquobb" path="res://assets/ui_kit/UI-006_Tab Button Active_trimmed.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://7na6uf73hkug" path="res://assets/ui_kit/UI-007_Tab Button Inactive_trimmed.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://d20sc8o72e3p5" path="res://assets/ui_kit/UI-001_Main Panel_trimmed.png" id="4"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
-bg_color = Color(0.08, 0.06, 0.04, 1.0)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_menu_panel"]
+texture = ExtResource("4")
+texture_margin_left = 170.0
+texture_margin_top = 170.0
+texture_margin_right = 170.0
+texture_margin_bottom = 170.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
-bg_color = Color(0.25, 0.18, 0.08, 1.0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.7, 0.55, 0.2, 1.0)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-content_margin_left = 20.0
-content_margin_right = 20.0
-content_margin_top = 10.0
-content_margin_bottom = 10.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn"]
+content_margin_left = 32.0
+content_margin_top = 44.0
+content_margin_right = 32.0
+content_margin_bottom = 30.0
+texture = ExtResource("3")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
-bg_color = Color(0.38, 0.28, 0.10, 1.0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1.0, 0.8, 0.3, 1.0)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-content_margin_left = 20.0
-content_margin_right = 20.0
-content_margin_top = 10.0
-content_margin_bottom = 10.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_hover"]
+content_margin_left = 32.0
+content_margin_top = 44.0
+content_margin_right = 32.0
+content_margin_bottom = 30.0
+texture = ExtResource("2")
 
-[node name="MainMenu" type="Control"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[node name="MainMenu" type="Control" unique_id=1676222673]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1")
 
-[node name="BG" type="ColorRect" parent="."]
+[node name="BG" type="ColorRect" parent="." unique_id=1247541201]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.08, 0.06, 0.04, 1.0)
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.06, 0.04, 1)
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="MenuPanel" type="Panel" parent="." unique_id=1963661727]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_menu_panel")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=525760710]
+layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -140.0
-offset_right = 160.0
-offset_bottom = 140.0
+offset_left = -260.0
+offset_top = -307.5
+offset_right = 260.0
+offset_bottom = 307.5
+grow_horizontal = 2
+grow_vertical = 2
 alignment = 1
 
-[node name="Title" type="Label" parent="VBox"]
+[node name="Title" type="Label" parent="VBox" unique_id=1492700417]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.78, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0.12, 0.055, 0.015, 0.95)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 44
 text = "Merchant's Road"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 42
-theme_override_colors/font_color = Color(0.95, 0.8, 0.3, 1.0)
 
-[node name="Subtitle" type="Label" parent="VBox"]
+[node name="Subtitle" type="Label" parent="VBox" unique_id=796069538]
 layout_mode = 2
-text = "A trading simulation"
+theme_override_colors/font_color = Color(0.76, 0.62, 0.36, 1)
+theme_override_colors/font_shadow_color = Color(0.08, 0.045, 0.02, 0.85)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+text = "Trade. Travel. Survive."
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.65, 0.55, 0.35, 1.0)
 
-[node name="Spacer" type="Control" parent="VBox"]
+[node name="Spacer" type="Control" parent="VBox" unique_id=552382784]
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
-custom_minimum_size = Vector2(0, 40)
 
-[node name="StartBtn" type="Button" parent="VBox"]
+[node name="ContinueBtn" type="Button" parent="VBox" unique_id=907420012]
+custom_minimum_size = Vector2(400, 112)
 layout_mode = 2
-text = "New Game"
-theme_override_font_sizes/font_size = 20
-theme_override_colors/font_color = Color(0.95, 0.85, 0.5, 1.0)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_colors/font_color = Color(0.82, 0.65, 0.36, 1)
+theme_override_colors/font_pressed_color = Color(0.68, 0.48, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 0.82, 0.42, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "CONTINUE"
 
-[node name="Spacer2" type="Control" parent="VBox"]
+[node name="SpacerContinue" type="Control" parent="VBox" unique_id=779151909]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-custom_minimum_size = Vector2(0, 12)
 
-[node name="QuitBtn" type="Button" parent="VBox"]
+[node name="StartBtn" type="Button" parent="VBox" unique_id=1489968971]
+custom_minimum_size = Vector2(400, 112)
 layout_mode = 2
-text = "Quit"
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.7, 0.6, 0.4, 1.0)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_colors/font_color = Color(1, 0.82, 0.36, 1)
+theme_override_colors/font_pressed_color = Color(0.78, 0.55, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.55, 1)
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "NEW GAME"
+
+[node name="Spacer2" type="Control" parent="VBox" unique_id=1585520569]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="SettingsBtn" type="Button" parent="VBox" unique_id=1634750012]
+custom_minimum_size = Vector2(400, 112)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.65, 0.36, 1)
+theme_override_colors/font_pressed_color = Color(0.68, 0.48, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 0.82, 0.42, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "SETTINGS"
+
+[node name="SpacerSettings" type="Control" parent="VBox" unique_id=1350370577]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="QuitBtn" type="Button" parent="VBox" unique_id=2050644313]
+custom_minimum_size = Vector2(400, 112)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.65, 0.36, 1)
+theme_override_colors/font_pressed_color = Color(0.68, 0.48, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 0.82, 0.42, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "QUIT"
