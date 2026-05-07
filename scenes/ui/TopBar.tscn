@@ -1,0 +1,394 @@
+[gd_scene format=3 uid="uid://c0hxejklifmr5"]
+
+[ext_resource type="Script" uid="uid://c8mvkxuyiholv" path="res://scripts/ui/TopBar.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cpdlhj657yvu5" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r1_c1.png" id="2_tl"]
+[ext_resource type="Texture2D" uid="uid://cdm8lph1mjslq" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r1_c2.png" id="3_tc"]
+[ext_resource type="Texture2D" uid="uid://dwlopysc3t0ar" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r1_c3.png" id="4_tr"]
+[ext_resource type="Texture2D" uid="uid://c6g60a0xun15n" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r2_c1.png" id="5_ml"]
+[ext_resource type="Texture2D" uid="uid://rlvnynfvk0bw" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r2_c2.png" id="6_mc"]
+[ext_resource type="PackedScene" uid="uid://bxmdr7w72u4bv" path="res://scenes/ui/top_bar_panel.tscn" id="7_ck54b"]
+[ext_resource type="Texture2D" uid="uid://bo0j2mn6g7xvs" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r2_c3.png" id="7_mr"]
+[ext_resource type="Texture2D" uid="uid://1duob7uhy4si" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r3_c1.png" id="8_bl"]
+[ext_resource type="Texture2D" uid="uid://co0p74yqq361q" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r3_c2.png" id="9_bc"]
+[ext_resource type="Texture2D" uid="uid://bkrptlwqn5u0s" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r3_c3.png" id="10_br"]
+
+[node name="TopBar" type="Control" unique_id=1543135548]
+custom_minimum_size = Vector2(0, 88)
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 88.0
+grow_horizontal = 2
+script = ExtResource("1_script")
+
+[node name="HeaderTexture" type="VBoxContainer" parent="." unique_id=202497799]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="TopRow" type="HBoxContainer" parent="HeaderTexture" unique_id=510562645]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="TopLeft" type="TextureRect" parent="HeaderTexture/TopRow" unique_id=1581803790]
+custom_minimum_size = Vector2(45, 20)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_tl")
+expand_mode = 1
+
+[node name="TopCenter" type="TextureRect" parent="HeaderTexture/TopRow" unique_id=1930400728]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+texture = ExtResource("3_tc")
+expand_mode = 1
+
+[node name="TopRight" type="TextureRect" parent="HeaderTexture/TopRow" unique_id=1980487254]
+custom_minimum_size = Vector2(45, 20)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_tr")
+expand_mode = 1
+
+[node name="MiddleRow" type="HBoxContainer" parent="HeaderTexture" unique_id=2088227310]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MiddleLeft" type="TextureRect" parent="HeaderTexture/MiddleRow" unique_id=1048396970]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("5_ml")
+expand_mode = 1
+
+[node name="MiddleCenter" type="TextureRect" parent="HeaderTexture/MiddleRow" unique_id=1066158166]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+texture = ExtResource("6_mc")
+expand_mode = 1
+
+[node name="ContentMargin" type="MarginContainer" parent="HeaderTexture/MiddleRow/MiddleCenter"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 86
+theme_override_constants/margin_right = 86
+
+[node name="Content" type="HBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin" unique_id=177886733]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="GoldSlot" type="Control" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content" unique_id=1205220100]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TopBarPanel" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot" unique_id=906584106 instance=ExtResource("7_ck54b")]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GoldStat" type="HBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot" unique_id=665070206]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot/GoldStat" unique_id=1205331689]
+custom_minimum_size = Vector2(34, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 30
+text = "O"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Text" type="VBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot/GoldStat" unique_id=1813944083]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot/GoldStat/Text" unique_id=498835639]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 11
+text = "GOLD"
+
+[node name="Value" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot/GoldStat/Text" unique_id=1141886282]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.78, 0.45, 1)
+theme_override_font_sizes/font_size = 17
+text = "000050"
+clip_text = true
+
+[node name="CargoSlot" type="Control" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content" unique_id=2132250636]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CargoStat" type="HBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot" unique_id=33601444]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot/CargoStat" unique_id=1632484552]
+custom_minimum_size = Vector2(34, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 30
+text = "#"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Text" type="VBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot/CargoStat" unique_id=964754397]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot/CargoStat/Text" unique_id=1785798470]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 11
+text = "CARGO"
+
+[node name="Value" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot/CargoStat/Text" unique_id=285715821]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.78, 0.45, 1)
+theme_override_font_sizes/font_size = 17
+text = "000 / 020"
+clip_text = true
+
+[node name="TopBarPanel" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot" unique_id=1410815592 instance=ExtResource("7_ck54b")]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LocationSlot" type="Control" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content" unique_id=1562259713]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LocationStat" type="HBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/LocationSlot" unique_id=19560058]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/LocationSlot/LocationStat" unique_id=2032726125]
+custom_minimum_size = Vector2(34, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 30
+text = "v"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Text" type="VBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/LocationSlot/LocationStat" unique_id=2025600046]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/LocationSlot/LocationStat/Text" unique_id=1232858032]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 11
+text = "LOCATION"
+
+[node name="Value" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/LocationSlot/LocationStat/Text" unique_id=591275434]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.78, 0.45, 1)
+theme_override_font_sizes/font_size = 17
+text = "Ashford"
+clip_text = true
+
+[node name="TopBarPanel" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/LocationSlot" unique_id=1748184078 instance=ExtResource("7_ck54b")]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SpeedSlot" type="Control" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content" unique_id=66827827]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Controls" type="HBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot" unique_id=1496589657]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="PauseButton" type="Button" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot/Controls" unique_id=491443802]
+custom_minimum_size = Vector2(56, 48)
+layout_mode = 2
+toggle_mode = true
+text = "II"
+
+[node name="PlayButton" type="Button" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot/Controls" unique_id=1333033846]
+custom_minimum_size = Vector2(56, 48)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = ">"
+
+[node name="FastButton" type="Button" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot/Controls" unique_id=196693684]
+custom_minimum_size = Vector2(56, 48)
+layout_mode = 2
+toggle_mode = true
+text = ">>"
+
+[node name="SettingsButton" type="Button" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot/Controls" unique_id=1258011518]
+custom_minimum_size = Vector2(56, 48)
+layout_mode = 2
+disabled = true
+text = "*"
+
+[node name="TopBarPanel" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot" unique_id=2063624883 instance=ExtResource("7_ck54b")]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DaySlot" type="Control" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content" unique_id=1992352811]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DayStat" type="HBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot" unique_id=1351864972]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot/DayStat" unique_id=1704284716]
+custom_minimum_size = Vector2(34, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 30
+text = "I"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Text" type="VBoxContainer" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot/DayStat" unique_id=589094062]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot/DayStat/Text" unique_id=1627509365]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.59, 0.28, 1)
+theme_override_font_sizes/font_size = 11
+text = "DAY"
+
+[node name="Value" type="Label" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot/DayStat/Text" unique_id=1402409121]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.78, 0.45, 1)
+theme_override_font_sizes/font_size = 17
+text = "Day 1"
+clip_text = true
+
+[node name="TopBarPanel" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot" unique_id=114760058 instance=ExtResource("7_ck54b")]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MiddleRight" type="TextureRect" parent="HeaderTexture/MiddleRow" unique_id=120274047]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_mr")
+expand_mode = 1
+
+[node name="BottomRow" type="HBoxContainer" parent="HeaderTexture" unique_id=14163516]
+custom_minimum_size = Vector2(0, 19)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="BottomLeft" type="TextureRect" parent="HeaderTexture/BottomRow" unique_id=772050389]
+custom_minimum_size = Vector2(45, 20)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("8_bl")
+expand_mode = 1
+
+[node name="BottomCenter" type="TextureRect" parent="HeaderTexture/BottomRow" unique_id=1765920777]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+texture = ExtResource("9_bc")
+expand_mode = 1
+
+[node name="BottomRight" type="TextureRect" parent="HeaderTexture/BottomRow" unique_id=1995049046]
+custom_minimum_size = Vector2(45, 20)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("10_br")
+expand_mode = 1
+
+

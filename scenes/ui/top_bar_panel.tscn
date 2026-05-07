@@ -1,0 +1,110 @@
+[gd_scene format=3 uid="uid://bxmdr7w72u4bv"]
+
+[ext_resource type="Texture2D" uid="uid://q71akgcuujo8" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r1_c1.png" id="1_tl"]
+[ext_resource type="Texture2D" uid="uid://clcesfp3p5v60" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r1_c2.png" id="2_tc"]
+[ext_resource type="Texture2D" uid="uid://brih3mg1rh5t2" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r1_c3.png" id="3_tr"]
+[ext_resource type="Texture2D" uid="uid://dtg1wjqft7nqt" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r2_c1.png" id="4_ml"]
+[ext_resource type="Texture2D" uid="uid://drll1csdri5bu" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r2_c2.png" id="5_mc"]
+[ext_resource type="Texture2D" uid="uid://sok5gubud7g6" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r2_c3.png" id="6_mr"]
+[ext_resource type="Texture2D" uid="uid://chou8r7jdyvmd" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r3_c1.png" id="7_bl"]
+[ext_resource type="Texture2D" uid="uid://coda7xsvf821h" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r3_c2.png" id="8_bc"]
+[ext_resource type="Texture2D" uid="uid://b6rpajw0b8y0f" path="res://assets/ui_kit/UI-010_Tooltip Panel_trimmed_split/UI-010_Tooltip Panel_trimmed_r3_c3.png" id="9_br"]
+
+[node name="TopBarPanel" type="Control" unique_id=906584106]
+custom_minimum_size = Vector2(150, 52)
+layout_mode = 3
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelSlices" type="VBoxContainer" parent="." unique_id=1184391981]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Top" type="HBoxContainer" parent="PanelSlices" unique_id=72675366]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="TopLeft" type="TextureRect" parent="PanelSlices/Top" unique_id=1806892485]
+custom_minimum_size = Vector2(14, 4)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("1_tl")
+expand_mode = 1
+
+[node name="TopCenter" type="TextureRect" parent="PanelSlices/Top" unique_id=1812593058]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+texture = ExtResource("2_tc")
+expand_mode = 1
+
+[node name="TopRight" type="TextureRect" parent="PanelSlices/Top" unique_id=990907435]
+custom_minimum_size = Vector2(14, 4)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_tr")
+expand_mode = 1
+
+[node name="Middle" type="HBoxContainer" parent="PanelSlices" unique_id=626915108]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MiddleLeft" type="TextureRect" parent="PanelSlices/Middle" unique_id=1577257083]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_ml")
+expand_mode = 1
+
+[node name="MiddleCenter" type="TextureRect" parent="PanelSlices/Middle" unique_id=1145536912]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+texture = ExtResource("5_mc")
+expand_mode = 1
+
+[node name="MiddleRight" type="TextureRect" parent="PanelSlices/Middle" unique_id=521855810]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("6_mr")
+expand_mode = 1
+
+[node name="Bottom" type="HBoxContainer" parent="PanelSlices" unique_id=1065164599]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="BottomLeft" type="TextureRect" parent="PanelSlices/Bottom" unique_id=1515324360]
+custom_minimum_size = Vector2(14, 4)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_bl")
+expand_mode = 1
+
+[node name="BottomCenter" type="TextureRect" parent="PanelSlices/Bottom" unique_id=1162290742]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+texture = ExtResource("8_bc")
+expand_mode = 1
+
+[node name="BottomRight" type="TextureRect" parent="PanelSlices/Bottom" unique_id=508916095]
+custom_minimum_size = Vector2(14, 4)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("9_br")
+expand_mode = 1

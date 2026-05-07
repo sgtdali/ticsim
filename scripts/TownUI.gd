@@ -143,6 +143,7 @@ func _build_market() -> void:
 		var town_stock = inventory.get(item, 0)
 		var price = _economy.get_price(town_name, item)
 		var player_has = _player.get_item_count(item)
+		var town_free_stock = _economy.get_town_free_stock(town_name, item)
 
 		var row = HBoxContainer.new()
 		row.add_theme_constant_override("separation", 4)
@@ -171,7 +172,7 @@ func _build_market() -> void:
 
 		var sell_btn = Button.new()
 		sell_btn.text = "Sell 1 (%d)" % player_has
-		sell_btn.disabled = (player_has == 0)
+		sell_btn.disabled = (player_has == 0 or town_free_stock < 1)
 		_apply_secondary_button_style(sell_btn)
 		sell_btn.pressed.connect(_on_sell.bind(item, 1))
 		row.add_child(sell_btn)

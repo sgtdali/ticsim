@@ -156,6 +156,12 @@ func get_goods_category(item: String) -> String:
 func get_price(town_name: String, item: String) -> float:
 	return towns.get(town_name, {}).get("prices", {}).get(item, BASE_PRICES.get(item, 0.0))
 
+func get_town_free_stock(town_name: String, item: String) -> int:
+	var town = towns.get(town_name, {})
+	if town.is_empty():
+		return 0
+	return maxi(_get_stock_cap(town, item) - int(town["inventory"].get(item, 0)), 0)
+
 func _get_season() -> String:
 	var idx = int(((current_day - 1) / 30) % 4)
 	return ["spring", "summer", "autumn", "winter"][idx]
@@ -203,16 +209,32 @@ func _recalculate_all_prices() -> void:
 			town["prices"][item] = _calculate_price(town, item)
 
 func _calculate_price(town: Dictionary, item: String) -> float:
-	var base = BASE_PRICES.get(item, 0.0)
+	var base := float(BASE_PRICES.get(item, 0.0))
 	if base <= 0.0:
 		return 0.0
-	var stock = float(town["inventory"].get(item, 0))
-	var demand = float(_estimate_daily_consumption(town, item))
-	var supply = float(town.get("production_plan", {}).get(item, 0))
-	var max_stock = max(float(_get_stock_cap(town, item)), 1.0)
-	var pressure = (demand - supply) / max_stock
-	var scarcity = stock / max_stock
-	return max(base * (1.0 + clamp(pressure - scarcity, -0.6, 1.5)), base * 0.3)
+	var stock := float(town["inventory"].get(item, 0))
+	var demand := float(_estimate_daily_consumption(town, item))
+	var supply := _estimate_effective_daily_supply(town, item)
+	var max_stock := maxf(float(_get_stock_cap(town, item)), 1.0)
+	var pressure := (demand - supply) / max_stock
+	var scarcity := stock / max_stock
+	return maxf(base * (1.0 + clamp(pressure - scarcity, -0.6, 1.5)), base * 0.3)
+
+func _estimate_effective_daily_supply(town: Dictionary, item: String) -> float:
+	var planned_output := float(town.get("production_plan", {}).get(item, 0))
+	if planned_output <= 0.0:
+		return 0.0
+
+	var interval := maxi(int(GOODS.get(item, {}).get("production_interval_days", 1)), 1)
+	var input_state := _calculate_input_efficiency(town, item, planned_output)
+	var upgrade_level := _get_upgrade_level(town.get("production_upgrades", {}), item)
+	var effective_output := _calculate_effective_output(
+		planned_output,
+		_get_season_multiplier(item),
+		input_state["efficiency"],
+		upgrade_level
+	)
+	return effective_output / float(interval)
 
 func _estimate_daily_consumption(town: Dictionary, item: String) -> int:
 	var per_capita = float(town.get("consumption_rules", {}).get(item, 0.0))
@@ -223,7 +245,6 @@ func advance_day() -> void:
 	for town_name in towns:
 		_process_town_production(towns[town_name])
 		_process_town_consumption(towns[town_name])
-	_npc_trade_cycle()
 	if current_day % POPULATION_TICK_DAYS == 0:
 		for town_name in towns:
 			_process_population_change(towns[town_name])
@@ -283,28 +304,13 @@ func _process_population_change(town: Dictionary) -> void:
 		change += int(ceil(town["population"] * 0.01))
 	town["population"] = clamp(town["population"] + change, 10, town.get("population_cap", 200))
 
-func _npc_trade_cycle() -> void:
-	var town_list = towns.keys()
-	for i in range(town_list.size()):
-		for j in range(i + 1, town_list.size()):
-			var a = towns[town_list[i]]
-			var b = towns[town_list[j]]
-			for item in BASE_PRICES:
-				var stock_a = a["inventory"].get(item, 0)
-				var stock_b = b["inventory"].get(item, 0)
-				var surplus = stock_a - stock_b
-				if surplus > 10:
-					var transfer = int(surplus * 0.2)
-					a["inventory"][item] -= transfer
-					b["inventory"][item] = b["inventory"].get(item, 0) + transfer
-				elif surplus < -10:
-					var transfer2 = int(-surplus * 0.2)
-					b["inventory"][item] -= transfer2
-					a["inventory"][item] = a["inventory"].get(item, 0) + transfer2
-
 func player_buy(town_name: String, item: String, qty: int) -> bool:
+	if qty <= 0:
+		return false
 	var town = towns.get(town_name, {})
 	if town.is_empty() or town["inventory"].get(item, 0) < qty:
+		return false
+	if _player.get_free_capacity() < qty:
 		return false
 	var price = get_price(town_name, item) * qty
 	var discount = _player.get_faction_rep(town.get("faction", "")) * 0.001
@@ -318,13 +324,20 @@ func player_buy(town_name: String, item: String, qty: int) -> bool:
 	return true
 
 func player_sell(town_name: String, item: String, qty: int) -> bool:
+	if qty <= 0:
+		return false
 	var town = towns.get(town_name, {})
-	if town.is_empty() or not _player.remove_item(item, qty):
+	if town.is_empty():
+		return false
+	var cap = _get_stock_cap(town, item)
+	var current_stock = int(town["inventory"].get(item, 0))
+	if current_stock + qty > cap:
+		return false
+	if not _player.remove_item(item, qty):
 		return false
 	var price = get_price(town_name, item) * qty
 	var bonus = _player.get_faction_rep(town.get("faction", "")) * 0.001
 	_player.add_gold(price * (1.0 + bonus))
-	var cap = _get_stock_cap(town, item)
-	town["inventory"][item] = min(town["inventory"].get(item, 0) + qty, cap)
+	town["inventory"][item] = current_stock + qty
 	_recalculate_all_prices()
 	return true

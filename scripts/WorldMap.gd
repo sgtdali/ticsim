@@ -11,6 +11,7 @@ var travel_start_pos: Vector2   # screen space
 var travel_end_pos: Vector2     # screen space
 
 var town_buttons: Dictionary = {}
+var top_bar: Control
 
 var game_speed: int = 1
 const DAY_INTERVAL: float = 3.0
@@ -19,6 +20,7 @@ const MAP_W: float = 1672.0
 const MAP_H: float = 941.0
 const TOWN_COORD_W: float = 2816.0
 const TOWN_COORD_H: float = 1536.0
+const DEFAULT_TOP_BAR_HEIGHT: float = 88.0
 
 # City interaction radius in screen pixels
 const CITY_R: float = 14.0
@@ -39,10 +41,10 @@ func _ready() -> void:
 	_player_data.current_town = "Ashford"
 
 	_setup_view()
+	_bind_top_bar()
 	_place_player()
 	_build_town_buttons()
 	_setup_day_timer()
-	_setup_speed_buttons()
 	_update_ui()
 
 # Scale & position the map sprite to fill the viewport while keeping aspect ratio.
@@ -50,8 +52,10 @@ func _ready() -> void:
 # All other calculations use _map_to_screen() for explicit conversion.
 func _setup_view() -> void:
 	var vp: Vector2 = get_viewport_rect().size
-	_map_scale  = min(vp.x / MAP_W, vp.y / MAP_H)
-	_map_offset = (vp - Vector2(MAP_W, MAP_H) * _map_scale) * 0.5
+	var top_bar_height := _get_top_bar_height()
+	var map_area := Vector2(vp.x, max(1.0, vp.y - top_bar_height))
+	_map_scale  = max(map_area.x / MAP_W, map_area.y / MAP_H)
+	_map_offset = Vector2(0.0, top_bar_height) + (map_area - Vector2(MAP_W, MAP_H) * _map_scale) * 0.5
 
 	var map_sprite = get_node_or_null("MapSprite")
 	if map_sprite:
@@ -60,6 +64,16 @@ func _setup_view() -> void:
 	var player = get_node_or_null("Player")
 	if player:
 		player.z_index = 3
+
+func _get_top_bar_height() -> float:
+	var bar := get_node_or_null("UI/TopBar") as Control
+	if bar == null or not bar.visible:
+		return DEFAULT_TOP_BAR_HEIGHT
+
+	return maxf(
+		maxf(bar.size.y, bar.custom_minimum_size.y),
+		maxf(bar.get_combined_minimum_size().y, DEFAULT_TOP_BAR_HEIGHT)
+	)
 
 # Map (world) coordinate → screen coordinate
 func _map_to_screen(map_pos: Vector2) -> Vector2:
@@ -76,18 +90,16 @@ func _setup_day_timer() -> void:
 	_day_timer.timeout.connect(_on_day_tick)
 	add_child(_day_timer)
 
-func _setup_speed_buttons() -> void:
-	var hbox := HBoxContainer.new()
-	hbox.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	hbox.position = Vector2(10, -50)
-	var labels = ["⏸", "▶ 1x", "⏩ 2x"]
-	for i in 3:
-		var btn := Button.new()
-		btn.text = labels[i]
-		btn.custom_minimum_size = Vector2(70, 36)
-		btn.pressed.connect(_set_speed.bind(i))
-		hbox.add_child(btn)
-	get_node("UI").add_child(hbox)
+func _bind_top_bar() -> void:
+	var old_panel := get_node_or_null("UI/InfoPanel") as Control
+	if old_panel:
+		old_panel.visible = false
+
+	var ui := get_node("UI")
+	ui.layer = 10
+	top_bar = get_node_or_null("UI/TopBar") as Control
+	if top_bar and top_bar.has_signal("speed_changed"):
+		top_bar.connect("speed_changed", _set_speed)
 
 func _set_speed(speed: int) -> void:
 	game_speed = speed
@@ -96,6 +108,8 @@ func _set_speed(speed: int) -> void:
 	else:
 		_day_timer.paused = false
 		_day_timer.wait_time = DAY_INTERVAL / float(speed)
+	if top_bar and top_bar.has_method("set_speed"):
+		top_bar.call("set_speed", game_speed)
 
 # -----------------------------------------------
 
@@ -205,3 +219,15 @@ func _update_ui() -> void:
 			travel_lbl.text = "→ %s (%d day(s))" % [travel_destination, travel_days_remaining]
 		else:
 			travel_lbl.text = ""
+	if top_bar and top_bar.has_method("set_values"):
+		var location: String = travel_destination if is_traveling else _player_data.current_town
+		var travel_days: int = travel_days_remaining if is_traveling else 0
+		top_bar.call(
+			"set_values",
+			_player_data.current_day,
+			_player_data.gold,
+			_player_data.get_total_cargo(),
+			_player_data.caravan_capacity,
+			location,
+			travel_days
+		)
