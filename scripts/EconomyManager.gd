@@ -233,7 +233,7 @@ func _calculate_price(town: Dictionary, item: String) -> float:
 	var max_stock := maxf(float(_get_stock_cap(town, item)), 1.0)
 	var pressure := (demand - supply) / max_stock
 	var scarcity := stock / max_stock
-	return maxf(base * (1.0 + clamp(pressure - scarcity, -0.6, 1.5)), base * 0.3)
+	return maxf(base * (1.0 + clamp(pressure - scarcity, -0.7, 3.0) * 1.4), base * 0.25)
 
 func _estimate_effective_daily_supply(town: Dictionary, item: String) -> float:
 	var planned_output := float(town.get("production_plan", {}).get(item, 0))

@@ -3,6 +3,7 @@ extends Node2D
 var _player_data: Node
 var _economy: Node
 var _contracts: Node
+var _risk: Node
 
 var is_traveling: bool = false
 var travel_destination: String = ""
@@ -41,6 +42,7 @@ func _ready() -> void:
 	_player_data = get_node("/root/PlayerData")
 	_economy     = get_node("/root/EconomyManager")
 	_contracts   = get_node("/root/ContractManager")
+	_risk        = get_node("/root/TravelRiskManager")
 	_player_data.current_town = "Ashford"
 
 	_setup_view()
@@ -146,6 +148,7 @@ func _on_day_tick() -> void:
 			_arrive()
 			return
 	_update_ui()
+	_refresh_buttons()
 
 # -----------------------------------------------
 
@@ -186,13 +189,21 @@ func _calc_travel_days(town_name: String) -> int:
 
 func _arrive() -> void:
 	is_traveling = false
-	_player_data.current_town = travel_destination
+	var arrived_town: String = travel_destination
+	_player_data.current_town = arrived_town
 	travel_destination = ""
 	travel_days_remaining = 0
 	travel_total_days = 0
 	_refresh_buttons()
+
+	# Saldırı kontrolü - şehre vardığında değil, varış anında roll
+	if _risk.roll_attack(arrived_town) and _player_data.get_total_cargo() > 0:
+		var lost: Dictionary = _resolve_attack()
+		_show_attack_popup(lost, arrived_town)
+		return
+
 	_update_ui()
-	_open_town(_player_data.current_town)
+	_open_town(arrived_town)
 
 func _open_town(town_name: String) -> void:
 	_day_timer.paused = true
@@ -215,7 +226,17 @@ func _refresh_buttons() -> void:
 		elif town_name == _player_data.current_town:
 			btn.modulate = Color(0.3, 1.0, 0.3)
 		else:
-			btn.modulate = Color(1.0, 1.0, 1.0)
+			# Risk seviyesine göre renk: düşük=normal, yüksek=hafif kırmızı
+			var chance: float = 0.0
+			if _risk != null:
+				chance = _risk.calculate_attack_chance(town_name)
+			if chance >= 0.30:
+				btn.modulate = Color(1.0, 0.65, 0.55)  # Dangerous - kırmızımsı
+			elif chance >= 0.20:
+				btn.modulate = Color(1.0, 0.85, 0.7)   # Risky - turuncumsu
+			else:
+				btn.modulate = Color(1.0, 1.0, 1.0)    # Safe - normal
+	_update_risk_indicators()
 
 func _update_ui() -> void:
 	var day_lbl    = get_node_or_null("UI/InfoPanel/VBox/DayLabel")
@@ -333,3 +354,52 @@ func _get_contract_status_color(status: String) -> Color:
 	if status == "accepted":
 		return Color(1.0, 0.82, 0.36)
 	return Color(0.82, 0.65, 0.36)
+
+# Her şehir butonu için risk göstergesini günceller (tooltip + renk).
+func _update_risk_indicators() -> void:
+	if _risk == null or _player_data == null:
+		return
+
+	for town_name in town_buttons:
+		var btn: Button = town_buttons[town_name]
+		if btn == null:
+			continue
+
+		# Aynı şehir veya seyahat halinde - risk uyarısı göstermeye gerek yok
+		if town_name == _player_data.current_town or is_traveling:
+			btn.tooltip_text = town_name
+			continue
+
+		var chance: float = _risk.calculate_attack_chance(town_name)
+		var label: String = _risk.get_risk_label(chance)
+		var percent: int = int(round(chance * 100.0))
+		btn.tooltip_text = "%s\nRisk: %s (%d%%)" % [town_name, label, percent]
+
+# Saldırı olduğunda cargonun yarısını rastgele kaybeder.
+# Geriye kayıp özetini döndürür.
+func _resolve_attack() -> Dictionary:
+	var lost_items: Dictionary = {}
+	var inventory_copy: Dictionary = _player_data.inventory.duplicate()
+
+	for item in inventory_copy:
+		var qty: int = int(inventory_copy[item])
+		if qty <= 0:
+			continue
+		# Her itemin üçte biri kaybediliyor (yukarı yuvarla, en az 1)
+		var lost: int = maxi(1, int(ceil(qty / 3.0)))
+		lost = mini(lost, qty)
+		_player_data.remove_item(item, lost)
+		lost_items[item] = lost
+
+	return lost_items
+
+func _show_attack_popup(lost_items: Dictionary, arrived_town: String) -> void:
+	_day_timer.paused = true
+	var popup: Control = preload("res://scenes/ui/AttackPopup.tscn").instantiate()
+	get_node("UI").add_child(popup)
+	popup.call("show_attack", lost_items)
+	popup.connect("closed", _on_attack_popup_closed.bind(arrived_town))
+
+func _on_attack_popup_closed(arrived_town: String) -> void:
+	_update_ui()
+	_open_town(arrived_town)

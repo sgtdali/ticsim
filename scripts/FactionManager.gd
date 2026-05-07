@@ -53,20 +53,6 @@ func _init_npcs() -> void:
 			"role": "Master Craftsman",
 			"description": "Controls the craftsman association. Sells rare tools.",
 		},
-		"lysa": {
-			"name": "Lysa",
-			"faction": "Thieves Brotherhood",
-			"town": "Grapevale",
-			"role": "Innkeeper",
-			"description": "Runs the local inn. Knows smuggling routes.",
-		},
-		"bram": {
-			"name": "Bram",
-			"faction": "Northern Kingdom",
-			"town": "Millhaven",
-			"role": "Mill Owner",
-			"description": "Owns the largest mill. Offers flour contracts.",
-		},
 	}
 
 func get_npc(npc_id: String) -> Dictionary:
