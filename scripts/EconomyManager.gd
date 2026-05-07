@@ -162,6 +162,21 @@ func get_town_free_stock(town_name: String, item: String) -> int:
 		return 0
 	return maxi(_get_stock_cap(town, item) - int(town["inventory"].get(item, 0)), 0)
 
+func add_town_stock(town_name: String, item: String, qty: int, respect_cap := true) -> bool:
+	if qty <= 0:
+		return false
+	var town = towns.get(town_name, {})
+	if town.is_empty():
+		return false
+	var current_stock = int(town["inventory"].get(item, 0))
+	if respect_cap:
+		var cap = _get_stock_cap(town, item)
+		town["inventory"][item] = mini(current_stock + qty, cap)
+	else:
+		town["inventory"][item] = current_stock + qty
+	_recalculate_all_prices()
+	return true
+
 func _get_season() -> String:
 	var idx = int(((current_day - 1) / 30) % 4)
 	return ["spring", "summer", "autumn", "winter"][idx]

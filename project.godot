@@ -21,6 +21,7 @@ PlayerData="*res://scripts/PlayerData.gd"
 EconomyManager="*res://scripts/EconomyManager.gd"
 FactionManager="*res://scripts/FactionManager.gd"
 CaravanSystem="*res://scripts/CaravanSystem.gd"
+ContractManager="*res://scripts/ContractManager.gd"
 
 [gui]
 

@@ -111,6 +111,19 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "Info"
 
+[node name="ContractsBtn" type="Button" parent="TabBar"]
+custom_minimum_size = Vector2(104, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.65, 0.36, 1)
+theme_override_colors/font_pressed_color = Color(0.68, 0.48, 0.2, 1)
+theme_override_colors/font_hover_color = Color(1, 0.82, 0.42, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxTexture_secondary_btn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_secondary_btn")
+theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_btn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "Contracts"
+
 [node name="CloseBtn" type="Button" parent="." unique_id=866730568]
 layout_mode = 1
 anchors_preset = 1
@@ -177,3 +190,22 @@ grow_vertical = 2
 [node name="InfoLabel" type="Label" parent="InfoPanel" unique_id=693324275]
 layout_mode = 2
 autowrap_mode = 3
+
+[node name="ContractsPanel" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 118.0
+offset_right = 760.0
+offset_bottom = -10.0
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ContractsPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ContractList" type="VBoxContainer" parent="ContractsPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3

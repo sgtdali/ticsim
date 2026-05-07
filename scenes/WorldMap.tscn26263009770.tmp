@@ -68,44 +68,6 @@ layout_mode = 2
 
 [node name="TopBar" parent="UI" unique_id=506667552 instance=ExtResource("5_topbar")]
 
-[node name="ContractsToggle" type="Button" parent="UI" unique_id=517107815]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -181.0
-offset_top = 100.0
-offset_right = -15.0
-offset_bottom = 136.0
-grow_horizontal = 0
-text = "Contracts (0)"
-
-[node name="ContractsPanel" type="PanelContainer" parent="UI" unique_id=1113226552]
-visible = false
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -390.0
-offset_top = 138.0
-offset_right = -12.0
-offset_bottom = 430.0
-grow_horizontal = 0
-
-[node name="VBox" type="VBoxContainer" parent="UI/ContractsPanel" unique_id=1019648211]
-layout_mode = 2
-
-[node name="Title" type="Label" parent="UI/ContractsPanel/VBox" unique_id=1706761027]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "Contract Tracker"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/ContractsPanel/VBox" unique_id=662727575]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ContractList" type="VBoxContainer" parent="UI/ContractsPanel/VBox/ScrollContainer" unique_id=1653107959]
-layout_mode = 2
-size_flags_horizontal = 3
-
 [node name="Map001NormalCityMarkerTrimmed" type="Sprite2D" parent="." unique_id=394400374]
 z_index = 2
 position = Vector2(872, 464)
@@ -128,10 +90,10 @@ offset_bottom = 559.0
 text = "Ashford"
 
 [node name="IronmereBtn" type="Button" parent="TownButtons" unique_id=1204028932]
-offset_left = 979.0
-offset_top = 369.0
-offset_right = 1099.0
-offset_bottom = 405.0
+offset_left = 348.0
+offset_top = 36.0
+offset_right = 468.0
+offset_bottom = 72.0
 text = "Ironmere"
 
 [node name="StonebridgeBtn" type="Button" parent="TownButtons" unique_id=635898567]

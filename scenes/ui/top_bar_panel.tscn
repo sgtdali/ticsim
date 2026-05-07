@@ -15,6 +15,7 @@ custom_minimum_size = Vector2(150, 52)
 layout_mode = 3
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="PanelSlices" type="VBoxContainer" parent="." unique_id=1184391981]
 layout_mode = 1

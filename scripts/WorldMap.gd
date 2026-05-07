@@ -2,6 +2,7 @@ extends Node2D
 
 var _player_data: Node
 var _economy: Node
+var _contracts: Node
 
 var is_traveling: bool = false
 var travel_destination: String = ""
@@ -12,6 +13,7 @@ var travel_end_pos: Vector2     # screen space
 
 var town_buttons: Dictionary = {}
 var top_bar: Control
+var _contracts_panel_open := true
 
 var game_speed: int = 1
 const DAY_INTERVAL: float = 3.0
@@ -38,10 +40,12 @@ signal town_selected(town_name: String)
 func _ready() -> void:
 	_player_data = get_node("/root/PlayerData")
 	_economy     = get_node("/root/EconomyManager")
+	_contracts   = get_node("/root/ContractManager")
 	_player_data.current_town = "Ashford"
 
 	_setup_view()
 	_bind_top_bar()
+	_bind_contract_tracker()
 	_place_player()
 	_build_town_buttons()
 	_setup_day_timer()
@@ -100,6 +104,14 @@ func _bind_top_bar() -> void:
 	top_bar = get_node_or_null("UI/TopBar") as Control
 	if top_bar and top_bar.has_signal("speed_changed"):
 		top_bar.connect("speed_changed", _set_speed)
+
+func _bind_contract_tracker() -> void:
+	var toggle := get_node_or_null("UI/ContractsToggle") as Button
+	if toggle:
+		toggle.pressed.connect(_toggle_contract_tracker)
+	if _contracts and _contracts.has_signal("contracts_changed"):
+		_contracts.connect("contracts_changed", _update_contract_tracker)
+	_update_contract_tracker()
 
 func _set_speed(speed: int) -> void:
 	game_speed = speed
@@ -231,3 +243,93 @@ func _update_ui() -> void:
 			location,
 			travel_days
 		)
+	_update_contract_tracker()
+
+func _toggle_contract_tracker() -> void:
+	_contracts_panel_open = not _contracts_panel_open
+	_update_contract_tracker()
+
+func _update_contract_tracker() -> void:
+	if _contracts == null:
+		return
+
+	var toggle := get_node_or_null("UI/ContractsToggle") as Button
+	var panel := get_node_or_null("UI/ContractsPanel") as Control
+	var list := get_node_or_null("UI/ContractsPanel/VBox/ScrollContainer/ContractList") as VBoxContainer
+	if toggle == null or panel == null or list == null:
+		return
+
+	var active_contracts: Array = _contracts.get_active_contracts()
+	var player_contracts: Array = _contracts.get_player_contracts()
+	toggle.text = "Contracts (%d)" % active_contracts.size()
+	panel.visible = _contracts_panel_open and not player_contracts.is_empty()
+
+	for child in list.get_children():
+		list.remove_child(child)
+		child.queue_free()
+
+	if player_contracts.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "No accepted contracts yet."
+		list.add_child(empty_label)
+		return
+
+	for contract in player_contracts:
+		_add_contract_tracker_row(list, contract)
+
+func _add_contract_tracker_row(list: VBoxContainer, contract: Dictionary) -> void:
+	var row := VBoxContainer.new()
+	row.add_theme_constant_override("separation", 2)
+
+	var title := Label.new()
+	title.text = "%s [%s]" % [contract.get("title", "Contract"), str(contract.get("status", "")).capitalize()]
+	title.add_theme_color_override("font_color", _get_contract_status_color(str(contract.get("status", ""))))
+	row.add_child(title)
+
+	var detail := Label.new()
+	detail.text = _format_contract_tracker_detail(contract)
+	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row.add_child(detail)
+
+	list.add_child(row)
+	list.add_child(HSeparator.new())
+
+func _format_contract_tracker_detail(contract: Dictionary) -> String:
+	var status: String = str(contract.get("status", ""))
+	var item: String = str(contract.get("required_item", ""))
+	var required: int = int(contract.get("required_quantity", 0))
+	var held: int = int(_player_data.get_item_count(item))
+	var target: String = str(contract.get("target_town", ""))
+	var days_left: int = int(_contracts.get_days_remaining(contract))
+
+	if status == "completed":
+		return "Completed on day %d. Reward: %dg" % [
+			int(contract.get("completed_day", 0)),
+			int(contract.get("reward_gold", 0)),
+		]
+	if status == "failed":
+		return "Failed on day %d. Target was %s." % [int(contract.get("failed_day", 0)), target]
+
+	var progress := "Ready"
+	if _player_data.current_town != target:
+		progress = "Travel to %s" % target
+	elif held < required:
+		progress = "Need %d more %s" % [required - held, item.capitalize()]
+
+	return "%d/%d %s | %s | %d day(s) left | %dg" % [
+		held,
+		required,
+		item.capitalize(),
+		progress,
+		days_left,
+		int(contract.get("reward_gold", 0)),
+	]
+
+func _get_contract_status_color(status: String) -> Color:
+	if status == "completed":
+		return Color(0.45, 1.0, 0.35)
+	if status == "failed":
+		return Color(1.0, 0.35, 0.25)
+	if status == "accepted":
+		return Color(1.0, 0.82, 0.36)
+	return Color(0.82, 0.65, 0.36)
