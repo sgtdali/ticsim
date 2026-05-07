@@ -5,6 +5,12 @@ const BASE_UPGRADE_MULTIPLIER := 0.10
 const INPUT_CRITICAL_THRESHOLD := 0.25
 const POPULATION_TICK_DAYS := 30
 
+# --- Prosperity ---
+const PROSPERITY_MAX := 100
+const PROSPERITY_LEVEL_2_THRESHOLD := 30   # Level 2 = "Growing"
+const PROSPERITY_LEVEL_3_THRESHOLD := 65   # Level 3 = "Prosperous"
+const PROSPERITY_DECAY_PER_TICK := 1       # Yatırım yapılmazsa yavaşça düşer
+
 const GOODS: Dictionary = {
 	"wheat": {
 		"category": "survival",
@@ -122,6 +128,7 @@ func _init_towns() -> void:
 	towns = {
 		"Ashford": {
 			"name": "Ashford", "faction": "Northern Kingdom", "population": 120, "population_cap": 180,
+			"prosperity": 0,
 			"inventory": {"wheat": 80, "flour": 20, "wood": 40}, "prices": {}, "position": Vector2(480, 360),
 			"production_plan": {"wheat": 12, "wood": 8, "flour": 4},
 			"consumption_rules": {"bread": 0.05, "tool": 0.006},
@@ -129,6 +136,7 @@ func _init_towns() -> void:
 		},
 		"Ironmere": {
 			"name": "Ironmere", "faction": "Merchants Guild", "population": 200, "population_cap": 280,
+			"prosperity": 0,
 			"inventory": {"iron_ore": 60, "iron_bar": 15, "sword": 5}, "prices": {}, "position": Vector2(2200, 440),
 			"production_plan": {"iron_ore": 10, "iron_bar": 5, "tool": 3, "sword": 2},
 			"consumption_rules": {"wheat": 0.04, "flour": 0.03, "wood": 0.025},
@@ -136,6 +144,7 @@ func _init_towns() -> void:
 		},
 		"Stonebridge": {
 			"name": "Stonebridge", "faction": "Merchants Guild", "population": 160, "population_cap": 240,
+			"prosperity": 0,
 			"inventory": {"grapes": 60, "must": 20, "wine": 10, "wood": 30}, "prices": {}, "position": Vector2(1380, 1080),
 			"production_plan": {"grapes": 15, "must": 4, "wine": 2, "wood": 6},
 			"consumption_rules": {"wheat": 0.03, "bread": 0.02, "iron_bar": 0.015},
@@ -356,3 +365,30 @@ func player_sell(town_name: String, item: String, qty: int) -> bool:
 	town["inventory"][item] = current_stock + qty
 	_recalculate_all_prices()
 	return true
+
+
+# --- Prosperity API ---
+
+func get_prosperity(town_name: String) -> int:
+	return int(towns.get(town_name, {}).get("prosperity", 0))
+
+func get_prosperity_level(town_name: String) -> int:
+	var p := get_prosperity(town_name)
+	if p >= PROSPERITY_LEVEL_3_THRESHOLD:
+		return 3
+	elif p >= PROSPERITY_LEVEL_2_THRESHOLD:
+		return 2
+	return 1
+
+func get_prosperity_label(town_name: String) -> String:
+	match get_prosperity_level(town_name):
+		3: return "Prosperous"
+		2: return "Growing"
+		_: return "Struggling"
+
+func add_prosperity(town_name: String, amount: int) -> void:
+	var town = towns.get(town_name, {})
+	if town.is_empty():
+		return
+	var current := int(town.get("prosperity", 0))
+	town["prosperity"] = clamp(current + amount, 0, PROSPERITY_MAX)
