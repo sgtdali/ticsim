@@ -131,24 +131,27 @@ func _init_towns() -> void:
 		"Ashford": {
 			"name": "Ashford", "faction": "Northern Kingdom", "population": 120, "population_cap": 180,
 			"prosperity": 0,
-			"inventory": {"wheat": 80, "flour": 20, "wood": 40}, "prices": {}, "position": Vector2(480, 360),
-			"production_plan": {"wheat": 12, "wood": 8, "flour": 4},
+			"population_history": [],
+			"inventory": {"wheat": 30, "flour": 8, "wood": 15}, "prices": {}, "position": Vector2(480, 360),
+			"production_plan": {"wheat": 6, "wood": 4, "flour": 2},
 			"consumption_rules": {"bread": 0.05, "tool": 0.006},
 			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 		"Ironmere": {
 			"name": "Ironmere", "faction": "Merchants Guild", "population": 200, "population_cap": 280,
 			"prosperity": 0,
-			"inventory": {"iron_ore": 60, "iron_bar": 15, "sword": 5}, "prices": {}, "position": Vector2(2200, 440),
-			"production_plan": {"iron_ore": 10, "iron_bar": 5, "tool": 3, "sword": 2},
+			"population_history": [],
+			"inventory": {"iron_ore": 20, "iron_bar": 5, "sword": 2}, "prices": {}, "position": Vector2(2200, 440),
+			"production_plan": {"iron_ore": 5, "iron_bar": 2, "tool": 1, "sword": 1},
 			"consumption_rules": {"wheat": 0.04, "flour": 0.03, "wood": 0.025},
 			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 		"Stonebridge": {
 			"name": "Stonebridge", "faction": "Merchants Guild", "population": 160, "population_cap": 240,
 			"prosperity": 0,
-			"inventory": {"grapes": 60, "must": 20, "wine": 10, "wood": 30}, "prices": {}, "position": Vector2(1380, 1080),
-			"production_plan": {"grapes": 15, "must": 4, "wine": 2, "wood": 6},
+			"population_history": [],
+			"inventory": {"grapes": 20, "must": 8, "wine": 4, "wood": 10}, "prices": {}, "position": Vector2(1380, 1080),
+			"production_plan": {"grapes": 7, "must": 2, "wine": 1, "wood": 3},
 			"consumption_rules": {"wheat": 0.03, "bread": 0.02, "iron_bar": 0.015},
 			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
@@ -278,9 +281,8 @@ func advance_day() -> void:
 	for town_name in towns:
 		_process_town_production(towns[town_name])
 		_process_town_consumption(towns[town_name])
-	if current_day % POPULATION_TICK_DAYS == 0:
-		for town_name in towns:
-			_process_population_change(towns[town_name])
+	for town_name in towns:
+		_process_population_change(towns[town_name])
 	_recalculate_all_prices()
 	emit_signal("economy_updated")
 
@@ -334,11 +336,25 @@ func _process_town_consumption(town: Dictionary) -> void:
 
 func _process_population_change(town: Dictionary) -> void:
 	var change := 0
-	if town["report"].get("critical_consumption_issues", []).has("bread"):
+	var has_critical_survival := false
+	for item in town["report"].get("critical_consumption_issues", []):
+		if get_goods_category(item) == "survival":
+			has_critical_survival = true
+			break
+			
+	if has_critical_survival:
 		change -= int(ceil(town["population"] * 0.03))
-	if town["inventory"].get("bread", 0) > 20:
+	elif town["inventory"].get("bread", 0) > 10 or town["inventory"].get("wheat", 0) > 20:
 		change += int(ceil(town["population"] * 0.01))
+		
 	town["population"] = clamp(town["population"] + change, 10, town.get("population_cap", 200))
+
+	# Nüfus geçmişini tut (son 3 kayıt)
+	var history: Array = town.get("population_history", [])
+	history.append(int(town["population"]))
+	if history.size() > 3:
+		history = history.slice(history.size() - 3)
+	town["population_history"] = history
 
 func player_buy(town_name: String, item: String, qty: int) -> bool:
 	if qty <= 0:
@@ -416,6 +432,19 @@ func get_prosperity_multiplier(town_name: String) -> float:
 		3: return 1.50
 		2: return 1.20
 		_: return 1.0
+
+func get_population_trend(town_name: String) -> String:
+	var town = towns.get(town_name, {})
+	var history: Array = town.get("population_history", [])
+	if history.size() < 2:
+		return "stable"
+	var first: int = int(history[0])
+	var last: int = int(history[history.size() - 1])
+	if last > first:
+		return "up"
+	elif last < first:
+		return "down"
+	return "stable"
 
 # --- Investment ---
 

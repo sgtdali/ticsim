@@ -16,9 +16,9 @@ const CONTRACTS_PER_TOWN := 2
 const FAILURE_REP_PENALTY := 1.0
 
 const TIER_DATA := {
-	"basic": {"minimum_deadline": 5, "travel_buffer": 3, "gold_multiplier": 1.0, "rep": 1.0},
-	"standard": {"minimum_deadline": 4, "travel_buffer": 2, "gold_multiplier": 1.35, "rep": 1.5},
-	"urgent": {"minimum_deadline": 3, "travel_buffer": 1, "gold_multiplier": 1.8, "rep": 2.0},
+	"basic": {"minimum_deadline": 10, "travel_buffer": 5, "gold_multiplier": 1.0, "rep": 1.0},
+	"standard": {"minimum_deadline": 8, "travel_buffer": 4, "gold_multiplier": 1.35, "rep": 1.5},
+	"urgent": {"minimum_deadline": 6, "travel_buffer": 2, "gold_multiplier": 1.8, "rep": 2.0},
 }
 
 const TRAVEL_DISTANCE_PER_DAY := 200.0

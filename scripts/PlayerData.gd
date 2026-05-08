@@ -1,7 +1,7 @@
 extends Node
 
 # --- Money ---
-var gold: float = 50.0
+var gold: float = 5000.0
 
 # --- Inventory ---
 # { "item_name": quantity }
@@ -82,3 +82,40 @@ func get_npc_relation(npc_id: String) -> float:
 
 func advance_day() -> void:
 	current_day += 1
+
+# --- Caravan Upgrade ---
+
+const UPGRADE_NAMES := ["Donkey Cart", "Horse Cart", "Small Caravan"]
+const UPGRADE_CAPACITIES := [20, 35, 50]
+const UPGRADE_COSTS := [0, 300, 800]  # index 0 = başlangıç, ücretsiz
+
+func get_upgrade_name() -> String:
+	return UPGRADE_NAMES[clamp(caravan_upgrade_level, 0, UPGRADE_NAMES.size() - 1)]
+
+func get_next_upgrade_name() -> String:
+	var next := caravan_upgrade_level + 1
+	if next >= UPGRADE_NAMES.size():
+		return ""
+	return UPGRADE_NAMES[next]
+
+func get_next_upgrade_cost() -> int:
+	var next := caravan_upgrade_level + 1
+	if next >= UPGRADE_COSTS.size():
+		return -1  # max level
+	return UPGRADE_COSTS[next]
+
+func can_upgrade_caravan() -> bool:
+	var cost := get_next_upgrade_cost()
+	if cost < 0:
+		return false
+	return gold >= float(cost)
+
+func upgrade_caravan() -> bool:
+	if not can_upgrade_caravan():
+		return false
+	var cost := get_next_upgrade_cost()
+	if not remove_gold(float(cost)):
+		return false
+	caravan_upgrade_level += 1
+	caravan_capacity = UPGRADE_CAPACITIES[clamp(caravan_upgrade_level, 0, UPGRADE_CAPACITIES.size() - 1)]
+	return true

@@ -10,6 +10,11 @@
 - ContractManager: procurement & delivery, basic/standard/urgent
 - FactionManager: 3 faction, NPC listesi, reputation
 - TopBar UI
+- TravelRiskManager: bandit attacks, cargo-based risk
+- EventManager: random town events (festival, famine, demand surge, bumper crop, plague)
+- EconomyManager: prosperity system (invest gold → city grows → production/price bonus)
+- Goal system: develop all 3 cities to Prosperous → win
+- Caravan upgrade: Donkey Cart (20) → Horse Cart (35) → Small Caravan (50)
 
 ## YOK (ileride bakılır, şu an yazma)
 - 4. ve 5. şehir
@@ -18,7 +23,6 @@
 - Tax sistemi
 - NPC ile diyalog
 - Black market
-- Caravan upgrades
 
 ## v0.1 HEDEFİ
 Oyuncu 50 gold ile başlar. 3 şehir arası ticaret + kontratlarla 300 gold biriktirir.
@@ -27,3 +31,19 @@ Oyuncu 50 gold ile başlar. 3 şehir arası ticaret + kontratlarla 300 gold biri
 ## v0.1 OUT-OF-SCOPE KARARI
 Yeni özellik eklenmeyecek. Mevcut sistemler (market, contract, faction) cilalanacak.
 Yeni mekanik isteği geldiğinde bu dosyaya yaz, **hemen kodlama**.
+
+## v0.1 TAMAMLANDI
+Tüm temel sistemler kuruldu ve çalışıyor:
+- Al-sat döngüsü
+- Risk sistemi (bandit saldırıları)
+- Event sistemi (5 olay tipi)
+- Prosperity sistemi
+- Caravan upgrade
+- Goal panel + win condition
+- Harita tooltips + cargo panel
+
+Oyun zevki testi v0.2'ye ertelendi.
+Sebep: "Dünya yaşamıyor" problemi ancak
+canlı dünya sistemiyle test edilebilir.
+
+## v0.2 HEDEFİ: Yaşayan Dünya
