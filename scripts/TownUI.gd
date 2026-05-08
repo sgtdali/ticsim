@@ -12,6 +12,7 @@ var _player: Node
 var _economy: Node
 var _faction: Node
 var _contracts: Node
+var _events: Node
 
 var _active_tab: String = "market"
 
@@ -28,6 +29,7 @@ func _ready() -> void:
 	_economy = get_node("/root/EconomyManager")
 	_faction = get_node("/root/FactionManager")
 	_contracts = get_node("/root/ContractManager")
+	_events = get_node_or_null("/root/EventManager")
 	if _contracts.has_signal("contracts_changed"):
 		_contracts.connect("contracts_changed", _on_contracts_changed)
 
@@ -41,6 +43,7 @@ func _ready() -> void:
 	$TabBar/NPCBtn.pressed.connect(_show_tab.bind("npc"))
 	$TabBar/InfoBtn.pressed.connect(_show_tab.bind("info"))
 	$TabBar/ContractsBtn.pressed.connect(_show_tab.bind("contracts"))
+	$TabBar/InvestBtn.pressed.connect(_show_tab.bind("invest"))
 	$CloseBtn.pressed.connect(_on_close)
 
 	_apply_secondary_button_style($CloseBtn)
@@ -51,6 +54,7 @@ func _show_tab(tab: String) -> void:
 	$NPCPanel.visible    = (tab == "npc")
 	$InfoPanel.visible   = (tab == "info")
 	$ContractsPanel.visible = (tab == "contracts")
+	$InvestPanel.visible = (tab == "invest")
 	_update_tab_button_styles()
 
 	match tab:
@@ -58,14 +62,16 @@ func _show_tab(tab: String) -> void:
 		"npc":    _build_npc()
 		"info":   _build_info()
 		"contracts": _build_contracts()
+		"invest": _build_invest()
 
 func _update_tab_button_styles() -> void:
-	$TabBar.custom_minimum_size = Vector2(456, 42)
-	$TabBar.size = Vector2(456, 42)
+	$TabBar.custom_minimum_size = Vector2(560, 42)
+	$TabBar.size = Vector2(560, 42)
 	_apply_tab_button_style($TabBar/MarketBtn, _active_tab == "market")
 	_apply_tab_button_style($TabBar/NPCBtn, _active_tab == "npc")
 	_apply_tab_button_style($TabBar/InfoBtn, _active_tab == "info")
 	_apply_tab_button_style($TabBar/ContractsBtn, _active_tab == "contracts")
+	_apply_tab_button_style($TabBar/InvestBtn, _active_tab == "invest")
 
 func _apply_tab_button_style(button: Button, active: bool) -> void:
 	if active:
@@ -372,6 +378,26 @@ func _on_contracts_changed() -> void:
 # ---- INFO ----
 
 func _build_info() -> void:
+	# --- Aktif olay kartı ---
+	if _events != null and _events.has_event(town_name):
+		var event: Dictionary = _events.get_event(town_name)
+		var event_color: Color = event.get("color", Color.WHITE)
+		var days_left: int = int(event.get("ends_day", 0)) - int(_economy.current_day)
+
+		var event_card = Label.new()
+		event_card.text = "[%s] %s\n%s\nEnds in %d day(s)." % [
+			str(event.get("name", "")),
+			str(event.get("icon", "")),
+			str(event.get("description", "")),
+			max(days_left, 0),
+		]
+		event_card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		event_card.add_theme_color_override("font_color", event_color)
+		event_card.add_theme_font_size_override("font_size", 15)
+		$InfoPanel.add_child(event_card)
+		$InfoPanel.move_child(event_card, 0)
+
+	# --- Mevcut info ---
 	var town = _economy.get_town(town_name)
 	var faction_name = town.get("faction", "")
 	var faction_data = _faction.get_faction_data(faction_name)
@@ -407,6 +433,75 @@ Last production report:
 func _on_close() -> void:
 	emit_signal("closed")
 	queue_free()
+
+# ---- INVEST ----
+
+func _build_invest() -> void:
+	var container = $InvestPanel/ScrollContainer/InvestList
+	for child in container.get_children():
+		child.queue_free()
+
+	var prosperity := int(_economy.get_prosperity(town_name))
+	var level := int(_economy.get_prosperity_level(town_name))
+	var label := String(_economy.get_prosperity_label(town_name))
+
+	# Header
+	var title = Label.new()
+	title.text = "Invest in %s" % town_name
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color(1.0, 0.82, 0.36))
+	container.add_child(title)
+
+	var status = Label.new()
+	status.text = "Status: %s (Level %d)  |  Prosperity: %d / %d" % [label, level, prosperity, _economy.PROSPERITY_MAX]
+	status.add_theme_color_override("font_color", Color(0.94, 0.78, 0.45))
+	container.add_child(status)
+
+	var explain = Label.new()
+	explain.text = "Invest gold into the town. Each %d gold raises prosperity by 1 point.\nA prosperous town produces more goods and pays better prices." % int(_economy.GOLD_PER_PROSPERITY_POINT)
+	explain.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	explain.add_theme_color_override("font_color", Color(0.76, 0.62, 0.36))
+	container.add_child(explain)
+
+	# Mevcut prosperity bonusu
+	var multiplier := float(_economy.get_prosperity_multiplier(town_name))
+	var production_bonus := int(round((multiplier - 1.0) * 100.0))
+	var sell_bonus := int(round((multiplier - 1.0) * 30.0))
+	var effects = Label.new()
+	effects.text = "Current effects:\n  • Production: +%d%%\n  • Sell prices: +%d%%\n  • Demand: +%d%%" % [production_bonus, sell_bonus, production_bonus]
+	effects.add_theme_color_override("font_color", Color(0.7, 0.95, 0.7))
+	container.add_child(effects)
+
+	container.add_child(HSeparator.new())
+
+	var gold_lbl = Label.new()
+	gold_lbl.text = "Your gold: %.1f" % _player.gold
+	container.add_child(gold_lbl)
+
+	var amounts := [50, 100, 250, 500]
+	for amount in amounts:
+		var row = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+
+		var amount_lbl = Label.new()
+		amount_lbl.text = "%d gold  →  +%d prosperity" % [amount, int(amount / _economy.GOLD_PER_PROSPERITY_POINT)]
+		amount_lbl.custom_minimum_size.x = 240
+		row.add_child(amount_lbl)
+
+		var btn = Button.new()
+		btn.text = "Invest"
+		btn.disabled = (_player.gold < amount or prosperity >= _economy.PROSPERITY_MAX)
+		_apply_primary_button_style(btn)
+		btn.pressed.connect(_on_invest.bind(amount))
+		row.add_child(btn)
+
+		container.add_child(row)
+
+func _on_invest(amount: int) -> void:
+	var gained := int(_economy.invest_gold(town_name, float(amount)))
+	if gained > 0:
+		print("Invested %d gold in %s. +%d prosperity." % [amount, town_name, gained])
+	_build_invest()
 
 func _format_town_report(report: Dictionary) -> String:
 	if report.is_empty():

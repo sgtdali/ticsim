@@ -119,9 +119,11 @@ var current_day := 1
 signal economy_updated
 
 var _player: Node
+var _events: Node
 
 func _ready() -> void:
 	_player = get_node("/root/PlayerData")
+	_events = get_node_or_null("/root/EventManager")
 	_init_towns()
 
 func _init_towns() -> void:
@@ -242,7 +244,10 @@ func _calculate_price(town: Dictionary, item: String) -> float:
 	var max_stock := maxf(float(_get_stock_cap(town, item)), 1.0)
 	var pressure := (demand - supply) / max_stock
 	var scarcity := stock / max_stock
-	return maxf(base * (1.0 + clamp(pressure - scarcity, -0.7, 3.0) * 1.4), base * 0.25)
+	var event_mult: float = 1.0
+	if _events != null:
+		event_mult = float(_events.get_price_multiplier(town.get("name", ""), item))
+	return maxf(base * (1.0 + clamp(pressure - scarcity, -0.7, 3.0) * 1.4) * event_mult, base * 0.25)
 
 func _estimate_effective_daily_supply(town: Dictionary, item: String) -> float:
 	var planned_output := float(town.get("production_plan", {}).get(item, 0))
@@ -262,7 +267,11 @@ func _estimate_effective_daily_supply(town: Dictionary, item: String) -> float:
 
 func _estimate_daily_consumption(town: Dictionary, item: String) -> int:
 	var per_capita = float(town.get("consumption_rules", {}).get(item, 0.0))
-	return int(round(town.get("population", 0) * per_capita))
+	var multiplier = get_prosperity_multiplier(town.get("name", ""))
+	var event_mult: float = 1.0
+	if _events != null:
+		event_mult = float(_events.get_consumption_multiplier(town.get("name", ""), item))
+	return int(round(town.get("population", 0) * per_capita * multiplier * event_mult))
 
 func advance_day() -> void:
 	current_day += 1
@@ -293,6 +302,9 @@ func _process_town_production(town: Dictionary) -> void:
 		var input_state = _calculate_input_efficiency(town, item, base_output)
 		var upgrade_level = _get_upgrade_level(town.get("production_upgrades", {}), item)
 		var final_output = _calculate_effective_output(base_output, _get_season_multiplier(item), input_state["efficiency"], upgrade_level)
+		final_output *= get_prosperity_multiplier(town["name"])
+		if _events != null:
+			final_output *= float(_events.get_production_multiplier(town["name"], item))
 		var stock_cap = _get_stock_cap(town, item)
 		var in_stock = int(town["inventory"].get(item, 0))
 		var free_space = max(stock_cap - in_stock, 0)
@@ -361,7 +373,9 @@ func player_sell(town_name: String, item: String, qty: int) -> bool:
 		return false
 	var price = get_price(town_name, item) * qty
 	var bonus = _player.get_faction_rep(town.get("faction", "")) * 0.001
-	_player.add_gold(price * (1.0 + bonus))
+	# Prosperous şehirler %5-15 daha iyi fiyat öder
+	var prosperity_bonus = (get_prosperity_multiplier(town_name) - 1.0) * 0.30
+	_player.add_gold(price * (1.0 + bonus + prosperity_bonus))
 	town["inventory"][item] = current_stock + qty
 	_recalculate_all_prices()
 	return true
@@ -392,3 +406,41 @@ func add_prosperity(town_name: String, amount: int) -> void:
 		return
 	var current := int(town.get("prosperity", 0))
 	town["prosperity"] = clamp(current + amount, 0, PROSPERITY_MAX)
+
+# Prosperity seviyesine göre çarpan döndürür.
+# Level 1 (Struggling) = 1.0  (etkisiz)
+# Level 2 (Growing)    = 1.20 (+%20)
+# Level 3 (Prosperous) = 1.50 (+%50)
+func get_prosperity_multiplier(town_name: String) -> float:
+	match get_prosperity_level(town_name):
+		3: return 1.50
+		2: return 1.20
+		_: return 1.0
+
+# --- Investment ---
+
+# Gold başına ne kadar prosperity puanı kazanılır.
+# 10 gold = 1 prosperity puanı. Yani 100 gold = 10 puan, 1000 gold = 100 puan (max).
+const GOLD_PER_PROSPERITY_POINT := 10.0
+
+# Oyuncu şehre gold yatırır. Prosperity artar.
+# Geriye kazanılan prosperity puanını döndürür (0 = başarısız).
+func invest_gold(town_name: String, gold_amount: float) -> int:
+	if gold_amount <= 0.0:
+		return 0
+	var town = towns.get(town_name, {})
+	if town.is_empty():
+		return 0
+	if _player.gold < gold_amount:
+		return 0
+
+	var prosperity_gain := int(floor(gold_amount / GOLD_PER_PROSPERITY_POINT))
+	if prosperity_gain <= 0:
+		return 0
+
+	if not _player.remove_gold(gold_amount):
+		return 0
+
+	add_prosperity(town_name, prosperity_gain)
+	emit_signal("economy_updated")
+	return prosperity_gain

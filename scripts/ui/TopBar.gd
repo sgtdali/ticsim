@@ -54,3 +54,18 @@ func _on_speed_button_pressed(speed: int) -> void:
 	set_speed(speed)
 	speed_changed.emit(speed)
 
+func show_notification(message: String, color: Color = Color(1.0, 0.82, 0.36)) -> void:
+	var notif := Label.new()
+	notif.text = message
+	notif.add_theme_color_override("font_color", color)
+	notif.add_theme_font_size_override("font_size", 13)
+	notif.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(notif)
+	# 4 saniye sonra sil
+	var timer := Timer.new()
+	timer.wait_time = 4.0
+	timer.one_shot = true
+	timer.timeout.connect(func(): notif.queue_free(); timer.queue_free())
+	add_child(timer)
+	timer.start()
+

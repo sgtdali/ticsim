@@ -22,6 +22,7 @@ EconomyManager="*res://scripts/EconomyManager.gd"
 FactionManager="*res://scripts/FactionManager.gd"
 ContractManager="*res://scripts/ContractManager.gd"
 TravelRiskManager="*res://scripts/TravelRiskManager.gd"
+EventManager="*res://scripts/EventManager.gd"
 
 [gui]
 

@@ -4,6 +4,7 @@ var _player_data: Node
 var _economy: Node
 var _contracts: Node
 var _risk: Node
+var _events: Node
 
 var is_traveling: bool = false
 var travel_destination: String = ""
@@ -43,6 +44,10 @@ func _ready() -> void:
 	_economy     = get_node("/root/EconomyManager")
 	_contracts   = get_node("/root/ContractManager")
 	_risk        = get_node("/root/TravelRiskManager")
+	_events = get_node_or_null("/root/EventManager")
+	if _events:
+		_events.connect("event_started", _on_event_changed)
+		_events.connect("event_ended", _on_event_changed)
 	_player_data.current_town = "Ashford"
 
 	_setup_view()
@@ -223,19 +228,33 @@ func _refresh_buttons() -> void:
 		var btn: Button = town_buttons[town_name]
 		if is_traveling:
 			btn.modulate = Color(0.55, 0.55, 0.55)
-		elif town_name == _player_data.current_town:
+			btn.text = town_name
+			continue
+		if town_name == _player_data.current_town:
 			btn.modulate = Color(0.3, 1.0, 0.3)
+			btn.text = town_name
+			continue
+
+		# Olay rozeti
+		if _events != null and _events.has_event(town_name):
+			var event: Dictionary = _events.get_event(town_name)
+			var icon: String = str(event.get("icon", "?"))
+			var event_color: Color = event.get("color", Color.WHITE)
+			btn.text = "%s %s" % [icon, town_name]
+			btn.modulate = event_color
+			continue
+
+		# Risk rengi (olay yoksa)
+		var chance: float = 0.0
+		if _risk != null:
+			chance = _risk.calculate_attack_chance(town_name)
+		if chance >= 0.30:
+			btn.modulate = Color(1.0, 0.65, 0.55)
+		elif chance >= 0.20:
+			btn.modulate = Color(1.0, 0.85, 0.7)
 		else:
-			# Risk seviyesine göre renk: düşük=normal, yüksek=hafif kırmızı
-			var chance: float = 0.0
-			if _risk != null:
-				chance = _risk.calculate_attack_chance(town_name)
-			if chance >= 0.30:
-				btn.modulate = Color(1.0, 0.65, 0.55)  # Dangerous - kırmızımsı
-			elif chance >= 0.20:
-				btn.modulate = Color(1.0, 0.85, 0.7)   # Risky - turuncumsu
-			else:
-				btn.modulate = Color(1.0, 1.0, 1.0)    # Safe - normal
+			btn.modulate = Color(1.0, 1.0, 1.0)
+		btn.text = town_name
 	_update_risk_indicators()
 
 func _update_ui() -> void:
@@ -403,3 +422,12 @@ func _show_attack_popup(lost_items: Dictionary, arrived_town: String) -> void:
 func _on_attack_popup_closed(arrived_town: String) -> void:
 	_update_ui()
 	_open_town(arrived_town)
+
+func _on_event_changed(town_name: String, event: Dictionary) -> void:
+	_refresh_buttons()
+	if event.is_empty():
+		return
+	if top_bar and top_bar.has_method("show_notification"):
+		var event_color: Color = event.get("color", Color.WHITE)
+		var msg: String = "%s: %s begins!" % [town_name, str(event.get("name", ""))]
+		top_bar.call("show_notification", msg, event_color)
