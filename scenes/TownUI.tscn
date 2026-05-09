@@ -111,7 +111,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "Info"
 
-[node name="ContractsBtn" type="Button" parent="TabBar"]
+[node name="ContractsBtn" type="Button" parent="TabBar" unique_id=611638597]
 custom_minimum_size = Vector2(104, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.65, 0.36, 1)
@@ -124,7 +124,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "Contracts"
 
-[node name="InvestBtn" type="Button" parent="TabBar"]
+[node name="InvestBtn" type="Button" parent="TabBar" unique_id=2106003537]
 custom_minimum_size = Vector2(104, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.65, 0.36, 1)
@@ -137,7 +137,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_secondary_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "Invest"
 
-[node name="UpgradeBtn" type="Button" parent="TabBar"]
+[node name="UpgradeBtn" type="Button" parent="TabBar" unique_id=906097195]
 custom_minimum_size = Vector2(104, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.65, 0.36, 1)
@@ -171,6 +171,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "Leave Town"
 
 [node name="MarketPanel" type="VBoxContainer" parent="." unique_id=74560453]
+modulate = Color(0.8934645, 0.89592165, 0.73175114, 1)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -217,7 +218,7 @@ grow_vertical = 2
 layout_mode = 2
 autowrap_mode = 3
 
-[node name="ContractsPanel" type="VBoxContainer" parent="."]
+[node name="ContractsPanel" type="VBoxContainer" parent="." unique_id=2028487689]
 visible = false
 layout_mode = 1
 anchors_preset = 9
@@ -228,15 +229,15 @@ offset_right = 760.0
 offset_bottom = -10.0
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="ContractsPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="ContractsPanel" unique_id=1375619452]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ContractList" type="VBoxContainer" parent="ContractsPanel/ScrollContainer"]
+[node name="ContractList" type="VBoxContainer" parent="ContractsPanel/ScrollContainer" unique_id=915268353]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="InvestPanel" type="VBoxContainer" parent="."]
+[node name="InvestPanel" type="VBoxContainer" parent="." unique_id=2138695620]
 visible = false
 layout_mode = 1
 anchors_preset = 9
@@ -247,15 +248,15 @@ offset_right = 760.0
 offset_bottom = -10.0
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="InvestPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="InvestPanel" unique_id=1577211932]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="InvestList" type="VBoxContainer" parent="InvestPanel/ScrollContainer"]
+[node name="InvestList" type="VBoxContainer" parent="InvestPanel/ScrollContainer" unique_id=887348810]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="UpgradePanel" type="VBoxContainer" parent="."]
+[node name="UpgradePanel" type="VBoxContainer" parent="." unique_id=1387900145]
 visible = false
 layout_mode = 1
 anchors_preset = 9
@@ -266,10 +267,10 @@ offset_right = 760.0
 offset_bottom = -10.0
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UpgradePanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UpgradePanel" unique_id=1719103454]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="UpgradeList" type="VBoxContainer" parent="UpgradePanel/ScrollContainer"]
+[node name="UpgradeList" type="VBoxContainer" parent="UpgradePanel/ScrollContainer" unique_id=2112088247]
 layout_mode = 2
 size_flags_horizontal = 3

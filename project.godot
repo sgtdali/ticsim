@@ -24,6 +24,7 @@ ContractManager="*res://scripts/ContractManager.gd"
 TravelRiskManager="*res://scripts/TravelRiskManager.gd"
 EventManager="*res://scripts/EventManager.gd"
 TraderManager="*res://scripts/TraderManager.gd"
+
 [gui]
 
 theme/custom="res://assets/theme.tres"
