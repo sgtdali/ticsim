@@ -8,10 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://rlvnynfvk0bw" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r2_c2.png" id="6_mc"]
 [ext_resource type="PackedScene" uid="uid://bxmdr7w72u4bv" path="res://scenes/ui/top_bar_panel.tscn" id="7_ck54b"]
 [ext_resource type="Texture2D" uid="uid://bo0j2mn6g7xvs" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r2_c3.png" id="7_mr"]
+[ext_resource type="Texture2D" uid="uid://betwphaieki3j" path="res://GoldIcon_trimmed.png" id="7_sbmi0"]
 [ext_resource type="Texture2D" uid="uid://1duob7uhy4si" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r3_c1.png" id="8_bl"]
+[ext_resource type="Texture2D" uid="uid://c76ooncj187gy" path="res://assets/Icons/GoldIcon_trimmed1.png" id="8_sbmi0"]
 [ext_resource type="Texture2D" uid="uid://co0p74yqq361q" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r3_c2.png" id="9_bc"]
 [ext_resource type="Texture2D" uid="uid://bkrptlwqn5u0s" path="res://assets/ui_kit/UI-011_Header Bar_trimmed_split/UI-011_Header Bar_trimmed_r3_c3.png" id="10_br"]
-[ext_resource type="Texture2D" uid="uid://bka0dgeqyxv6m" path="res://assets/Icons/GoldIcon_trimmed.png" id="11_gold"]
 [ext_resource type="Texture2D" uid="uid://2f4yep7myxde" path="res://assets/Icons/CargoIcon_trimmed.png" id="12_cargo"]
 [ext_resource type="Texture2D" uid="uid://djeesta32dybu" path="res://assets/Icons/CompasIcon_trimmed.png" id="13_loc"]
 [ext_resource type="Texture2D" uid="uid://dbp01tlfnpry7" path="res://assets/Icons/DayIcon_trimmed.png" id="14_day"]
@@ -126,7 +127,7 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_vertical = 4
-texture = ExtResource("11_gold")
+texture = ExtResource("7_sbmi0")
 expand_mode = 1
 stretch_mode = 5
 
@@ -148,7 +149,13 @@ theme_override_font_sizes/font_size = 17
 text = "000050"
 clip_text = true
 
+[node name="GoldIconTrimmed1" type="Sprite2D" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot/GoldStat" unique_id=1621903942]
+position = Vector2(-36.99997, 30)
+scale = Vector2(0.21337582, 0.19585991)
+texture = ExtResource("8_sbmi0")
+
 [node name="TopBarPanel" parent="HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot" unique_id=906584106 instance=ExtResource("7_ck54b")]
+modulate = Color(0.7372549, 0.7372549, 0.7372549, 1)
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 15
