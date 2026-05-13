@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://y51dutj47o2d"]
+
+[ext_resource type="Script" uid="uid://jrffojowfcq1" path="res://scripts/experiments/CargoMovementTest.gd" id="1_scene_controller"]
+[ext_resource type="Texture2D" uid="uid://sxpbagqlnwyf" path="res://assets/experiments/CargoIcon_48x64.png" id="2_cargo_icon"]
+[ext_resource type="Script" uid="uid://bare2woxtmjt0" path="res://scripts/experiments/ExperimentGround.gd" id="3_ground"]
+[ext_resource type="Script" uid="uid://f3jeyb8eh5sn" path="res://scripts/experiments/CargoPlayerController.gd" id="4_cargo_controller"]
+[ext_resource type="Texture2D" uid="uid://dxq46mrui65h2" path="res://assets/experiments/Building_512x512.png" id="5_building"]
+[ext_resource type="Texture2D" path="res://assets/experiments/Interior_18_512x512.png" id="6_interior"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exterior_door"]
+size = Vector2(110, 86)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_interior_door"]
+size = Vector2(86, 34)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cargo"]
+radius = 13.0
+
+[node name="CargoMovementTest" type="Node2D" unique_id=45721132]
+script = ExtResource("1_scene_controller")
+
+[node name="Exterior" type="Node2D" parent="." unique_id=570886438]
+
+[node name="ExperimentGround" type="Node2D" parent="Exterior" unique_id=1323215126]
+script = ExtResource("3_ground")
+
+[node name="Building" type="Sprite2D" parent="Exterior" unique_id=1773386935]
+position = Vector2(0, -64)
+texture = ExtResource("5_building")
+
+[node name="DoorArea" type="Area2D" parent="Exterior" unique_id=1075564803]
+position = Vector2(0, 180)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exterior/DoorArea" unique_id=1176511656]
+shape = SubResource("RectangleShape2D_exterior_door")
+
+[node name="Interior" type="Node2D" parent="." unique_id=1413874118]
+visible = false
+
+[node name="InteriorBackground" type="Sprite2D" parent="Interior" unique_id=1514828112]
+texture = ExtResource("6_interior")
+
+[node name="DoorArea" type="Area2D" parent="Interior" unique_id=1246026609]
+position = Vector2(0, 235)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interior/DoorArea" unique_id=1685898757]
+shape = SubResource("RectangleShape2D_interior_door")
+
+[node name="CargoPlayer" type="CharacterBody2D" parent="." unique_id=857423790]
+y_sort_enabled = true
+script = ExtResource("4_cargo_controller")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CargoPlayer" unique_id=468542305]
+position = Vector2(0, 3)
+shape = SubResource("CircleShape2D_cargo")
+
+[node name="Shadow" type="Sprite2D" parent="CargoPlayer" unique_id=1682806856]
+modulate = Color(0, 0, 0, 0.28)
+position = Vector2(0, 6)
+scale = Vector2(0.68, 0.18)
+texture = ExtResource("2_cargo_icon")
+
+[node name="Sprite2D" type="Sprite2D" parent="CargoPlayer" unique_id=1501484987]
+position = Vector2(0, -24)
+texture = ExtResource("2_cargo_icon")
+
+[node name="Camera2D" type="Camera2D" parent="CargoPlayer" unique_id=333196075]
+position = Vector2(0, -120)
+zoom = Vector2(1, 1)
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+
+[node name="Hud" type="CanvasLayer" parent="." unique_id=1717097428]
+
+[node name="Instructions" type="Label" parent="Hud" unique_id=1077822812]
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 420.0
+offset_bottom = 44.0
+text = "Dis mekan - kapidan iceri gir"
