@@ -53,7 +53,6 @@ func get_rank_requirements(rank_idx: int) -> Dictionary:
 		2: # Merchant
 			reqs["gold"] = 1500
 			reqs["friendly_factions"] = 2
-			reqs["trading_posts"] = 1
 		3: # Guild Master
 			reqs["gold"] = 4000
 			reqs["friendly_factions"] = 3
