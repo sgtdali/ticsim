@@ -23,7 +23,7 @@ func build() -> void:
 
 	# Header
 	var header = Label.new()
-	header.text = "   %-14s %6s %10s %28s %28s" % ["Item", "Stock", "Price", "Buy Options", "Sell Options"]
+	header.text = "   %-14s %6s %10s %28s %28s" % ["Item", "Stock", "Ref", "Buy Options", "Sell Options"]
 	header.add_theme_font_size_override("font_size", 12)
 	header.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
 	container.add_child(header)
@@ -48,9 +48,6 @@ func build() -> void:
 		var player_has = _player.get_item_count(item)
 		var town_free_stock = _economy.get_town_free_stock(town_name, item)
 		
-		var faction = town.get("faction", "")
-		var discount = float(_player.get_faction_rep(faction)) * 0.001
-		var effective_price = price * (1.0 - discount)
 		var free_cap = _player.get_free_capacity()
 
 		var row = HBoxContainer.new()
@@ -67,8 +64,9 @@ func build() -> void:
 		row.add_child(stock_lbl)
 
 		var price_lbl = Label.new()
-		price_lbl.text = "%.1fg" % price
-		price_lbl.custom_minimum_size.x = 60
+		price_lbl.text = "Ref %.1fg" % price
+		price_lbl.tooltip_text = "Reference price. Actual buy/sell uses spread and marginal stock quotes."
+		price_lbl.custom_minimum_size.x = 76
 		row.add_child(price_lbl)
 
 		# --- Buy Buttons ---
@@ -80,16 +78,14 @@ func build() -> void:
 			var btn = Button.new()
 			var b_qty = qty
 			if qty == -1:
-				var can_afford = floor(_player.gold / effective_price) if effective_price > 0 else 0
-				b_qty = clampi(int(min(town_stock, free_cap, can_afford)), 0, 999)
+				b_qty = _get_max_affordable_buy(item, mini(town_stock, free_cap))
 				btn.text = "Buy MAX"
-				btn.tooltip_text = "Buy %d units" % b_qty
 			else:
 				btn.text = "Buy %d" % qty
 			
-			btn.disabled = (b_qty <= 0 or town_stock < b_qty or _player.gold < (effective_price * b_qty) or free_cap < b_qty)
-			if qty == 5 and (town_stock < 5 or _player.gold < (effective_price * 5) or free_cap < 5):
-				btn.disabled = true
+			var buy_total: float = _economy.get_buy_quote_total(town_name, item, b_qty)
+			btn.tooltip_text = _format_trade_quote_tooltip("Buy", b_qty, buy_total)
+			btn.disabled = (b_qty <= 0 or town_stock < b_qty or _player.gold < buy_total or free_cap < b_qty)
 				
 			ui.apply_primary_button_style(btn)
 			btn.custom_minimum_size = Vector2(72, 34)
@@ -108,10 +104,11 @@ func build() -> void:
 			if qty == -1:
 				s_qty = clampi(int(min(player_has, town_free_stock)), 0, 999)
 				btn.text = "Sell MAX"
-				btn.tooltip_text = "Sell %d units" % s_qty
 			else:
 				btn.text = "Sell %d" % qty
 			
+			var sell_total: float = _economy.get_sell_quote_total(town_name, item, s_qty)
+			btn.tooltip_text = _format_trade_quote_tooltip("Sell", s_qty, sell_total)
 			btn.disabled = (s_qty <= 0 or player_has < s_qty or town_free_stock < s_qty)
 			if qty == 5 and (player_has < 5 or town_free_stock < 5):
 				btn.disabled = true
@@ -134,13 +131,16 @@ func build() -> void:
 
 		if player_has > 0 and _player.purchase_prices.has(item):
 			var buy_avg: float = _player.purchase_prices[item]
-			var bonus := float(_player.get_faction_rep(faction)) * 0.001
-			var prosperity_bonus := (float(_economy.get_prosperity_multiplier(town_name)) - 1.0) * 0.30
-			var current_sell_price := float(price * (1.0 + bonus + prosperity_bonus))
+			var quote_qty: int = mini(player_has, town_free_stock)
+			if quote_qty <= 0:
+				container.add_child(row)
+				continue
+			var current_sell_price: float = _economy.get_sell_quote_average(town_name, item, quote_qty)
 			var diff := float(current_sell_price - buy_avg)
 			
 			var profit_lbl = Label.new()
-			profit_lbl.text = " | buy: %.1fg → now: %.1fg | %+.1fg" % [buy_avg, current_sell_price, diff]
+			profit_lbl.text = " | buy avg: %.1fg | sell avg: %.1fg | %+.1fg" % [buy_avg, current_sell_price, diff]
+			profit_lbl.tooltip_text = "Sell avg is the average quote for selling your current stack here, not the reference price."
 			profit_lbl.add_theme_font_size_override("font_size", 10)
 			
 			if diff > 0.1:
@@ -165,3 +165,19 @@ func _on_sell(item: String, qty: int) -> void:
 	var faction = _economy.get_town(town_name).get("faction", "")
 	_faction.apply_trade_reputation(faction, _economy.get_price(town_name, item) * qty)
 	build()
+
+func _get_max_affordable_buy(item: String, max_qty: int) -> int:
+	for qty in range(max_qty, 0, -1):
+		if _economy.get_buy_quote_total(town_name, item, qty) <= _player.gold:
+			return qty
+	return 0
+
+func _format_trade_quote_tooltip(action: String, qty: int, total: float) -> String:
+	if qty <= 0:
+		return "%s 0 units" % action
+	return "%s %d units\nTotal: %.1fg\nAverage: %.1fg" % [
+		action,
+		qty,
+		total,
+		total / float(qty),
+	]

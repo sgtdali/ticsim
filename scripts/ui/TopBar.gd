@@ -39,7 +39,13 @@ func _update_content_margins() -> void:
 
 func set_values(day: int, gold: float, cargo: int, capacity: int, location: String, travel_days := 0) -> void:
 	time_label.text = "Day %d" % day
-	gold_label.text = "%06d" % int(round(gold))
+	var player := get_node_or_null("/root/PlayerData")
+	if player != null and float(player.get("debt")) > 0.0:
+		gold_label.text = "%04d D:%03d" % [int(round(gold)), int(ceil(float(player.get("debt"))))]
+		gold_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.35))
+	else:
+		gold_label.text = "%06d" % int(round(gold))
+		gold_label.add_theme_color_override("font_color", Color(0.94, 0.78, 0.45))
 	cargo_label.text = "%03d / %03d" % [cargo, capacity]
 	if travel_days > 0:
 		location_label.text = "%s (%d d)" % [location, travel_days]

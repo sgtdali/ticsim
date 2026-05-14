@@ -9,6 +9,7 @@ const DEPOT_CAPACITY := 50
 # posts = {
 # 	"Ashford": {
 # 		"established": true,
+# 		"suspended": false,
 # 		"depot": { "wheat": 10, "iron_bar": 5 },
 # 		"rules": [
 # 			{
@@ -35,10 +36,19 @@ func _ready() -> void:
 		_economy.connect("new_day", _on_new_day)
 
 func has_post(town_name: String) -> bool:
-	return posts.has(town_name) and posts[town_name].get("established", false)
+	return posts.has(town_name) and posts[town_name].get("established", false) and not posts[town_name].get("suspended", false)
+
+func get_active_post_count() -> int:
+	var count := 0
+	for town_name in posts.keys():
+		if has_post(town_name):
+			count += 1
+	return count
 
 func establish_post(town_name: String) -> bool:
 	if not get_node("/root/RankManager").can_open_trading_post():
+		return false
+	if _player.has_debt():
 		return false
 	if has_post(town_name):
 		return false
@@ -48,9 +58,10 @@ func establish_post(town_name: String) -> bool:
 	_player.remove_gold(POST_COST)
 	
 	if not posts.has(town_name):
-		posts[town_name] = { "established": true, "depot": {}, "rules": [] }
+		posts[town_name] = { "established": true, "suspended": false, "depot": {}, "rules": [] }
 	else:
 		posts[town_name]["established"] = true
+		posts[town_name]["suspended"] = false
 	
 	emit_signal("post_updated", town_name)
 	return true
@@ -120,10 +131,37 @@ func toggle_rule(town_name: String, idx: int, enabled: bool) -> void:
 		rules[idx]["enabled"] = enabled
 		emit_signal("post_updated", town_name)
 
-func _on_new_day() -> void:
-	var trades_happened := false
+func suspend_most_valuable_post() -> bool:
+	var best_town := ""
+	var best_value := -1.0
 	for town_name in posts.keys():
 		if not has_post(town_name):
+			continue
+		var value: float = _get_depot_value(town_name)
+		if value > best_value:
+			best_value = value
+			best_town = town_name
+	if best_town == "":
+		return false
+	posts[best_town]["suspended"] = true
+	emit_signal("post_updated", best_town)
+	print("[Debt] Trading Post suspended in %s" % best_town)
+	return true
+
+func _get_depot_value(town_name: String) -> float:
+	var value := 0.0
+	var depot: Dictionary = posts.get(town_name, {}).get("depot", {})
+	for item in depot.keys():
+		value += float(_economy.BASE_PRICES.get(item, 0.0)) * float(depot[item])
+	return value
+
+func _on_new_day() -> void:
+	var trades_happened := false
+	var debt_stops_all_trade: bool = _player.should_stop_trading_post_auto_trade()
+	for town_name in posts.keys():
+		if not has_post(town_name):
+			continue
+		if debt_stops_all_trade:
 			continue
 		
 		var rules: Array = posts[town_name]["rules"]
@@ -140,20 +178,23 @@ func _on_new_day() -> void:
 			if daily_max <= 0:
 				continue
 				
-			var current_price := float(_economy.get_price(town_name, item))
-			var current_depot := get_depot_item_count(town_name, item)
+			var current_price: float = float(_economy.get_price(town_name, item))
+			var current_depot: int = get_depot_item_count(town_name, item)
 			
 			if type == "buy":
+				if _player.has_debt():
+					continue
 				if current_price < limit_price and current_depot < depot_limit:
-					var market_stock := int(_economy.get_town(town_name).get("inventory", {}).get(item, 0))
+					var market_stock: int = int(_economy.get_town(town_name).get("inventory", {}).get(item, 0))
 					var space_to_limit := depot_limit - current_depot
-					var global_space := DEPOT_CAPACITY - get_depot_total(town_name)
+					var global_space: int = DEPOT_CAPACITY - get_depot_total(town_name)
 					var space := mini(space_to_limit, global_space)
 					
 					var qty := mini(daily_max, mini(market_stock, space))
 					if qty > 0:
-						var cost := qty * current_price
-						if _player.gold >= cost:
+						var cost: float = _economy.get_buy_quote_total(town_name, item, qty)
+						var average_cost: float = cost / float(qty)
+						if average_cost < limit_price and _player.gold >= cost:
 							_player.remove_gold(cost)
 							# take from market
 							var town_data: Dictionary = _economy.get_town(town_name)
@@ -163,7 +204,7 @@ func _on_new_day() -> void:
 							
 							# add to depot silently without emitting signal repeatedly
 							posts[town_name]["depot"][item] = current_depot + qty
-							print("[Post] %s: bought %dx %s at %.1fg" % [town_name, qty, item, current_price])
+							print("[Post] %s: bought %dx %s for %.1fg" % [town_name, qty, item, cost])
 							trades_happened = true
 			
 			elif type == "sell":
@@ -175,7 +216,10 @@ func _on_new_day() -> void:
 					qty = mini(qty, market_free)
 					
 					if qty > 0:
-						var earnings := qty * current_price
+						var earnings: float = _economy.get_sell_quote_total(town_name, item, qty)
+						var average_earnings: float = earnings / float(qty)
+						if average_earnings <= limit_price:
+							continue
 						_player.add_gold(earnings)
 						
 						# add to market
@@ -186,7 +230,7 @@ func _on_new_day() -> void:
 						posts[town_name]["depot"][item] = current_depot - qty
 						if posts[town_name]["depot"][item] <= 0:
 							posts[town_name]["depot"].erase(item)
-						print("[Post] %s: sold %dx %s at %.1fg" % [town_name, qty, item, current_price])
+						print("[Post] %s: sold %dx %s for %.1fg" % [town_name, qty, item, earnings])
 						trades_happened = true
 	
 	if trades_happened:

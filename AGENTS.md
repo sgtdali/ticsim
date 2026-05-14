@@ -6,6 +6,16 @@
 
 Whenever a code, data, or scene change affects gameplay mechanics, progression, balance, or player-visible systemic behavior, check `docs/mechanics.md` in the same task and update it when needed.
 
+Before adding a new mechanic or changing an existing one, briefly review the current mechanics and give design feedback when useful. Call out:
+
+- Direct conflicts with existing mechanics, progression gates, balance assumptions, or scope
+- Systems that will be affected indirectly
+- Edge cases or exploit risks the change may create
+- Existing mechanics that should be connected to the new change for a stronger design
+- Simpler alternatives when the requested change is larger than needed
+
+Keep this feedback concise and practical. Once the impact is clear, proceed with the implementation unless the user asks to discuss first or the change would create a serious design/scope conflict.
+
 Mechanics-impacting areas include, but are not limited to:
 
 - Rank requirements, unlocks, win/loss conditions, and progression gates

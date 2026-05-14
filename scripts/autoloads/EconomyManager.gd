@@ -124,6 +124,18 @@ func get_upgrade_cost(item: String, level: int, stock_upgrade := false) -> int:
 func get_price(town_name: String, item: String) -> float:
 	return market.get_price(town_name, item)
 
+func get_buy_quote_total(town_name: String, item: String, qty: int) -> float:
+	return market.get_buy_quote_total(town_name, item, qty)
+
+func get_sell_quote_total(town_name: String, item: String, qty: int) -> float:
+	return market.get_sell_quote_total(town_name, item, qty)
+
+func get_buy_quote_average(town_name: String, item: String, qty: int) -> float:
+	return market.get_buy_quote_average(town_name, item, qty)
+
+func get_sell_quote_average(town_name: String, item: String, qty: int) -> float:
+	return market.get_sell_quote_average(town_name, item, qty)
+
 func get_town_free_stock(town_name: String, item: String) -> int:
 	return market.get_town_free_stock(town_name, item)
 

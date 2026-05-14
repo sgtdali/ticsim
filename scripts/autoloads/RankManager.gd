@@ -44,7 +44,8 @@ func get_rank_requirements(rank_idx: int) -> Dictionary:
 		"trading_posts": 0,
 		"growing_cities": 0,
 		"allied_factions": 0,
-		"prosperous_cities": 0
+		"prosperous_cities": 0,
+		"debt_free": 1
 	}
 	match rank_idx:
 		1: # Trader
@@ -96,11 +97,14 @@ func get_progress_data() -> Dictionary:
 		"trading_posts": {"current": post_count, "req": next_reqs["trading_posts"]},
 		"growing_cities": {"current": growing_count, "req": next_reqs["growing_cities"]},
 		"allied_factions": {"current": allied_count, "req": next_reqs["allied_factions"]},
-		"prosperous_cities": {"current": prosperous_count, "req": next_reqs["prosperous_cities"]}
+		"prosperous_cities": {"current": prosperous_count, "req": next_reqs["prosperous_cities"]},
+		"debt_free": {"current": 0 if _player.has_debt() else 1, "req": next_reqs["debt_free"]}
 	}
 
 func check_rank_up() -> bool:
 	if current_rank_index + 1 >= RANKS.size():
+		return false
+	if _player.has_debt():
 		return false
 		
 	var prog = get_progress_data()

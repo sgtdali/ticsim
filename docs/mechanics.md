@@ -20,9 +20,14 @@ Not: Trading Post, Merchant rutbesinde acildigi icin Merchant sartlari Trading P
 
 Her sehir kendi stok, uretim, tuketim, nufus ve fiyat durumuna sahiptir. Fiyatlar sabit degildir; arz, talep, stok dolulugu ve aktif olaylara gore yeniden hesaplanir.
 
-- **Stok ve fiyat:** Stok az, talep yuksek veya uretim dusukse fiyat artar. Stok fazlaysa fiyat duser.
-- **Alim fiyatlari:** Oyuncunun ilgili faction reputation degeri arttikca satin alma maliyeti azalir.
-- **Satis fiyatlari:** Reputation ve sehir prosperity seviyesi satis gelirini artirir.
+- **Stok ve fiyat:** Tuketilen mallarda fiyat, fiziksel kapasiteye degil sehrin kac gunluk ihtiyacinin stokta olduguna bakar. Denge noktasi 14 gunluk tuketimdir.
+- **Patrician tarzi tuketim egrisi:** Stok 0 gunlukse fiyat `base x3.0`; 7 gunlukse `base x1.8`; 14 gunlukse `base x1.0`; 28 gunlukse `base x0.6`; 42 gunluk ve uzeriyse `base x0.35` olur. Aradaki degerler lineer interpolate edilir.
+- **Tuketilmeyen mallar:** Gunluk tuketim 0 ise fiyat eski stok/kapasite mantigina doner. Bu, sehirde uretilen ama tuketilmeyen mallar icin kullanilir.
+- **Market fiyati:** UI'da gorunen ana fiyat, sehrin stok/talep durumundan uretilen referans fiyattir.
+- **Alim ve satis quote'u:** Oyuncu market fiyati uzerinden dogrudan sinirsiz al-sat yapmaz. Alimda ask spread, satista bid spread uygulanir.
+- **Marginal toplu islem:** Birden fazla mal alinir veya satilirken her birim stok degisiminden sonra yeniden fiyatlanir. Bu, "10 birim al, stok 0 oldu, hemen daha pahaliya geri sat" arbitrajini engeller.
+- **Alim fiyatlari:** Oyuncunun ilgili faction reputation degeri arttikca satin alma maliyeti azalir; bu indirim spread ile sinirlanir.
+- **Satis fiyatlari:** Reputation ve sehir prosperity seviyesi satis gelirini artirir; ayni sehirde anlik al-sat kârina donusmemesi icin satis carpani alis carpani altinda tutulur.
 - **Ortalama alis fiyati:** Oyuncunun her mal icin ortalama alis fiyati tutulur; market UI kâr/zarar firsatini gosterir.
 - **Stock cap:** Sehirler her mal icin sinirli stok kapasitesine sahiptir. Kapasite doluysa uretim veya satis engellenebilir.
 
@@ -68,8 +73,8 @@ Trading Post, Merchant rutbesinde acilir ve oyuncunun sehirde fiziksel olarak bu
 - **Rutbe gereksinimi:** Merchant.
 - **Depo kapasitesi:** 50 birim.
 - **Depot:** Oyuncu cargodan depoya mal birakabilir veya depodan cargo alabilir.
-- **Buy rule:** Fiyat limitin altindaysa, depodaki miktar hedefin altindaysa ve gunluk limit dolmadiysa alir.
-- **Sell rule:** Fiyat limitin ustundeyse, depodaki miktar hedefin ustundeyse ve markette yer varsa satar.
+- **Buy rule:** Ortalama alim quote'u limitin altindaysa, depodaki miktar hedefin altindaysa ve gunluk limit dolmadiysa alir.
+- **Sell rule:** Ortalama satis quote'u limitin ustundeyse, depodaki miktar hedefin ustundeyse ve markette yer varsa satar.
 - **Gunluk maksimum:** Her kural kendi daily max degerine sahiptir.
 
 ## 7. Kontratlar
@@ -126,7 +131,39 @@ Caravan kapasitesi oyuncunun ticaret hacmini ve dolayli olarak riskini belirler.
 | Horse Cart | 35 | 300 | Trader |
 | Small Caravan | 50 | 800 | Trader |
 
-## 12. Core Loop
+## 12. Upkeep ve Debt
+
+Oyuncu her gun caravan, Trading Post ve rutbe yasam standardi icin upkeep oder. Upkeep, gold ekonomisini sadece birikim degil hayatta kalma baskisi haline getirir.
+
+| Kaynak | Gunluk gider |
+| :--- | ---: |
+| Donkey Cart | 2 gold |
+| Horse Cart | 5 gold |
+| Small Caravan | 10 gold |
+| Her aktif Trading Post | 8 gold |
+| Peddler rank | 0 gold |
+| Trader rank | 3 gold |
+| Merchant rank | 8 gold |
+| Guild Master rank | 20 gold |
+| Patrician rank | 0 gold |
+
+Gold upkeep'i karsilamazsa eksik miktar **debt** olarak yazilir. Sonraki kontrat odulleri, satis gelirleri ve diger gold kazanclari once debt kapatir; debt bittikten sonra kalan miktar gold'a eklenir.
+
+Debt varken:
+
+- Rank up yapilamaz.
+- Caravan upgrade yapilamaz.
+- Yeni Trading Post acilamaz.
+- Trading Post auto-buy calismaz.
+- Gelirler once debt kapatir.
+
+Debt sure cezasi:
+
+- **14 gun debt:** Pozitif faction reputation kazanclari -%25 olur.
+- **30 gun debt:** Mevcut Trading Postlar otomatik ticareti tamamen durdurur.
+- **60 gun debt:** Depo degeri en yuksek aktif Trading Post suspended olur. Suspended post aktif post sayilmaz ve tekrar acilmasi gerekir.
+
+## 13. Core Loop
 
 1. **Al-sat ve kontrat yap** -> gold, faction reputation ve NPC relation kazan.
 2. **Pazar firsatlarini oku** -> stok, fiyat, event, nufus trendi ve risk bilgilerini kullan.
@@ -135,9 +172,3 @@ Caravan kapasitesi oyuncunun ticaret hacmini ve dolayli olarak riskini belirler.
 5. **Trading Post kur** -> otomatik ticaretle pasif stok/gold akisi yarat.
 6. **Yasayan dunyaya mudahale et** -> kriz yasayan sehirleri besle, firsat olan sehirlere mal gotur.
 7. **Hedef:** 3 allied faction ve 3 prosperous city ile **Patrician** rutbesine ulas.
-
-## 13. Scope Notlari
-
-- Owned shops, black market ve NPC dialogue su an out-of-scope veya altyapi seviyesindedir.
-- Production/stock upgrade altyapisi kodda vardir; oyuncuya tam sistem olarak acilmadigi surece ana progression mekanigi sayilmaz.
-- Yeni mekanik eklenirken once bu belge ve scope dokumani guncellenmelidir.
