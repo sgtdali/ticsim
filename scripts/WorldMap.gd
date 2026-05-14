@@ -18,6 +18,8 @@ var travel_end_pos: Vector2     # screen space
 var town_buttons: Dictionary = {}
 var top_bar: Control
 var _contracts_panel_open := true
+var _finance_panel: PanelContainer
+var _speed_before_finance := 1
 
 var game_speed: int = 1
 const DAY_INTERVAL: float = 8.0
@@ -122,6 +124,8 @@ func _bind_top_bar() -> void:
 	top_bar = get_node_or_null("UI/TopBar") as Control
 	if top_bar and top_bar.has_signal("speed_changed"):
 		top_bar.connect("speed_changed", _set_speed)
+	if top_bar and top_bar.has_signal("finance_requested"):
+		top_bar.connect("finance_requested", _toggle_finance_panel)
 
 func _bind_contract_tracker() -> void:
 	var toggle := get_node_or_null("UI/ContractsToggle") as Button
@@ -130,6 +134,133 @@ func _bind_contract_tracker() -> void:
 	if _contracts and _contracts.has_signal("contracts_changed"):
 		_contracts.connect("contracts_changed", _update_contract_tracker)
 	_update_contract_tracker()
+
+func _toggle_finance_panel() -> void:
+	if _finance_panel != null and is_instance_valid(_finance_panel):
+		_close_finance_panel()
+		return
+	_open_finance_panel()
+
+func _open_finance_panel() -> void:
+	_speed_before_finance = game_speed
+	_set_speed(0)
+	_build_finance_panel()
+
+func _close_finance_panel() -> void:
+	if _finance_panel != null and is_instance_valid(_finance_panel):
+		_finance_panel.queue_free()
+	_finance_panel = null
+	_set_speed(_speed_before_finance)
+
+func _build_finance_panel() -> void:
+	var ui := get_node("UI")
+	var panel := PanelContainer.new()
+	panel.name = "FinancePanel"
+	panel.anchor_left = 1.0
+	panel.anchor_top = 0.0
+	panel.anchor_right = 1.0
+	panel.anchor_bottom = 0.0
+	panel.offset_left = -390.0
+	panel.offset_top = 96.0
+	panel.offset_right = -10.0
+	panel.offset_bottom = 436.0
+	ui.add_child(panel)
+	_finance_panel = panel
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	panel.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	margin.add_child(vbox)
+
+	var header := HBoxContainer.new()
+	vbox.add_child(header)
+
+	var title := Label.new()
+	title.text = "Finance Summary"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", Color(1.0, 0.82, 0.36))
+	header.add_child(title)
+
+	var close_btn := Button.new()
+	close_btn.text = "X"
+	close_btn.custom_minimum_size = Vector2(34, 28)
+	close_btn.pressed.connect(_toggle_finance_panel)
+	header.add_child(close_btn)
+
+	vbox.add_child(HSeparator.new())
+
+	var summary: Dictionary = _player_data.get_finance_summary()
+	_add_finance_row(vbox, "Gold", _format_gold(float(summary.get("gold", 0.0))))
+	_add_finance_row(vbox, "Debt", "%s (%d day%s)" % [
+		_format_gold(float(summary.get("debt", 0.0))),
+		int(summary.get("debt_days", 0)),
+		"" if int(summary.get("debt_days", 0)) == 1 else "s"
+	])
+	_add_finance_row(vbox, "Daily upkeep", _format_gold(float(summary.get("daily_upkeep", 0.0))))
+
+	vbox.add_child(HSeparator.new())
+	_add_finance_section_title(vbox, "Upkeep Breakdown")
+	_add_finance_row(vbox, "Caravan", _format_gold(float(summary.get("caravan_upkeep", 0.0))))
+	_add_finance_row(vbox, "Rank (%s)" % str(summary.get("rank", "")), _format_gold(float(summary.get("rank_upkeep", 0.0))))
+	_add_finance_row(vbox, "Trading Posts (%d)" % int(summary.get("active_posts", 0)), _format_gold(float(summary.get("trading_post_upkeep", 0.0))))
+
+	vbox.add_child(HSeparator.new())
+	_add_finance_section_title(vbox, "Today")
+	_add_finance_bucket(vbox, summary.get("today", {}))
+
+	vbox.add_child(HSeparator.new())
+	_add_finance_section_title(vbox, "Yesterday")
+	_add_finance_bucket(vbox, summary.get("yesterday", {}))
+
+func _refresh_finance_panel() -> void:
+	if _finance_panel == null or not is_instance_valid(_finance_panel):
+		return
+	_finance_panel.queue_free()
+	_finance_panel = null
+	_build_finance_panel()
+
+func _add_finance_section_title(parent: VBoxContainer, text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_color_override("font_color", Color(0.94, 0.78, 0.45))
+	parent.add_child(label)
+
+func _add_finance_bucket(parent: VBoxContainer, bucket: Variant) -> void:
+	var data: Dictionary = bucket if bucket is Dictionary else {}
+	var income := float(data.get("income", 0.0))
+	var expenses := float(data.get("expenses", 0.0))
+	_add_finance_row(parent, "Income", _format_gold(income))
+	_add_finance_row(parent, "Expenses", _format_gold(expenses))
+	_add_finance_row(parent, "Net", _format_gold(income - expenses))
+	_add_finance_row(parent, "Debt paid", _format_gold(float(data.get("debt_paid", 0.0))))
+	_add_finance_row(parent, "Upkeep paid", _format_gold(float(data.get("upkeep_paid", 0.0))))
+	_add_finance_row(parent, "Unpaid upkeep", _format_gold(float(data.get("upkeep_unpaid", 0.0))))
+
+func _add_finance_row(parent: VBoxContainer, label_text: String, value_text: String) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	parent.add_child(row)
+
+	var label := Label.new()
+	label.text = label_text
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
+
+	var value := Label.new()
+	value.text = value_text
+	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	value.custom_minimum_size.x = 110
+	row.add_child(value)
+
+func _format_gold(value: float) -> String:
+	return "%.1fg" % value
 
 func _set_speed(speed: int) -> void:
 	game_speed = speed
@@ -156,7 +287,6 @@ func _process(delta: float) -> void:
 
 func _on_day_tick() -> void:
 	_economy.advance_day()
-	_player_data.advance_day()
 	if is_traveling:
 		travel_days_remaining -= 1
 		if travel_days_remaining <= 0:
@@ -169,6 +299,7 @@ func _on_day_tick() -> void:
 	_update_goal_panel()
 	_update_cargo_panel()
 	_update_trader_labels()
+	_refresh_finance_panel()
 	_check_win_condition()
 
 # -----------------------------------------------
@@ -228,10 +359,10 @@ func _arrive() -> void:
 
 func _open_town(town_name: String) -> void:
 	_day_timer.paused = true
-	var town_ui = preload("res://scenes/TownUI.tscn").instantiate()
-	town_ui.town_name = town_name
-	get_node("UI").add_child(town_ui)
-	town_ui.closed.connect(_on_town_ui_closed)
+	var town_scene: Node = preload("res://scenes/TownScene.tscn").instantiate()
+	town_scene.set("town_name", town_name)
+	get_node("UI").add_child(town_scene)
+	town_scene.connect("closed", Callable(self, "_on_town_ui_closed"))
 
 func _on_town_ui_closed() -> void:
 	if game_speed > 0:

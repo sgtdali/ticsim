@@ -163,7 +163,24 @@ Debt sure cezasi:
 - **30 gun debt:** Mevcut Trading Postlar otomatik ticareti tamamen durdurur.
 - **60 gun debt:** Depo degeri en yuksek aktif Trading Post suspended olur. Suspended post aktif post sayilmaz ve tekrar acilmasi gerekir.
 
-## 13. Core Loop
+## 13. Gunluk Tick Sirasi
+
+Gun ilerlemesi `EconomyManager.advance_day()` tarafindan merkezi olarak yonetilir. Sistemler sinyal baglanti sirasina guvenmez; gameplay sirasi aciktir.
+
+1. Economy day artar.
+2. Player day artar; upkeep/debt islenir.
+3. Trading Post auto-trade calisir.
+4. Sehir uretimi islenir.
+5. Sehir tuketimi islenir.
+6. Nufus degisimi islenir.
+7. Market fiyatlari yeniden hesaplanir ve gunluk investment limiti resetlenir.
+8. NPC trader'lar hareket/ticaret yapar.
+9. Kontratlar expire/check edilir ve eksik sehir kontratlari yenilenir.
+10. Event'ler expire/spawn edilir.
+11. Rank check yapilir.
+12. WorldMap/UI refresh edilir.
+
+## 14. Core Loop
 
 1. **Al-sat ve kontrat yap** -> gold, faction reputation ve NPC relation kazan.
 2. **Pazar firsatlarini oku** -> stok, fiyat, event, nufus trendi ve risk bilgilerini kullan.

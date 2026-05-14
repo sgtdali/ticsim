@@ -35,9 +35,6 @@ func _ready() -> void:
 	_economy = get_node("/root/EconomyManager")
 	_faction = get_node("/root/FactionManager")
 
-	if _economy.has_signal("economy_updated"):
-		_economy.connect("economy_updated", _on_economy_updated)
-
 	_generate_initial_contracts()
 
 func get_available_contracts(town_name: String) -> Array:
@@ -121,7 +118,7 @@ func get_days_remaining(contract: Dictionary) -> int:
 		return int(contract.get("deadline_duration", 0))
 	return int(contract.get("deadline_day", 0)) - _get_current_day()
 
-func _on_economy_updated() -> void:
+func process_day() -> void:
 	_expire_contracts()
 	var town_names: Array = _economy.towns.keys()
 	for town_name in town_names:

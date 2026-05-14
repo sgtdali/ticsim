@@ -65,5 +65,5 @@ func invest_gold(town_name: String, gold_amount: float) -> Variant:
 
 	add_prosperity(town_name, prosperity_gain)
 	daily_prosperity_earned[town_name] = daily_earned + prosperity_gain
-	eco.emit_signal("economy_updated")
+	eco.emit_signal("progression_updated")
 	return prosperity_gain

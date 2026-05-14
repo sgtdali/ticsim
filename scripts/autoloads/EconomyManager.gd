@@ -23,11 +23,14 @@ var BASE_PRICES: Dictionary = {}
 var towns: Dictionary = {}
 var current_day := 1
 
-signal economy_updated
-signal new_day
+signal progression_updated
 
 var _player: Node
 var _events: Node
+var _contracts: Node
+var _traders: Node
+var _posts: Node
+var _rank: Node
 
 # Sub-systems
 var market: MarketSystem
@@ -37,6 +40,10 @@ var investment: InvestmentSystem
 func _ready() -> void:
 	_player = get_node("/root/PlayerData")
 	_events = get_node_or_null("/root/EventManager")
+	_contracts = get_node_or_null("/root/ContractManager")
+	_traders = get_node_or_null("/root/TraderManager")
+	_posts = get_node_or_null("/root/TradingPostManager")
+	_rank = get_node_or_null("/root/RankManager")
 	
 	market = MarketSystem.new(self)
 	simulation = TownSimulation.new(self)
@@ -114,7 +121,48 @@ func get_population_trend(town_name: String) -> String:
 # --- Simulation API ---
 
 func advance_day() -> void:
-	simulation.advance_day()
+	current_day += 1
+	_player.advance_day()
+	_process_trading_posts()
+	simulation.process_town_production_phase()
+	simulation.process_town_consumption_phase()
+	simulation.process_population_phase()
+	market.recalculate_all_prices()
+	investment.daily_prosperity_earned.clear()
+	_process_traders()
+	_process_contracts()
+	_process_events()
+	_check_rank()
+
+func _process_trading_posts() -> void:
+	if _posts == null:
+		_posts = get_node_or_null("/root/TradingPostManager")
+	if _posts != null and _posts.has_method("process_day"):
+		_posts.call("process_day")
+
+func _process_traders() -> void:
+	if _traders == null:
+		_traders = get_node_or_null("/root/TraderManager")
+	if _traders != null and _traders.has_method("process_day"):
+		_traders.call("process_day")
+
+func _process_contracts() -> void:
+	if _contracts == null:
+		_contracts = get_node_or_null("/root/ContractManager")
+	if _contracts != null and _contracts.has_method("process_day"):
+		_contracts.call("process_day")
+
+func _process_events() -> void:
+	if _events == null:
+		_events = get_node_or_null("/root/EventManager")
+	if _events != null and _events.has_method("process_day"):
+		_events.call("process_day")
+
+func _check_rank() -> void:
+	if _rank == null:
+		_rank = get_node_or_null("/root/RankManager")
+	if _rank != null and _rank.has_method("check_rank_up"):
+		_rank.call("check_rank_up")
 
 func get_upgrade_cost(item: String, level: int, stock_upgrade := false) -> int:
 	return simulation.get_upgrade_cost(item, level, stock_upgrade)

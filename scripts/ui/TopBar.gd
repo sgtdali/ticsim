@@ -2,10 +2,12 @@
 extends Control
 
 signal speed_changed(speed: int)
+signal finance_requested
 
 const HORIZONTAL_MARGIN_RATIO := 0.05
 
 @onready var content_margin: MarginContainer = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin
+@onready var gold_slot: Control = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot
 @onready var time_label: Label = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot/DayStat/Text/Value
 @onready var gold_label: Label = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot/GoldStat/Text/Value
 @onready var cargo_label: Label = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot/CargoStat/Text/Value
@@ -27,6 +29,9 @@ func _ready() -> void:
 
 	for i in speed_buttons.size():
 		speed_buttons[i].pressed.connect(_on_speed_button_pressed.bind(i))
+	gold_slot.mouse_filter = Control.MOUSE_FILTER_STOP
+	gold_slot.tooltip_text = "Open finance summary"
+	gold_slot.gui_input.connect(_on_gold_slot_gui_input)
 	set_speed(1)
 
 func _update_content_margins() -> void:
@@ -39,7 +44,7 @@ func _update_content_margins() -> void:
 
 func set_values(day: int, gold: float, cargo: int, capacity: int, location: String, travel_days := 0) -> void:
 	time_label.text = "Day %d" % day
-	var player := get_node_or_null("/root/PlayerData")
+	var player: Node = get_node_or_null("/root/PlayerData")
 	if player != null and float(player.get("debt")) > 0.0:
 		gold_label.text = "%04d D:%03d" % [int(round(gold)), int(ceil(float(player.get("debt"))))]
 		gold_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.35))
@@ -59,6 +64,11 @@ func set_speed(speed: int) -> void:
 func _on_speed_button_pressed(speed: int) -> void:
 	set_speed(speed)
 	speed_changed.emit(speed)
+
+func _on_gold_slot_gui_input(event: InputEvent) -> void:
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	if mouse_event != null and mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+		finance_requested.emit()
 
 func show_notification(message: String, color: Color = Color(1.0, 0.82, 0.36)) -> void:
 	var notif := Label.new()

@@ -8,15 +8,23 @@ func _init(_eco: Node) -> void:
 
 func advance_day() -> void:
 	eco.current_day += 1
-	for town_name in eco.towns:
-		process_town_production(eco.towns[town_name])
-		process_town_consumption(eco.towns[town_name])
-	for town_name in eco.towns:
-		process_population_change(eco.towns[town_name])
+	process_town_production_phase()
+	process_town_consumption_phase()
+	process_population_phase()
 	eco.market.recalculate_all_prices()
 	eco.investment.daily_prosperity_earned.clear()
-	eco.emit_signal("new_day")
-	eco.emit_signal("economy_updated")
+
+func process_town_production_phase() -> void:
+	for town_name in eco.towns:
+		process_town_production(eco.towns[town_name])
+
+func process_town_consumption_phase() -> void:
+	for town_name in eco.towns:
+		process_town_consumption(eco.towns[town_name])
+
+func process_population_phase() -> void:
+	for town_name in eco.towns:
+		process_population_change(eco.towns[town_name])
 
 func get_season() -> String:
 	var idx = int(((eco.current_day - 1) / 30) % 4)

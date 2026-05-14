@@ -31,9 +31,6 @@ var _player: Node
 func _ready() -> void:
 	_economy = get_node("/root/EconomyManager")
 	_player = get_node("/root/PlayerData")
-	
-	if _economy.has_signal("new_day"):
-		_economy.connect("new_day", _on_new_day)
 
 func has_post(town_name: String) -> bool:
 	return posts.has(town_name) and posts[town_name].get("established", false) and not posts[town_name].get("suspended", false)
@@ -155,7 +152,7 @@ func _get_depot_value(town_name: String) -> float:
 		value += float(_economy.BASE_PRICES.get(item, 0.0)) * float(depot[item])
 	return value
 
-func _on_new_day() -> void:
+func process_day() -> void:
 	var trades_happened := false
 	var debt_stops_all_trade: bool = _player.should_stop_trading_post_auto_trade()
 	for town_name in posts.keys():

@@ -5,10 +5,13 @@ const SECONDARY_BUTTON_TEXTURE: Texture2D = preload("res://assets/ui_kit/UI-004_
 const DISABLED_BUTTON_TEXTURE: Texture2D = preload("res://assets/ui_kit/UI-005_Disabled Button_trimmed.png")
 
 var town_name: String = ""
+var initial_tab: String = "market"
+var visible_tabs: Array[String] = []
 
 signal closed
 
 var _active_tab: String = "market"
+var _post_btn: Button
 
 var _primary_button_style: StyleBoxTexture
 var _secondary_button_style: StyleBoxTexture
@@ -21,9 +24,9 @@ func _ready() -> void:
 	_build_button_styles()
 
 	$TownName.text = town_name
-	var _economy = get_node("/root/EconomyManager")
-	var town = _economy.get_town(town_name)
-	$FactionLabel.text = town.get("faction", "")
+	var _economy: Node = get_node("/root/EconomyManager")
+	var town: Dictionary = _economy.get_town(town_name)
+	$FactionLabel.text = String(town.get("faction", ""))
 
 	# Initialize tab controllers
 	tabs["market"] = preload("res://scripts/ui/town_ui/MarketTab.gd").new(self, $MarketPanel)
@@ -34,6 +37,7 @@ func _ready() -> void:
 	tabs["upgrade"] = preload("res://scripts/ui/town_ui/UpgradeTab.gd").new(self, $UpgradePanel)
 
 	var post_btn := Button.new()
+	_post_btn = post_btn
 	post_btn.name = "PostBtn"
 	post_btn.text = "Post"
 	$TabBar.add_child(post_btn)
@@ -47,11 +51,9 @@ func _ready() -> void:
 	
 	tabs["post"] = preload("res://scripts/ui/town_ui/PostTab.gd").new(self, post_panel)
 
-	var _contracts = get_node("/root/ContractManager")
+	var _contracts: Node = get_node("/root/ContractManager")
 	if _contracts.has_signal("contracts_changed"):
 		_contracts.connect("contracts_changed", _on_contracts_changed)
-
-	_show_tab("market")
 
 	$TabBar/MarketBtn.pressed.connect(_show_tab.bind("market"))
 	$TabBar/NPCBtn.pressed.connect(_show_tab.bind("npc"))
@@ -63,8 +65,12 @@ func _ready() -> void:
 	$CloseBtn.pressed.connect(_on_close)
 
 	apply_secondary_button_style($CloseBtn)
+	_apply_visible_tabs()
+	_show_tab(_get_initial_tab())
 
 func _show_tab(tab: String) -> void:
+	if not _is_tab_visible(tab):
+		return
 	_active_tab = tab
 	for key in tabs:
 		tabs[key].panel.visible = (key == tab)
@@ -83,13 +89,42 @@ func _update_tab_button_styles() -> void:
 	_apply_tab_button_style($TabBar/ContractsBtn, _active_tab == "contracts")
 	_apply_tab_button_style($TabBar/InvestBtn, _active_tab == "invest")
 	_apply_tab_button_style($TabBar/UpgradeBtn, _active_tab == "upgrade")
+	if _post_btn:
+		_apply_tab_button_style(_post_btn, _active_tab == "post")
 
 func _apply_tab_button_style(button: Button, active: bool) -> void:
+	if button == null:
+		return
 	if active:
 		apply_primary_button_style(button)
 	else:
 		apply_secondary_button_style(button)
 	button.custom_minimum_size = Vector2(104, 42)
+
+func _apply_visible_tabs() -> void:
+	if visible_tabs.is_empty():
+		return
+	_set_tab_button_visible($TabBar/MarketBtn, "market")
+	_set_tab_button_visible($TabBar/NPCBtn, "npc")
+	_set_tab_button_visible($TabBar/InfoBtn, "info")
+	_set_tab_button_visible($TabBar/ContractsBtn, "contracts")
+	_set_tab_button_visible($TabBar/InvestBtn, "invest")
+	_set_tab_button_visible($TabBar/UpgradeBtn, "upgrade")
+	_set_tab_button_visible(_post_btn, "post")
+
+func _set_tab_button_visible(button: Button, tab: String) -> void:
+	if button:
+		button.visible = _is_tab_visible(tab)
+
+func _is_tab_visible(tab: String) -> bool:
+	return visible_tabs.is_empty() or visible_tabs.has(tab)
+
+func _get_initial_tab() -> String:
+	if _is_tab_visible(initial_tab):
+		return initial_tab
+	if visible_tabs.is_empty():
+		return "market"
+	return String(visible_tabs[0])
 
 func _build_button_styles() -> void:
 	_primary_button_style = _make_button_style(PRIMARY_BUTTON_TEXTURE)
@@ -153,10 +188,10 @@ func _format_town_report(report: Dictionary) -> String:
 		lines.append("No production in this period.")
 	else:
 		for item in final_prod:
-			var eff = report.get("missing_input_efficiency", {}).get(item, 1.0)
-			var blocked = report.get("stock_blocked", {}).get(item, 0)
+			var eff: float = float(report.get("missing_input_efficiency", {}).get(item, 1.0))
+			var blocked: int = int(report.get("stock_blocked", {}).get(item, 0))
 			lines.append("- %s: +%d (eff %.0f%%, blocked %d)" % [item, final_prod[item], eff * 100.0, blocked])
-	var issues = report.get("critical_consumption_issues", [])
+	var issues: Array = report.get("critical_consumption_issues", [])
 	if not issues.is_empty():
 		lines.append("Critical shortages: %s" % ", ".join(issues))
 	return "\n".join(lines)

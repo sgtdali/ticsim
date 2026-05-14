@@ -29,9 +29,6 @@ func _ready() -> void:
 	_risk    = get_node("/root/TravelRiskManager")
 	_player  = get_node("/root/PlayerData")
 
-	if _economy.has_signal("economy_updated"):
-		_economy.connect("economy_updated", _on_economy_updated)
-
 	_init_traders()
 
 func _init_traders() -> void:
@@ -98,7 +95,7 @@ func get_total_cargo(trader_id: String) -> int:
 
 # --- Economy tick ---
 
-func _on_economy_updated() -> void:
+func process_day() -> void:
 	for trader_id in traders:
 		_tick_trader(trader_id)
 

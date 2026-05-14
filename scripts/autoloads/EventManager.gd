@@ -109,9 +109,6 @@ func _ready() -> void:
 	_economy = get_node("/root/EconomyManager")
 	_player = get_node("/root/PlayerData")
 
-	if _economy.has_signal("economy_updated"):
-		_economy.connect("economy_updated", _on_economy_updated)
-
 # Şehirde aktif olay var mı?
 func has_event(town_name: String) -> bool:
 	return active_events.has(town_name)
@@ -124,10 +121,10 @@ func get_event(town_name: String) -> Dictionary:
 func get_event_data(event_type: String) -> Dictionary:
 	return EVENT_DATA.get(event_type, {})
 
-# Her gün economy_updated tetiklenince çalışır:
+# Her gün EconomyManager.advance_day() içinden açık sırayla çağrılır:
 # - Aktif olayları bitir (süresi dolmuşsa)
 # - Yeni olay tetikle (rastgele şehirde, şartları sağlıyorsa)
-func _on_economy_updated() -> void:
+func process_day() -> void:
 	var current_day: int = int(_economy.current_day)
 	_expire_events(current_day)
 	_try_trigger_new_events(current_day)

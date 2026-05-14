@@ -17,8 +17,8 @@ func _ready() -> void:
 	_faction = get_node("/root/FactionManager")
 	_posts = get_node_or_null("/root/TradingPostManager")
 	
-	if _economy.has_signal("economy_updated"):
-		_economy.connect("economy_updated", _on_economy_updated)
+	if _economy.has_signal("progression_updated"):
+		_economy.connect("progression_updated", _on_progression_updated)
 
 func get_current_rank() -> String:
 	return RANKS[current_rank_index]
@@ -121,5 +121,5 @@ func check_rank_up() -> bool:
 	check_rank_up()
 	return true
 
-func _on_economy_updated() -> void:
+func _on_progression_updated() -> void:
 	check_rank_up()

@@ -4,6 +4,20 @@ extends Node
 var gold: float = 400.0
 var debt: float = 0.0
 var debt_days: int = 0
+var finance_today: Dictionary = {
+	"income": 0.0,
+	"expenses": 0.0,
+	"debt_paid": 0.0,
+	"upkeep_paid": 0.0,
+	"upkeep_unpaid": 0.0,
+}
+var finance_yesterday: Dictionary = {
+	"income": 0.0,
+	"expenses": 0.0,
+	"debt_paid": 0.0,
+	"upkeep_paid": 0.0,
+	"upkeep_unpaid": 0.0,
+}
 
 const DEBT_REP_PENALTY_DAYS := 14
 const DEBT_POST_TRADE_STOP_DAYS := 30
@@ -54,18 +68,22 @@ var current_day: int = 1
 func add_gold(amount: float) -> void:
 	if amount <= 0.0:
 		return
+	var gross_amount := amount
 	if debt > 0.0:
 		var debt_payment: float = minf(amount, debt)
 		debt -= debt_payment
 		amount -= debt_payment
+		finance_today["debt_paid"] = float(finance_today["debt_paid"]) + debt_payment
 		if debt <= 0.0:
 			debt = 0.0
 			debt_days = 0
 	gold += amount
+	finance_today["income"] = float(finance_today["income"]) + gross_amount
 
 func remove_gold(amount: float) -> bool:
 	if gold >= amount:
 		gold -= amount
+		finance_today["expenses"] = float(finance_today["expenses"]) + amount
 		return true
 	return false
 
@@ -112,6 +130,8 @@ func get_npc_relation(npc_id: String) -> float:
 	return npc_relations.get(npc_id, 0.0)
 
 func advance_day() -> void:
+	finance_yesterday = finance_today.duplicate()
+	finance_today = _make_empty_finance_bucket()
 	current_day += 1
 	_pay_daily_upkeep()
 
@@ -121,6 +141,25 @@ func has_debt() -> bool:
 func get_daily_upkeep() -> float:
 	var upkeep: float = _get_caravan_upkeep() + _get_rank_upkeep() + _get_trading_post_upkeep()
 	return upkeep
+
+func get_finance_summary() -> Dictionary:
+	var rank_name := "Peddler"
+	var rank_manager: Node = get_node_or_null("/root/RankManager")
+	if rank_manager != null and rank_manager.has_method("get_current_rank"):
+		rank_name = str(rank_manager.call("get_current_rank"))
+	return {
+		"gold": gold,
+		"debt": debt,
+		"debt_days": debt_days,
+		"today": finance_today.duplicate(),
+		"yesterday": finance_yesterday.duplicate(),
+		"daily_upkeep": get_daily_upkeep(),
+		"caravan_upkeep": _get_caravan_upkeep(),
+		"rank_upkeep": _get_rank_upkeep(),
+		"rank": rank_name,
+		"trading_post_upkeep": _get_trading_post_upkeep(),
+		"active_posts": _get_active_post_count(),
+	}
 
 func should_stop_trading_post_auto_trade() -> bool:
 	return debt_days >= DEBT_POST_TRADE_STOP_DAYS
@@ -134,10 +173,16 @@ func _pay_daily_upkeep() -> void:
 
 	if gold >= upkeep:
 		gold -= upkeep
+		finance_today["upkeep_paid"] = float(finance_today["upkeep_paid"]) + upkeep
+		finance_today["expenses"] = float(finance_today["expenses"]) + upkeep
 	else:
-		var unpaid := upkeep - gold
+		var unpaid: float = upkeep - gold
+		if gold > 0.0:
+			finance_today["upkeep_paid"] = float(finance_today["upkeep_paid"]) + gold
+			finance_today["expenses"] = float(finance_today["expenses"]) + gold
 		gold = 0.0
 		debt += unpaid
+		finance_today["upkeep_unpaid"] = float(finance_today["upkeep_unpaid"]) + unpaid
 
 	if debt > 0.0:
 		debt_days += 1
@@ -148,7 +193,7 @@ func _pay_daily_upkeep() -> void:
 func _apply_debt_duration_penalties() -> void:
 	if debt_days != DEBT_POST_SUSPEND_DAYS:
 		return
-	var posts := get_node_or_null("/root/TradingPostManager")
+	var posts: Node = get_node_or_null("/root/TradingPostManager")
 	if posts != null and posts.has_method("suspend_most_valuable_post"):
 		posts.call("suspend_most_valuable_post")
 
@@ -158,16 +203,28 @@ func _get_caravan_upkeep() -> float:
 
 func _get_rank_upkeep() -> float:
 	var rank := "Peddler"
-	var rank_manager := get_node_or_null("/root/RankManager")
+	var rank_manager: Node = get_node_or_null("/root/RankManager")
 	if rank_manager != null and rank_manager.has_method("get_current_rank"):
 		rank = str(rank_manager.call("get_current_rank"))
 	return float(RANK_UPKEEP.get(rank, 0.0))
 
 func _get_trading_post_upkeep() -> float:
-	var posts := get_node_or_null("/root/TradingPostManager")
+	return float(_get_active_post_count()) * TRADING_POST_UPKEEP
+
+func _get_active_post_count() -> int:
+	var posts: Node = get_node_or_null("/root/TradingPostManager")
 	if posts != null and posts.has_method("get_active_post_count"):
-		return float(posts.call("get_active_post_count")) * TRADING_POST_UPKEEP
-	return 0.0
+		return int(posts.call("get_active_post_count"))
+	return 0
+
+func _make_empty_finance_bucket() -> Dictionary:
+	return {
+		"income": 0.0,
+		"expenses": 0.0,
+		"debt_paid": 0.0,
+		"upkeep_paid": 0.0,
+		"upkeep_unpaid": 0.0,
+	}
 
 # --- Caravan Upgrade ---
 
