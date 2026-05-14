@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data_models/ItemData.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "grapes"
+display_name = "Grapes"
+category = "comfort"
+base_price = 4.0
+stock_cap = 180
+stock_cap_base_cost = 45
+production_base_cost = 40
+production_interval_days = 1
+recipe_inputs = {}

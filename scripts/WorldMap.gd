@@ -6,6 +6,7 @@ var _contracts: Node
 var _risk: Node
 var _events: Node
 var _traders: Node
+var _posts: Node
 
 var is_traveling: bool = false
 var travel_destination: String = ""
@@ -53,6 +54,7 @@ func _ready() -> void:
 	if _traders:
 		_traders.connect("trader_moved", _on_trader_moved)
 		_traders.connect("trader_traded", _on_trader_traded)
+	_posts = get_node_or_null("/root/TradingPostManager")
 	_player_data.current_town = "Ashford"
 
 	_setup_view()
@@ -62,6 +64,7 @@ func _ready() -> void:
 	_build_town_buttons()
 	_setup_day_timer()
 	_update_ui()
+	_build_rank_panel()
 	_build_goal_panel()
 	_build_cargo_panel()
 	_build_trader_labels()
@@ -162,6 +165,7 @@ func _on_day_tick() -> void:
 			return
 	_update_ui()
 	_refresh_buttons()
+	_update_rank_panel()
 	_update_goal_panel()
 	_update_cargo_panel()
 	_update_trader_labels()
@@ -522,6 +526,82 @@ func _on_event_changed(town_name: String, event: Dictionary) -> void:
 		var msg: String = "%s: %s begins!" % [town_name, str(event.get("name", ""))]
 		top_bar.call("show_notification", msg, event_color)
 
+func _on_rank_changed(old_rank: String, new_rank: String) -> void:
+	if top_bar and top_bar.has_method("show_notification"):
+		top_bar.call("show_notification", "You are now a %s!" % new_rank, Color(1.0, 0.85, 0.3))
+
+# --- Rank Panel ---
+
+func _build_rank_panel() -> void:
+	var ui := get_node("UI")
+
+	var panel := PanelContainer.new()
+	panel.name = "RankPanel"
+	panel.anchors_preset = 3  # bottom-left
+	panel.anchor_left = 0.0
+	panel.anchor_top = 1.0
+	panel.anchor_right = 0.0
+	panel.anchor_bottom = 1.0
+	panel.offset_left = 10.0
+	panel.offset_top = -340.0
+	panel.offset_right = 280.0
+	panel.offset_bottom = -190.0
+	ui.add_child(panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.name = "RankVBox"
+	panel.add_child(vbox)
+	
+	var rm = get_node("/root/RankManager")
+	rm.connect("rank_changed", _on_rank_changed)
+	
+	_update_rank_panel()
+
+func _update_rank_panel() -> void:
+	var vbox := get_node_or_null("UI/RankPanel/RankVBox")
+	if vbox == null:
+		return
+		
+	for child in vbox.get_children():
+		child.queue_free()
+		
+	var rm = get_node("/root/RankManager")
+	var curr = rm.get_current_rank()
+	var next = rm.get_next_rank()
+	
+	var title = Label.new()
+	title.text = "RANK: %s" % curr
+	title.add_theme_font_size_override("font_size", 14)
+	title.add_theme_color_override("font_color", Color(1.0, 0.82, 0.36))
+	vbox.add_child(title)
+	
+	vbox.add_child(HSeparator.new())
+	
+	if next == "":
+		var lbl = Label.new()
+		lbl.text = "Maximum rank achieved!"
+		lbl.add_theme_color_override("font_color", Color(0.4, 1.0, 0.4))
+		vbox.add_child(lbl)
+		return
+		
+	var next_lbl = Label.new()
+	next_lbl.text = "Next: %s" % next
+	vbox.add_child(next_lbl)
+	
+	var prog = rm.get_progress_data()
+	for key in prog.keys():
+		var req = int(prog[key]["req"])
+		if req > 0:
+			var cur = int(prog[key]["current"])
+			var row = Label.new()
+			var key_name = key.replace("_", " ").capitalize()
+			row.text = "- %s: %d / %d" % [key_name, cur, req]
+			if cur >= req:
+				row.add_theme_color_override("font_color", Color(0.4, 1.0, 0.4))
+			else:
+				row.add_theme_color_override("font_color", Color(1.0, 0.5, 0.4))
+			vbox.add_child(row)
+
 # --- Goal Panel ---
 
 func _build_goal_panel() -> void:
@@ -611,16 +691,13 @@ func _update_goal_panel() -> void:
 				_:            status_lbl.add_theme_color_override("font_color", Color(0.7, 0.6, 0.5))
 
 func _check_win_condition() -> void:
-	var threshold: int = int(_economy.PROSPERITY_LEVEL_3_THRESHOLD)
-	for town_name in _economy.towns.keys():
-		if int(_economy.get_prosperity(town_name)) < threshold:
-			return
-	_show_win_screen()
+	if get_node("/root/RankManager").get_current_rank() == "Patrician":
+		_show_win_screen()
 
 func _show_win_screen() -> void:
 	_day_timer.paused = true
 	var win := Label.new()
-	win.text = "YOU WIN!\nAll cities are Prosperous.\nDay %d" % _player_data.current_day
+	win.text = "YOU WIN!\nYou have reached the Patrician rank.\nDay %d" % _player_data.current_day
 	win.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	win.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	win.add_theme_font_size_override("font_size", 36)
@@ -716,7 +793,8 @@ func _get_town_label(town_name: String) -> String:
 		"up":   arrow = " ↑"
 		"down": arrow = " ↓"
 		_:      arrow = " →"
-	return "%s\n👥 %d%s" % [town_name, pop, arrow]
+	var p = " [P]" if _posts and _posts.has_post(town_name) else ""
+	return "%s%s\n👥 %d%s" % [town_name, p, pop, arrow]
 
 func _on_trader_moved(trader_id: String, from_town: String, to_town: String) -> void:
 	_update_trader_labels()

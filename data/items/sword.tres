@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data_models/ItemData.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "sword"
+display_name = "Sword"
+category = "comfort"
+base_price = 30.0
+stock_cap = 80
+stock_cap_base_cost = 120
+production_base_cost = 220
+production_interval_days = 2
+recipe_inputs = {"iron_bar": 2}

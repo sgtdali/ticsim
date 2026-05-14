@@ -100,7 +100,10 @@ func complete_contract(contract_id: String) -> bool:
 	_player.add_gold(float(contract.get("reward_gold", 0.0)))
 	var faction := String(contract.get("issuing_faction", ""))
 	if faction != "":
-		_player.change_faction_rep(faction, float(contract.get("reward_faction_rep", 0.0)))
+		var rep_bonus := float(contract.get("reward_faction_rep", 0.0))
+		if get_node("/root/RankManager").current_rank_index >= 3: # Guild Master
+			rep_bonus *= 1.5
+		_player.change_faction_rep(faction, rep_bonus)
 	var npc_id := String(contract.get("issuing_npc_id", ""))
 	if npc_id != "":
 		_player.change_npc_relation(npc_id, float(contract.get("reward_npc_relation", 0.0)))
@@ -253,8 +256,8 @@ func _get_procurement_item_candidates(target_town: String) -> Array:
 		if _economy.BASE_PRICES.has(item) and _is_item_obtainable(item, target_town):
 			candidates.append(item)
 	for item in target_data.get("production_plan", {}).keys():
-		if _economy.RECIPES.has(item):
-			for input_item in _economy.RECIPES[item].get("inputs", {}).keys():
+		if _economy.items_data.has(item) and not _economy.items_data[item].recipe_inputs.is_empty():
+			for input_item in _economy.items_data[item].recipe_inputs.keys():
 				if _economy.BASE_PRICES.has(input_item) and _is_item_obtainable(input_item, target_town):
 					candidates.append(input_item)
 
@@ -296,7 +299,9 @@ func _get_globally_obtainable_items() -> Array:
 func _pick_tier() -> String:
 	match _next_id % 3:
 		0:
-			return "urgent"
+			if get_node("/root/RankManager").can_get_urgent_contracts():
+				return "urgent"
+			return "standard"
 		1:
 			return "basic"
 		_:

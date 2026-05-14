@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data_models/ItemData.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "wheat"
+display_name = "Wheat"
+category = "survival"
+base_price = 3.0
+stock_cap = 220
+stock_cap_base_cost = 40
+production_base_cost = 35
+production_interval_days = 1
+recipe_inputs = {}

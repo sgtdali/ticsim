@@ -16,6 +16,7 @@ centered = false
 
 [node name="Roads" type="Node2D" parent="." unique_id=1299951475]
 z_index = 1
+position = Vector2(-643, -201)
 
 [node name="RoadShadow" type="Line2D" parent="Roads" unique_id=665421697]
 modulate = Color(0.22670749, 0.22670749, 0.22670746, 1)
@@ -108,7 +109,7 @@ size_flags_horizontal = 3
 
 [node name="Map001NormalCityMarkerTrimmed" type="Sprite2D" parent="." unique_id=394400374]
 z_index = 2
-position = Vector2(872, 464)
+position = Vector2(228, 270.99997)
 scale = Vector2(0.29769728, 0.27879223)
 texture = ExtResource("4_pj4xh")
 
@@ -121,29 +122,29 @@ texture = ExtResource("4_pj4xh")
 [node name="TownButtons" type="CanvasLayer" parent="." unique_id=993567523]
 
 [node name="AshfordBtn" type="Button" parent="TownButtons" unique_id=245258539]
-offset_left = 813.0
-offset_top = 523.0
-offset_right = 933.0
-offset_bottom = 559.0
+offset_left = 172.0
+offset_top = 339.0
+offset_right = 292.0
+offset_bottom = 375.0
 text = "Ashford"
 
 [node name="IronmereBtn" type="Button" parent="TownButtons" unique_id=1204028932]
-offset_left = 979.0
-offset_top = 369.0
-offset_right = 1099.0
-offset_bottom = 405.0
+offset_left = 428.0
+offset_top = 234.0
+offset_right = 548.0
+offset_bottom = 270.0
 text = "Ironmere"
 
 [node name="StonebridgeBtn" type="Button" parent="TownButtons" unique_id=635898567]
-offset_left = 1172.0
-offset_top = 635.0
-offset_right = 1312.0
-offset_bottom = 671.0
+offset_left = 555.0
+offset_top = 451.0
+offset_right = 695.0
+offset_bottom = 487.0
 text = "Stonebridge"
 
 [node name="Map001NormalCityMarkerTrimmed2" type="Sprite2D" parent="." unique_id=261595828]
 z_index = 2
-position = Vector2(1245.0001, 584)
+position = Vector2(619.0002, 405)
 scale = Vector2(0.23047003, 0.20639177)
 texture = ExtResource("4_pj4xh")
 

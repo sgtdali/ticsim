@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data_models/ItemData.gd" id="1_itemdata"]
+
+[resource]
+script = ExtResource("1_itemdata")
+id = "iron_bar"
+display_name = "Iron_bar"
+category = "production_input"
+base_price = 12.0
+stock_cap = 180
+stock_cap_base_cost = 90
+production_base_cost = 120
+production_interval_days = 2
+recipe_inputs = {"iron_ore": 2}

@@ -1,11 +1,14 @@
 extends Node
 
 # --- Money ---
-var gold: float = 5000.0
+var gold: float = 400.0
 
 # --- Inventory ---
 # { "item_name": quantity }
 var inventory: Dictionary = {}
+
+# { "item_name": average_purchase_price }
+var purchase_prices: Dictionary = {}
 
 # --- Caravan ---
 var caravan_capacity: int = 20
@@ -105,6 +108,8 @@ func get_next_upgrade_cost() -> int:
 	return UPGRADE_COSTS[next]
 
 func can_upgrade_caravan() -> bool:
+	if not get_node("/root/RankManager").can_upgrade_caravan():
+		return false
 	var cost := get_next_upgrade_cost()
 	if cost < 0:
 		return false

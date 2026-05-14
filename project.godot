@@ -17,13 +17,16 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-PlayerData="*res://scripts/PlayerData.gd"
-EconomyManager="*res://scripts/EconomyManager.gd"
-FactionManager="*res://scripts/FactionManager.gd"
-ContractManager="*res://scripts/ContractManager.gd"
-TravelRiskManager="*res://scripts/TravelRiskManager.gd"
-EventManager="*res://scripts/EventManager.gd"
-TraderManager="*res://scripts/TraderManager.gd"
+PlayerData="*res://scripts/autoloads/PlayerData.gd"
+EconomyManager="*res://scripts/autoloads/EconomyManager.gd"
+FactionManager="*res://scripts/autoloads/FactionManager.gd"
+ContractManager="*res://scripts/autoloads/ContractManager.gd"
+TravelRiskManager="*res://scripts/autoloads/TravelRiskManager.gd"
+EventManager="*res://scripts/autoloads/EventManager.gd"
+TraderManager="*res://scripts/autoloads/TraderManager.gd"
+EventBus="*res://scripts/autoloads/EventBus.gd"
+TradingPostManager="*res://scripts/autoloads/TradingPostManager.gd"
+RankManager="*res://scripts/autoloads/RankManager.gd"
 
 [gui]
 

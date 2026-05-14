@@ -12,9 +12,13 @@
 - TopBar UI
 - TravelRiskManager: bandit attacks, cargo-based risk
 - EventManager: random town events (festival, famine, demand surge, bumper crop, plague)
-- EconomyManager: prosperity system (invest gold → city grows → production/price bonus)
-- Goal system: develop all 3 cities to Prosperous → win
+- EconomyManager: prosperity system (invest gold 25:1 → city grows → production/price bonus)
+- Investment Limit: Şehir başına günlük max 50 prosperity puanı
+- Goal system: Reach Patrician Rank → win
 - Caravan upgrade: Donkey Cart (20) → Horse Cart (35) → Small Caravan (50)
+- Market Tracking: Ağırlıklı ortalama alış fiyatı takibi ve kâr/zarar göstergesi
+- TradingPostManager: Kalıcı depolar (50 stok) ve otomatik alış/satış kuralları (Merchant rank'ta açılır)
+- RankManager: 5 rank (Peddler → Patrician). Şartlara göre açılan özellikler (Upgrade, Trading Post, Urgent Contracts).
 
 ## YOK (ileride bakılır, şu an yazma)
 - 4. ve 5. şehir
@@ -25,7 +29,7 @@
 - Black market
 
 ## v0.1 HEDEFİ
-Oyuncu 50 gold ile başlar. 3 şehir arası ticaret + kontratlarla 300 gold biriktirir.
+Oyuncu 400 gold ile başlar (Peddler). Ticaret ve kontratlarla altın ve faction reputation biriktirip rank atlar. Patrician rank'ına ulaştığında oyun biter.
 30-45 dk'lık bir oturum içinde tamamlanabilir olmalı.
 
 ## v0.1 OUT-OF-SCOPE KARARI
@@ -37,10 +41,11 @@ Tüm temel sistemler kuruldu ve çalışıyor:
 - Al-sat döngüsü
 - Risk sistemi (bandit saldırıları)
 - Event sistemi (5 olay tipi)
-- Prosperity sistemi
+- Prosperity sistemi (25 gold : 1 puan, günlük 50 puan sınırı)
 - Caravan upgrade
 - Goal panel + win condition
 - Harita tooltips + cargo panel
+- Market UI Cilası: Buy/Sell 1-5-MAX butonları ve kâr/zarar takibi
 
 Oyun zevki testi v0.2'ye ertelendi.
 Sebep: "Dünya yaşamıyor" problemi ancak
