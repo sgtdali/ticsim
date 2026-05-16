@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://table_header_noise_material"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bxgl5rvwra30t"]
 
-[ext_resource type="Shader" path="res://assets/ui/table_header_noise.gdshader" id="1_header_noise"]
+[ext_resource type="Shader" uid="uid://dhs04ryi74amd" path="res://assets/ui/table_header_noise.gdshader" id="1_header_noise"]
 
 [resource]
 shader = ExtResource("1_header_noise")

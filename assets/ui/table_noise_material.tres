@@ -1,16 +1,16 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://lx7clv3qrxgr"]
 
-[ext_resource type="Shader" uid="uid://cu1dqahiwdyy" path="res://assets/ui/table_noise.gdshader" id="1_table_noise"]
+[ext_resource type="Shader" uid="uid://bq55g8sce87xa" path="res://assets/ui/table_noise.gdshader" id="1_table_noise"]
 
 [resource]
 shader = ExtResource("1_table_noise")
 shader_parameter/pixel_size = 5.0
-shader_parameter/grain_strength = 0.18
-shader_parameter/micro_grain = 0.1
-shader_parameter/medium_variation = 0.08
-shader_parameter/macro_variation = 0.055
+shader_parameter/grain_strength = 0.22
+shader_parameter/micro_grain = 0.12
+shader_parameter/medium_variation = 0.1
+shader_parameter/macro_variation = 0.075
 shader_parameter/edge_shading = 0.14
 shader_parameter/center_brightness = 0.035
 shader_parameter/grime_intensity = 0.08
-shader_parameter/horizontal_wear = 0.025
+shader_parameter/horizontal_wear = 0.035
 shader_parameter/warp_strength = 0.015

@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://cwkvq58cogl2x"]
 
-[ext_resource type="Shader" uid="uid://dwsjddnchn10q" path="res://assets/ui/table_selected_noise.gdshader" id="1_selected_noise"]
+[ext_resource type="Shader" uid="uid://dh6usm4sf8kyj" path="res://assets/ui/table_selected_noise.gdshader" id="1_selected_noise"]
 
 [resource]
 shader = ExtResource("1_selected_noise")

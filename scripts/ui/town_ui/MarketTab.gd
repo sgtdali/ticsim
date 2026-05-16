@@ -5,38 +5,36 @@ var trade_qty: int = 1
 var market_view: String = "trade"
 
 const GOODS_PROJECTION_DAYS := 14
+const TRADE_BUTTON_TEXT := Color(0.878431, 0.780392, 0.505882)
+const TRADE_BUTTON_TEXT_HOVER := Color(0.933333, 0.839216, 0.580392)
+const TRADE_BUTTON_TEXT_DISABLED := Color(0.42, 0.36, 0.27, 0.85)
+const TRADE_BUTTON_OUTLINE := Color(0.062745, 0.043137, 0.023529)
+const TRADE_BUTTON_SHADOW := Color(0.0, 0.0, 0.0, 0.68)
+const PANEL_BG := Color(0.085, 0.067, 0.047, 0.98)
+const PANEL_INSET_BG := Color(0.036, 0.031, 0.026, 1.0)
+const PANEL_BORDER_DARK := Color(0.045, 0.030, 0.017, 1.0)
+const PANEL_BORDER_BRASS := Color(0.48, 0.34, 0.15, 0.78)
+const PANEL_HIGHLIGHT := Color(0.70, 0.50, 0.24, 0.16)
+const LABEL_MUTED_GOLD := Color(0.70, 0.56, 0.34)
+const VALUE_PARCHMENT := Color(0.88, 0.80, 0.58)
+const TITLE_PARCHMENT := Color(0.92, 0.82, 0.56)
+const BODY_SHADOW := Color(0.0, 0.0, 0.0, 0.64)
+
 func build() -> void:
 	panel.offset_right = 760.0
 	panel.offset_bottom = -10.0
 
+	var trade_host := _get_trade_panel_host()
 	var container: VBoxContainer = panel.get_node("ScrollContainer/ItemList") as VBoxContainer
 	for child in container.get_children():
 		child.queue_free()
+	for child in trade_host.get_children():
+		child.queue_free()
+	trade_host.visible = false
 
 	if selected_item == "" or not _economy.BASE_PRICES.has(selected_item):
 		selected_item = _get_first_item()
 	trade_qty = maxi(trade_qty, 1)
-
-	var town: Dictionary = _economy.get_town(town_name)
-	var prosperity: int = int(_economy.get_prosperity(town_name))
-	var label: String = String(_economy.get_prosperity_label(town_name))
-	var pop: int = int(town.get("population", 0))
-
-	var status_lbl := Label.new()
-	status_lbl.text = "%s | %s | Pop %d | Prosperity %d/%d | Gold %.1fg | Cargo %d/%d" % [
-		town_name,
-		label,
-		pop,
-		prosperity,
-		int(_economy.PROSPERITY_LEVEL_3_THRESHOLD),
-		float(_player.gold),
-		int(_player.get_total_cargo()),
-		int(_player.caravan_capacity),
-	]
-	status_lbl.add_theme_font_size_override("font_size", 13)
-	status_lbl.add_theme_color_override("font_color", Color(0.9, 0.8, 0.6))
-	container.add_child(status_lbl)
-	container.add_child(HSeparator.new())
 
 	_build_view_switch(container)
 	if market_view == "goods":
@@ -45,8 +43,19 @@ func build() -> void:
 
 	_build_trade_table(container)
 
-	container.add_child(HSeparator.new())
-	_build_trade_panel(container)
+	trade_host.visible = true
+	_build_trade_panel(trade_host)
+
+func _get_trade_panel_host() -> VBoxContainer:
+	var host := panel.get_node_or_null("TradePanelHost") as VBoxContainer
+	if host == null:
+		host = VBoxContainer.new()
+		host.name = "TradePanelHost"
+		host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		host.size_flags_vertical = Control.SIZE_SHRINK_END
+		host.add_theme_constant_override("separation", 0)
+		panel.add_child(host)
+	return host
 
 func _build_view_switch(container: VBoxContainer) -> void:
 	var row := HBoxContainer.new()
@@ -188,25 +197,46 @@ func _build_trade_panel(container: VBoxContainer) -> void:
 	var max_qty: int = maxi(1, maxi(max_buy, max_sell))
 	trade_qty = clampi(trade_qty, 1, max_qty)
 
-	var title := Label.new()
-	title.text = "%s  |  Cargo %d  |  City %d  |  Ref %.1fg" % [
-		_get_item_name(item),
-		player_has,
-		town_stock,
-		float(_economy.get_price(town_name, item)),
-	]
-	title.add_theme_font_size_override("font_size", 16)
-	title.add_theme_color_override("font_color", Color(1.0, 0.82, 0.36))
-	container.add_child(title)
+	var panel := _make_trade_section()
+	container.add_child(panel)
 
-	var qty_row := HBoxContainer.new()
-	qty_row.add_theme_constant_override("separation", 8)
-	container.add_child(qty_row)
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 14)
+	panel.add_child(root)
 
-	var qty_lbl := Label.new()
-	qty_lbl.text = "Qty"
-	qty_lbl.custom_minimum_size.x = 44
-	qty_row.add_child(qty_lbl)
+	var top_row := HBoxContainer.new()
+	top_row.add_theme_constant_override("separation", 12)
+	root.add_child(top_row)
+
+	var item_box := _make_framed_panel(Vector2(220, 70), true)
+	top_row.add_child(item_box)
+	var item_vbox := VBoxContainer.new()
+	item_vbox.add_theme_constant_override("separation", 2)
+	item_box.add_child(item_vbox)
+	_add_panel_label(item_vbox, "Selected Good")
+	_add_panel_value(item_vbox, _get_item_name(item), 24, TITLE_PARCHMENT)
+
+	top_row.add_child(_make_stat_box("Reference Price", "%.1fg" % float(_economy.get_price(town_name, item))))
+	top_row.add_child(_make_stat_box("City Stock", "%d" % town_stock))
+	top_row.add_child(_make_stat_box("Cargo", "%d" % player_has))
+
+	var middle_row := HBoxContainer.new()
+	middle_row.add_theme_constant_override("separation", 14)
+	root.add_child(middle_row)
+
+	var qty_panel := _make_framed_panel(Vector2(300, 118), false)
+	middle_row.add_child(qty_panel)
+	var qty_vbox := VBoxContainer.new()
+	qty_vbox.add_theme_constant_override("separation", 8)
+	qty_panel.add_child(qty_vbox)
+
+	var qty_header := HBoxContainer.new()
+	qty_header.add_theme_constant_override("separation", 10)
+	qty_vbox.add_child(qty_header)
+	_add_panel_label(qty_header, "Quantity")
+
+	var spin_box_panel := _make_inset_panel(Vector2(92, 38))
+	qty_header.add_child(spin_box_panel)
 
 	var slider := HSlider.new()
 	slider.min_value = 1
@@ -215,34 +245,45 @@ func _build_trade_panel(container: VBoxContainer) -> void:
 	slider.value = trade_qty
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	slider.value_changed.connect(_on_qty_changed)
-	qty_row.add_child(slider)
+	_apply_market_slider_style(slider)
 
 	var spin := SpinBox.new()
 	spin.min_value = 1
 	spin.max_value = max_qty
 	spin.step = 1
 	spin.value = trade_qty
-	spin.custom_minimum_size.x = 80
+	spin.custom_minimum_size = Vector2(84, 34)
 	spin.value_changed.connect(_on_qty_changed)
-	qty_row.add_child(spin)
+	_apply_quantity_spin_style(spin)
+	spin_box_panel.add_child(spin)
+
+	var slider_frame := _make_inset_panel(Vector2(0, 44))
+	slider_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	qty_vbox.add_child(slider_frame)
+	slider_frame.add_child(slider)
+
+	var max_row := HBoxContainer.new()
+	max_row.add_theme_constant_override("separation", 8)
+	qty_vbox.add_child(max_row)
 
 	var max_buy_btn := Button.new()
 	max_buy_btn.text = "Max Buy"
 	max_buy_btn.disabled = max_buy <= 0
 	max_buy_btn.pressed.connect(_set_qty_and_rebuild.bind(max_buy))
-	ui.apply_secondary_button_style(max_buy_btn)
-	qty_row.add_child(max_buy_btn)
+	apply_market_small_button_style(max_buy_btn)
+	max_row.add_child(max_buy_btn)
 
 	var max_sell_btn := Button.new()
 	max_sell_btn.text = "Max Sell"
 	max_sell_btn.disabled = max_sell <= 0
 	max_sell_btn.pressed.connect(_set_qty_and_rebuild.bind(max_sell))
-	ui.apply_secondary_button_style(max_sell_btn)
-	qty_row.add_child(max_sell_btn)
+	apply_market_small_button_style(max_sell_btn)
+	max_row.add_child(max_sell_btn)
 
 	var quote_row := HBoxContainer.new()
-	quote_row.add_theme_constant_override("separation", 16)
-	container.add_child(quote_row)
+	quote_row.add_theme_constant_override("separation", 12)
+	quote_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	middle_row.add_child(quote_row)
 
 	var buy_total: float = float(_economy.get_buy_quote_total(town_name, item, trade_qty))
 	var sell_total: float = float(_economy.get_sell_quote_total(town_name, item, trade_qty))
@@ -250,23 +291,23 @@ func _build_trade_panel(container: VBoxContainer) -> void:
 	var sell_avg: float = sell_total / float(trade_qty) if trade_qty > 0 else 0.0
 	var stored_avg: float = float(_player.purchase_prices.get(item, 0.0))
 
-	_add_quote_block(quote_row, "Buy", buy_total, buy_avg, max_buy)
-	_add_quote_block(quote_row, "Sell", sell_total, sell_avg, max_sell)
+	_add_quote_block(quote_row, "Buy Quote", buy_total, buy_avg, max_buy)
+	_add_quote_block(quote_row, "Sell Quote", sell_total, sell_avg, max_sell)
 	if player_has > 0 and stored_avg > 0.0:
 		var diff: float = sell_avg - stored_avg
 		var profit: float = diff * float(mini(trade_qty, max_sell))
 		_add_plain_info(quote_row, "Held avg\n%.1fg\n%+.1fg" % [stored_avg, profit], _profit_color(diff))
 
 	var action_row := HBoxContainer.new()
-	action_row.add_theme_constant_override("separation", 10)
-	container.add_child(action_row)
+	action_row.add_theme_constant_override("separation", 12)
+	root.add_child(action_row)
 
 	var buy_btn := Button.new()
 	buy_btn.text = "Buy"
 	buy_btn.disabled = trade_qty <= 0 or trade_qty > max_buy
 	buy_btn.tooltip_text = _format_trade_quote_tooltip("Buy", trade_qty, buy_total)
 	buy_btn.pressed.connect(_on_buy.bind(item, trade_qty))
-	ui.apply_primary_button_style(buy_btn)
+	apply_market_trade_button_style(buy_btn, true)
 	action_row.add_child(buy_btn)
 
 	var sell_btn := Button.new()
@@ -274,40 +315,306 @@ func _build_trade_panel(container: VBoxContainer) -> void:
 	sell_btn.disabled = trade_qty <= 0 or trade_qty > max_sell
 	sell_btn.tooltip_text = _format_trade_quote_tooltip("Sell", trade_qty, sell_total)
 	sell_btn.pressed.connect(_on_sell.bind(item, trade_qty))
-	ui.apply_secondary_button_style(sell_btn)
+	apply_market_trade_button_style(sell_btn, false)
 	action_row.add_child(sell_btn)
 
-	var note := Label.new()
-	note.text = "Reference price is not the transaction price; buy/sell quotes include spread and stock movement."
-	note.add_theme_font_size_override("font_size", 11)
-	note.add_theme_color_override("font_color", Color(0.62, 0.55, 0.42))
-	container.add_child(note)
+func _make_trade_section() -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _make_panel_style(PANEL_BG, PANEL_BORDER_DARK, 3, 22.0, true))
+	return panel
 
-func _add_quote_block(parent: HBoxContainer, title: String, total: float, avg: float, max_qty: int) -> void:
-	var box := VBoxContainer.new()
-	box.custom_minimum_size.x = 150
-	parent.add_child(box)
+func _make_framed_panel(min_size: Vector2, emphasized: bool) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = min_size
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL if min_size.x <= 0.0 else Control.SIZE_SHRINK_BEGIN
+	var bg := Color(0.135, 0.096, 0.058, 1.0) if emphasized else Color(0.066, 0.052, 0.039, 1.0)
+	var border := PANEL_BORDER_BRASS.lightened(0.05) if emphasized else Color(0.31, 0.22, 0.105, 0.82)
+	panel.add_theme_stylebox_override("panel", _make_panel_style(bg, border, 2, 14.0, true))
+	return panel
 
-	var title_lbl := Label.new()
-	title_lbl.text = "%s quote" % title
-	title_lbl.add_theme_color_override("font_color", Color(0.94, 0.78, 0.45))
-	box.add_child(title_lbl)
+func _make_inset_panel(min_size: Vector2) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = min_size
+	panel.add_theme_stylebox_override("panel", _make_panel_style(PANEL_INSET_BG, Color(0.16, 0.11, 0.065, 0.9), 2, 8.0, false))
+	return panel
 
-	var total_lbl := Label.new()
-	total_lbl.text = "Total %.1fg" % total
-	box.add_child(total_lbl)
+func _make_stat_box(title: String, value: String) -> PanelContainer:
+	var box := _make_framed_panel(Vector2(124, 70), false)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 4)
+	box.add_child(vbox)
+	_add_panel_label(vbox, title)
+	_add_panel_value(vbox, value, 20, VALUE_PARCHMENT)
+	return box
 
-	var avg_lbl := Label.new()
-	avg_lbl.text = "Avg %.1fg  |  Max %d" % [avg, max_qty]
-	avg_lbl.add_theme_font_size_override("font_size", 11)
-	box.add_child(avg_lbl)
+func _make_panel_style(bg: Color, border: Color, border_width: int, padding: float, raised: bool) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg.lightened(0.008 if raised else 0.0)
+	style.border_color = border
+	style.border_width_left = border_width
+	style.border_width_top = border_width
+	style.border_width_right = border_width
+	style.border_width_bottom = border_width + (2 if raised else 1)
+	style.corner_radius_top_left = 2
+	style.corner_radius_top_right = 2
+	style.corner_radius_bottom_left = 2
+	style.corner_radius_bottom_right = 2
+	style.content_margin_left = padding
+	style.content_margin_right = padding
+	style.content_margin_top = padding * 0.82
+	style.content_margin_bottom = padding * 0.82
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.66 if raised else 0.48)
+	style.shadow_size = 3 if raised else 2
+	style.shadow_offset = Vector2(0, 2 if raised else 1)
+	style.expand_margin_left = 0.0
+	style.expand_margin_right = 0.0
+	style.expand_margin_top = 0.0
+	style.expand_margin_bottom = 1.0 if raised else 0.0
+	return style
 
-func _add_plain_info(parent: HBoxContainer, text: String, color: Color) -> void:
+func _add_panel_label(parent: Container, text: String) -> Label:
 	var label := Label.new()
 	label.text = text
-	label.custom_minimum_size.x = 130
-	label.add_theme_color_override("font_color", color)
+	label.label_settings = _make_trade_label_settings(12, LABEL_MUTED_GOLD)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	parent.add_child(label)
+	return label
+
+func _add_panel_value(parent: Container, text: String, font_size: int = 18, color: Color = VALUE_PARCHMENT) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.label_settings = _make_trade_label_settings(font_size, color)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	parent.add_child(label)
+	return label
+
+func _make_trade_label_settings(font_size: int, color: Color) -> LabelSettings:
+	var settings := LabelSettings.new()
+	settings.font_size = font_size
+	settings.font_color = color
+	settings.outline_size = 1
+	settings.outline_color = Color(0.055, 0.035, 0.018)
+	settings.shadow_color = BODY_SHADOW
+	settings.shadow_offset = Vector2(1.5, 1.5)
+	return settings
+
+func _apply_quantity_spin_style(spin: SpinBox) -> void:
+	spin.add_theme_font_size_override("font_size", 16)
+	spin.add_theme_color_override("font_color", VALUE_PARCHMENT)
+	spin.add_theme_color_override("font_outline_color", TRADE_BUTTON_OUTLINE)
+	spin.add_theme_constant_override("outline_size", 1)
+	spin.add_theme_stylebox_override("normal", _make_input_style(false))
+	spin.add_theme_stylebox_override("focus", _make_input_style(true))
+
+func _make_input_style(focused: bool) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = PANEL_INSET_BG.lightened(0.014 if focused else 0.0)
+	style.border_color = PANEL_BORDER_BRASS.lightened(0.04) if focused else Color(0.115, 0.080, 0.045, 1.0)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 1
+	style.corner_radius_top_left = 1
+	style.corner_radius_top_right = 1
+	style.corner_radius_bottom_left = 1
+	style.corner_radius_bottom_right = 1
+	style.content_margin_left = 8
+	style.content_margin_right = 8
+	style.content_margin_top = 5
+	style.content_margin_bottom = 5
+	return style
+
+func _apply_market_slider_style(slider: HSlider) -> void:
+	slider.custom_minimum_size = Vector2(0, 42)
+	slider.add_theme_stylebox_override("slider", _make_slider_track_style(false))
+	slider.add_theme_stylebox_override("grabber_area", _make_slider_track_style(true))
+	slider.add_theme_stylebox_override("grabber_area_highlight", _make_slider_track_style(true))
+	slider.add_theme_icon_override("grabber", _make_slider_grabber_texture(false))
+	slider.add_theme_icon_override("grabber_highlight", _make_slider_grabber_texture(true))
+	slider.add_theme_icon_override("grabber_disabled", _make_slider_grabber_texture(false))
+
+func _make_slider_track_style(filled: bool) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.275, 0.185, 0.085, 0.96) if filled else Color(0.018, 0.016, 0.014, 1.0)
+	style.border_color = Color(0.52, 0.36, 0.15, 0.78) if filled else Color(0.075, 0.052, 0.032, 1.0)
+	style.border_width_left = 2
+	style.border_width_top = 3
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 1
+	style.corner_radius_top_right = 1
+	style.corner_radius_bottom_left = 1
+	style.corner_radius_bottom_right = 1
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.48)
+	style.shadow_size = 1
+	style.shadow_offset = Vector2(0, 1)
+	return style
+
+func _make_slider_grabber_texture(highlighted: bool) -> Texture2D:
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 0.22, 0.62, 1.0])
+	var top := Color(0.70, 0.48, 0.22) if highlighted else Color(0.54, 0.36, 0.16)
+	var mid := Color(0.36, 0.235, 0.10) if highlighted else Color(0.27, 0.175, 0.075)
+	var low := Color(0.11, 0.068, 0.030)
+	gradient.colors = PackedColorArray([top, Color(0.40, 0.27, 0.12), mid, low])
+	var texture := GradientTexture2D.new()
+	texture.width = 20
+	texture.height = 32
+	texture.fill = GradientTexture2D.FILL_LINEAR
+	texture.fill_from = Vector2(0.5, 0.0)
+	texture.fill_to = Vector2(0.5, 1.0)
+	texture.gradient = gradient
+	return texture
+
+func apply_market_small_button_style(button: Button) -> void:
+	button.custom_minimum_size = Vector2(92, 32)
+	button.add_theme_font_size_override("font_size", 13)
+	button.add_theme_color_override("font_color", Color(0.76, 0.65, 0.43))
+	button.add_theme_color_override("font_hover_color", TRADE_BUTTON_TEXT_HOVER)
+	button.add_theme_color_override("font_disabled_color", TRADE_BUTTON_TEXT_DISABLED)
+	button.add_theme_color_override("font_outline_color", TRADE_BUTTON_OUTLINE)
+	button.add_theme_constant_override("outline_size", 1)
+	button.add_theme_stylebox_override("normal", _make_small_button_style("normal"))
+	button.add_theme_stylebox_override("hover", _make_small_button_style("hover"))
+	button.add_theme_stylebox_override("pressed", _make_small_button_style("pressed"))
+	button.add_theme_stylebox_override("disabled", _make_small_button_style("disabled"))
+	button.focus_mode = Control.FOCUS_NONE
+
+func _make_small_button_style(state: String) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.content_margin_left = 12.0
+	style.content_margin_right = 12.0
+	style.content_margin_top = 6.0
+	style.content_margin_bottom = 6.0
+	style.corner_radius_top_left = 1
+	style.corner_radius_top_right = 1
+	style.corner_radius_bottom_left = 1
+	style.corner_radius_bottom_right = 1
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 3
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.50)
+	style.shadow_size = 2
+	style.shadow_offset = Vector2(0, 2)
+	var bg := Color(0.118, 0.082, 0.050, 1.0)
+	var border := Color(0.36, 0.25, 0.115, 0.88)
+	match state:
+		"hover":
+			bg = bg.lightened(0.08)
+			border = border.lightened(0.10)
+		"pressed":
+			bg = bg.darkened(0.10)
+			style.shadow_size = 1
+			style.shadow_offset = Vector2(0, 1)
+		"disabled":
+			bg = Color(0.065, 0.055, 0.044, 0.94)
+			border = Color(0.16, 0.13, 0.085, 0.55)
+	style.bg_color = bg
+	style.border_color = border
+	return style
+
+func apply_market_trade_button_style(button: Button, primary: bool) -> void:
+	button.custom_minimum_size = Vector2(154, 60)
+	button.add_theme_font_size_override("font_size", 18)
+	button.add_theme_color_override("font_color", TRADE_BUTTON_TEXT if primary else Color(0.78, 0.68, 0.47))
+	button.add_theme_color_override("font_hover_color", TRADE_BUTTON_TEXT_HOVER)
+	button.add_theme_color_override("font_pressed_color", Color(0.72, 0.55, 0.31))
+	button.add_theme_color_override("font_disabled_color", TRADE_BUTTON_TEXT_DISABLED)
+	button.add_theme_color_override("font_outline_color", TRADE_BUTTON_OUTLINE)
+	button.add_theme_color_override("font_shadow_color", TRADE_BUTTON_SHADOW)
+	button.add_theme_constant_override("outline_size", 2)
+	button.add_theme_constant_override("shadow_offset_x", 2)
+	button.add_theme_constant_override("shadow_offset_y", 2)
+	button.add_theme_stylebox_override("normal", _make_trade_button_style(primary, "normal"))
+	button.add_theme_stylebox_override("hover", _make_trade_button_style(primary, "hover"))
+	button.add_theme_stylebox_override("pressed", _make_trade_button_style(primary, "pressed"))
+	button.add_theme_stylebox_override("disabled", _make_trade_button_style(primary, "disabled"))
+	button.focus_mode = Control.FOCUS_NONE
+
+func _make_trade_button_style(primary: bool, state: String) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.content_margin_left = 24.0
+	style.content_margin_right = 24.0
+	style.content_margin_top = 14.0
+	style.content_margin_bottom = 14.0
+	style.corner_radius_top_left = 2
+	style.corner_radius_top_right = 2
+	style.corner_radius_bottom_left = 2
+	style.corner_radius_bottom_right = 2
+	style.border_width_left = 3
+	style.border_width_top = 3
+	style.border_width_right = 3
+	style.border_width_bottom = 5
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.62)
+	style.shadow_size = 3
+	style.shadow_offset = Vector2(0, 3)
+
+	var bg := Color(0.155, 0.085, 0.060)
+	var border := Color(0.42, 0.235, 0.135, 0.90)
+	if primary:
+		bg = Color(0.285, 0.195, 0.100)
+		border = Color(0.62, 0.425, 0.18, 0.94)
+
+	match state:
+		"hover":
+			bg = bg.lightened(0.055)
+			border = border.lightened(0.07)
+		"pressed":
+			bg = bg.darkened(0.13)
+			border = border.darkened(0.10)
+			style.border_width_top = 4
+			style.border_width_bottom = 3
+			style.shadow_size = 1
+			style.shadow_offset = Vector2(0, 1)
+		"disabled":
+			bg = Color(0.075, 0.062, 0.048)
+			border = Color(0.18, 0.145, 0.095, 0.58)
+
+	style.bg_color = bg.lightened(0.006)
+	style.border_color = border
+	return style
+
+func _add_quote_block(parent: HBoxContainer, title: String, total: float, avg: float, max_qty: int) -> void:
+	var box := _make_framed_panel(Vector2(120, 118), false)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(box)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 4)
+	box.add_child(vbox)
+
+	var title_lbl := Label.new()
+	title_lbl.text = title
+	title_lbl.label_settings = _make_trade_label_settings(12, LABEL_MUTED_GOLD)
+	vbox.add_child(title_lbl)
+
+	var total_lbl := Label.new()
+	total_lbl.text = "%.1fg" % total
+	total_lbl.label_settings = _make_trade_label_settings(22, VALUE_PARCHMENT)
+	vbox.add_child(total_lbl)
+
+	var avg_lbl := Label.new()
+	avg_lbl.text = "Avg %.1fg" % avg
+	avg_lbl.label_settings = _make_trade_label_settings(12, Color(0.72, 0.64, 0.46))
+	vbox.add_child(avg_lbl)
+
+	var max_lbl := Label.new()
+	max_lbl.text = "Max %d" % max_qty
+	max_lbl.label_settings = _make_trade_label_settings(12, Color(0.66, 0.57, 0.40))
+	vbox.add_child(max_lbl)
+
+func _add_plain_info(parent: HBoxContainer, text: String, color: Color) -> void:
+	var box := _make_framed_panel(Vector2(110, 118), false)
+	parent.add_child(box)
+
+	var label := Label.new()
+	label.text = text
+	label.label_settings = _make_trade_label_settings(13, color)
+	box.add_child(label)
 
 func _select_item(item: String) -> void:
 	selected_item = item
