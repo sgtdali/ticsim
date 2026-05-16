@@ -14,21 +14,34 @@ var travel_days_remaining: int = 0
 var travel_total_days: int = 0
 var travel_start_pos: Vector2   # screen space
 var travel_end_pos: Vector2     # screen space
+var travel_start_map_pos: Vector2
+var travel_end_map_pos: Vector2
+var travel_elapsed_seconds: float = 0.0
 
 var town_buttons: Dictionary = {}
 var top_bar: Control
 var _contracts_panel_open := true
 var _finance_panel: PanelContainer
 var _speed_before_finance := 1
+var _town_view_host: Control
+var _active_town_scene: Control
 
 var game_speed: int = 1
 const DAY_INTERVAL: float = 8.0
 
-const MAP_W: float = 1672.0
-const MAP_H: float = 941.0
-const TOWN_COORD_W: float = 2816.0
+const MAP_W: float = 2688.0
+const MAP_H: float = 1536.0
+const TOWN_COORD_W: float = 2688.0
 const TOWN_COORD_H: float = 1536.0
 const DEFAULT_TOP_BAR_HEIGHT: float = 88.0
+const SIDE_PANEL_WIDTH: float = 360.0
+const SIDE_PANEL_MIN_WIDTH: float = 300.0
+const SIDE_PANEL_RATIO: float = 0.22
+const BOTTOM_BAR_HEIGHT: float = 96.0
+const UI_GAP: float = 10.0
+const MAP_VIEW_SCALE: float = 0.85
+const MAP_MIN_VIEW_SCALE: float = 0.55
+const MAP_ZOOM_STEP: float = 0.08
 
 # City interaction radius in screen pixels
 const CITY_R: float = 14.0
@@ -36,6 +49,10 @@ const CITY_R: float = 14.0
 # Calculated once in _setup_view
 var _map_scale: float  = 1.0
 var _map_offset: Vector2 = Vector2.ZERO
+var _map_view_rect: Rect2 = Rect2()
+var _map_pan: Vector2 = Vector2.ZERO
+var _is_panning_map: bool = false
+var _last_pan_mouse_pos: Vector2 = Vector2.ZERO
 
 var _day_timer: Timer
 
@@ -60,8 +77,11 @@ func _ready() -> void:
 	_player_data.current_town = "Ashford"
 
 	_setup_view()
+	get_viewport().size_changed.connect(_on_viewport_resized)
 	_bind_top_bar()
 	_bind_contract_tracker()
+	_sync_town_positions_from_anchors()
+	_smooth_road_lines()
 	_place_player()
 	_build_town_buttons()
 	_setup_day_timer()
@@ -70,6 +90,7 @@ func _ready() -> void:
 	_build_goal_panel()
 	_build_cargo_panel()
 	_build_trader_labels()
+	_layout_ui()
 
 # Scale & position the map sprite to fill the viewport while keeping aspect ratio.
 # WorldMap node itself stays at identity (position=0, scale=1).
@@ -77,17 +98,164 @@ func _ready() -> void:
 func _setup_view() -> void:
 	var vp: Vector2 = get_viewport_rect().size
 	var top_bar_height := _get_top_bar_height()
-	var map_area := Vector2(vp.x, max(1.0, vp.y - top_bar_height))
-	_map_scale  = max(map_area.x / MAP_W, map_area.y / MAP_H)
-	_map_offset = Vector2(0.0, top_bar_height) + (map_area - Vector2(MAP_W, MAP_H) * _map_scale) * 0.5
+	var side_width := _get_side_panel_width()
+	_map_view_rect = Rect2(
+		Vector2.ZERO + Vector2(0.0, top_bar_height),
+		Vector2(
+			maxf(1.0, vp.x - side_width - UI_GAP),
+			maxf(1.0, vp.y - top_bar_height - BOTTOM_BAR_HEIGHT - UI_GAP)
+		)
+	)
+	_map_scale = MAP_VIEW_SCALE
+	_clamp_map_pan()
+	_apply_map_transform()
+	_layout_ui()
 
-	var map_sprite = get_node_or_null("MapSprite")
-	if map_sprite:
-		map_sprite.scale    = Vector2(_map_scale, _map_scale)
-		map_sprite.position = _map_offset
+func _on_viewport_resized() -> void:
+	_setup_view()
+	_update_map_positions()
+
+func _get_side_panel_width() -> float:
+	var vp_width := get_viewport_rect().size.x
+	return clampf(vp_width * SIDE_PANEL_RATIO, SIDE_PANEL_MIN_WIDTH, SIDE_PANEL_WIDTH)
+
+func _apply_map_transform() -> void:
+	_map_offset = _map_view_rect.position + _map_pan * _map_scale
+
+	var map_content = get_node_or_null("MapContent")
+	if map_content:
+		map_content.scale = Vector2(_map_scale, _map_scale)
+		map_content.position = _map_offset
 	var player = get_node_or_null("Player")
 	if player:
 		player.z_index = 3
+
+func _clamp_map_pan() -> void:
+	var display_size := Vector2(MAP_W, MAP_H) * _map_scale
+	for axis in range(2):
+		var view_size: float = _map_view_rect.size[axis]
+		var map_size: float = display_size[axis]
+		if map_size <= view_size:
+			_map_pan[axis] = ((view_size - map_size) * 0.5) / _map_scale
+		else:
+			var min_pan := (view_size - map_size) / _map_scale
+			_map_pan[axis] = clampf(_map_pan[axis], min_pan, 0.0)
+
+func _layout_ui() -> void:
+	var vp := get_viewport_rect().size
+	var top_bar_height := _get_top_bar_height()
+	var side_width := _get_side_panel_width()
+	var side_left := vp.x - side_width
+	_layout_backdrops(vp, top_bar_height, side_left)
+
+	var contracts_toggle := get_node_or_null("UI/ContractsToggle") as Control
+	if contracts_toggle:
+		contracts_toggle.anchor_left = 0.0
+		contracts_toggle.anchor_right = 0.0
+		contracts_toggle.offset_left = side_left + UI_GAP
+		contracts_toggle.offset_top = top_bar_height + UI_GAP
+		contracts_toggle.offset_right = vp.x - UI_GAP
+		contracts_toggle.offset_bottom = top_bar_height + 46.0
+
+	var contracts_panel := get_node_or_null("UI/ContractsPanel") as Control
+	if contracts_panel:
+		contracts_panel.anchor_left = 0.0
+		contracts_panel.anchor_right = 0.0
+		contracts_panel.offset_left = side_left + UI_GAP
+		contracts_panel.offset_top = top_bar_height + 54.0
+		contracts_panel.offset_right = vp.x - UI_GAP
+		contracts_panel.offset_bottom = top_bar_height + 346.0
+
+	if _finance_panel != null and is_instance_valid(_finance_panel):
+		_finance_panel.offset_left = side_left + UI_GAP
+		_finance_panel.offset_top = top_bar_height + UI_GAP
+		_finance_panel.offset_right = vp.x - UI_GAP
+
+	var rank_panel := get_node_or_null("UI/RankPanel") as Control
+	if rank_panel:
+		rank_panel.anchor_left = 0.0
+		rank_panel.anchor_top = 0.0
+		rank_panel.anchor_right = 0.0
+		rank_panel.anchor_bottom = 0.0
+		rank_panel.offset_left = UI_GAP
+		rank_panel.offset_top = vp.y - BOTTOM_BAR_HEIGHT + UI_GAP
+		rank_panel.offset_right = 290.0
+		rank_panel.offset_bottom = vp.y - UI_GAP
+
+	var goal_panel := get_node_or_null("UI/GoalPanel") as Control
+	if goal_panel:
+		goal_panel.anchor_left = 0.0
+		goal_panel.anchor_top = 0.0
+		goal_panel.anchor_right = 0.0
+		goal_panel.anchor_bottom = 0.0
+		goal_panel.offset_left = 300.0
+		goal_panel.offset_top = vp.y - BOTTOM_BAR_HEIGHT + UI_GAP
+		goal_panel.offset_right = minf(_map_view_rect.end.x - UI_GAP, 720.0)
+		goal_panel.offset_bottom = vp.y - UI_GAP
+
+	var cargo_panel := get_node_or_null("UI/CargoPanel") as Control
+	if cargo_panel:
+		cargo_panel.anchor_left = 0.0
+		cargo_panel.anchor_top = 0.0
+		cargo_panel.anchor_right = 0.0
+		cargo_panel.anchor_bottom = 0.0
+		cargo_panel.offset_left = side_left + UI_GAP
+		cargo_panel.offset_top = maxf(top_bar_height + 360.0, vp.y - 230.0)
+		cargo_panel.offset_right = vp.x - UI_GAP
+		cargo_panel.offset_bottom = vp.y - UI_GAP
+
+	_layout_town_view_host()
+
+func _layout_town_view_host() -> void:
+	if _town_view_host == null or not is_instance_valid(_town_view_host):
+		return
+	_town_view_host.anchor_left = 0.0
+	_town_view_host.anchor_top = 0.0
+	_town_view_host.anchor_right = 0.0
+	_town_view_host.anchor_bottom = 0.0
+	_town_view_host.offset_left = _map_view_rect.position.x
+	_town_view_host.offset_top = _map_view_rect.position.y
+	_town_view_host.offset_right = _map_view_rect.end.x
+	_town_view_host.offset_bottom = _map_view_rect.end.y
+
+func _layout_backdrops(vp: Vector2, top_bar_height: float, side_left: float) -> void:
+	var ui := get_node_or_null("UI")
+	if ui == null:
+		return
+
+	var right_dock := ui.get_node_or_null("RightDockBackdrop") as ColorRect
+	if right_dock == null:
+		right_dock = ColorRect.new()
+		right_dock.name = "RightDockBackdrop"
+		right_dock.color = Color(0.055, 0.045, 0.035, 0.96)
+		right_dock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		ui.add_child(right_dock)
+		ui.move_child(right_dock, 0)
+	right_dock.anchor_left = 0.0
+	right_dock.anchor_top = 0.0
+	right_dock.anchor_right = 0.0
+	right_dock.anchor_bottom = 0.0
+	right_dock.offset_left = side_left
+	right_dock.offset_top = top_bar_height
+	right_dock.offset_right = vp.x
+	right_dock.offset_bottom = vp.y
+
+	var bottom_bar := ui.get_node_or_null("BottomDockBackdrop") as ColorRect
+	if bottom_bar == null:
+		bottom_bar = ColorRect.new()
+		bottom_bar.name = "BottomDockBackdrop"
+		bottom_bar.color = Color(0.055, 0.045, 0.035, 0.96)
+		bottom_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		ui.add_child(bottom_bar)
+		ui.move_child(bottom_bar, 0)
+	bottom_bar.anchor_left = 0.0
+	bottom_bar.anchor_top = 0.0
+	bottom_bar.anchor_right = 0.0
+	bottom_bar.anchor_bottom = 0.0
+	bottom_bar.offset_left = 0.0
+	bottom_bar.offset_top = vp.y - BOTTOM_BAR_HEIGHT
+	bottom_bar.offset_right = side_left
+	bottom_bar.offset_bottom = vp.y
 
 func _get_top_bar_height() -> float:
 	var bar := get_node_or_null("UI/TopBar") as Control
@@ -101,11 +269,74 @@ func _get_top_bar_height() -> float:
 
 # Map (world) coordinate → screen coordinate
 func _map_to_screen(map_pos: Vector2) -> Vector2:
-	var texture_pos = Vector2(
+	var texture_pos := Vector2(
 		map_pos.x / TOWN_COORD_W * MAP_W,
 		map_pos.y / TOWN_COORD_H * MAP_H
 	)
 	return _map_offset + texture_pos * _map_scale
+
+func _is_in_map_view(screen_pos: Vector2) -> bool:
+	return _map_view_rect.has_point(screen_pos)
+
+func _update_map_positions() -> void:
+	_apply_map_transform()
+	_position_town_buttons()
+	_update_trader_labels()
+	if is_traveling:
+		_update_player_travel_position()
+	else:
+		_place_player()
+
+func _sync_town_positions_from_anchors() -> void:
+	var anchors := get_node_or_null("MapContent/TownAnchors")
+	if anchors == null or _economy == null:
+		return
+
+	for child in anchors.get_children():
+		if not child is Node2D:
+			continue
+		var town_name := child.name
+		if not _economy.towns.has(town_name):
+			continue
+		var town: Dictionary = _economy.towns[town_name]
+		town["position"] = (child as Node2D).position
+		_economy.towns[town_name] = town
+
+func _smooth_road_lines() -> void:
+	var roads := get_node_or_null("MapContent/Roads")
+	if roads == null:
+		return
+
+	for child in roads.get_children():
+		var line := child as Line2D
+		if line == null or line.points.size() < 3:
+			continue
+		line.points = _catmull_rom_points(line.points, 10)
+
+func _catmull_rom_points(source: PackedVector2Array, steps_per_segment: int) -> PackedVector2Array:
+	var smoothed := PackedVector2Array()
+	for i in range(source.size() - 1):
+		var p0 := source[maxi(i - 1, 0)]
+		var p1 := source[i]
+		var p2 := source[i + 1]
+		var p3 := source[mini(i + 2, source.size() - 1)]
+
+		for step in range(steps_per_segment):
+			var t := float(step) / float(steps_per_segment)
+			smoothed.append(_catmull_rom_point(p0, p1, p2, p3, t))
+
+	smoothed.append(source[source.size() - 1])
+	return smoothed
+
+func _catmull_rom_point(p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, t: float) -> Vector2:
+	var t2 := t * t
+	var t3 := t2 * t
+	return 0.5 * (
+		(2.0 * p1) +
+		(-p0 + p2) * t +
+		(2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2 +
+		(-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t3
+	)
 
 func _setup_day_timer() -> void:
 	_day_timer = Timer.new()
@@ -156,14 +387,16 @@ func _build_finance_panel() -> void:
 	var ui := get_node("UI")
 	var panel := PanelContainer.new()
 	panel.name = "FinancePanel"
-	panel.anchor_left = 1.0
+	panel.anchor_left = 0.0
 	panel.anchor_top = 0.0
-	panel.anchor_right = 1.0
+	panel.anchor_right = 0.0
 	panel.anchor_bottom = 0.0
-	panel.offset_left = -390.0
-	panel.offset_top = 96.0
-	panel.offset_right = -10.0
-	panel.offset_bottom = 436.0
+	var vp := get_viewport_rect().size
+	var side_left := vp.x - _get_side_panel_width()
+	panel.offset_left = side_left + UI_GAP
+	panel.offset_top = _get_top_bar_height() + UI_GAP
+	panel.offset_right = vp.x - UI_GAP
+	panel.offset_bottom = panel.offset_top + 340.0
 	ui.add_child(panel)
 	_finance_panel = panel
 
@@ -278,19 +511,67 @@ func _process(delta: float) -> void:
 	queue_redraw()
 	if not is_traveling or game_speed == 0:
 		return
-	var player = get_node("Player")
-	var total_dist = travel_start_pos.distance_to(travel_end_pos)
-	if total_dist < 1.0:
+	travel_elapsed_seconds += delta * float(game_speed)
+	_update_player_travel_position()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _active_town_scene != null and is_instance_valid(_active_town_scene):
 		return
-	var speed_px = total_dist * float(game_speed) / (float(travel_total_days) * DAY_INTERVAL)
-	player.position = player.position.move_toward(travel_end_pos, speed_px * delta)
+
+	var mouse_button := event as InputEventMouseButton
+	if mouse_button != null:
+		if mouse_button.pressed and _is_in_map_view(mouse_button.position):
+			if mouse_button.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				_zoom_map(-MAP_ZOOM_STEP, mouse_button.position)
+				get_viewport().set_input_as_handled()
+				return
+			if mouse_button.button_index == MOUSE_BUTTON_WHEEL_UP:
+				_zoom_map(MAP_ZOOM_STEP, mouse_button.position)
+				get_viewport().set_input_as_handled()
+				return
+			if mouse_button.button_index == MOUSE_BUTTON_LEFT:
+				_is_panning_map = true
+				_last_pan_mouse_pos = mouse_button.position
+				get_viewport().set_input_as_handled()
+				return
+		elif mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
+			_is_panning_map = false
+		return
+
+	var mouse_motion := event as InputEventMouseMotion
+	if mouse_motion != null and _is_panning_map:
+		_map_pan += (mouse_motion.position - _last_pan_mouse_pos) / _map_scale
+		_last_pan_mouse_pos = mouse_motion.position
+		_clamp_map_pan()
+		_update_map_positions()
+		get_viewport().set_input_as_handled()
+
+func _zoom_map(delta_scale: float, focus_screen_pos: Vector2) -> void:
+	var old_scale := _map_scale
+	var new_scale := clampf(_map_scale + delta_scale, MAP_MIN_VIEW_SCALE, MAP_VIEW_SCALE)
+	if is_equal_approx(old_scale, new_scale):
+		return
+
+	var focus_map_pos := (focus_screen_pos - _map_view_rect.position) / old_scale - _map_pan
+	_map_scale = new_scale
+	_map_pan = (focus_screen_pos - _map_view_rect.position) / new_scale - focus_map_pos
+	_clamp_map_pan()
+	_update_map_positions()
+
+func _update_player_travel_position() -> void:
+	var player = get_node_or_null("Player")
+	if player == null:
+		return
+	var duration := maxf(float(travel_total_days) * DAY_INTERVAL, 0.001)
+	var t := clampf(travel_elapsed_seconds / duration, 0.0, 1.0)
+	player.position = _map_to_screen(travel_start_map_pos.lerp(travel_end_map_pos, t))
 
 func _on_day_tick() -> void:
 	_economy.advance_day()
 	if is_traveling:
 		travel_days_remaining -= 1
 		if travel_days_remaining <= 0:
-			get_node("Player").position = travel_end_pos
+			get_node("Player").position = _map_to_screen(travel_end_map_pos)
 			_arrive()
 			return
 	_update_ui()
@@ -309,9 +590,20 @@ func _build_town_buttons() -> void:
 		var btn := get_node_or_null("TownButtons/%sBtn" % town_name) as Button
 		if btn == null:
 			continue
+		btn.custom_minimum_size = Vector2(140, 42)
+		btn.size = Vector2(140, 42)
 		btn.pressed.connect(_on_town_pressed.bind(town_name))
 		town_buttons[town_name] = btn
+	_position_town_buttons()
 	_refresh_buttons()
+
+func _position_town_buttons() -> void:
+	for town_name in town_buttons:
+		var btn: Button = town_buttons[town_name]
+		var map_pos: Vector2 = _economy.towns.get(town_name, {}).get("position", Vector2.ZERO)
+		var screen_pos := _map_to_screen(map_pos)
+		btn.position = screen_pos + Vector2(-70.0, -21.0)
+		btn.visible = _is_in_map_view(screen_pos)
 
 func _place_player() -> void:
 	var map_pos: Vector2 = _economy.towns.get(_player_data.current_town, {}).get("position", Vector2.ZERO)
@@ -326,10 +618,13 @@ func _on_town_pressed(town_name: String) -> void:
 
 	is_traveling = true
 	travel_destination    = town_name
-	travel_start_pos      = get_node("Player").position
-	travel_end_pos        = _map_to_screen(_economy.towns[town_name].get("position", Vector2.ZERO))
+	travel_start_map_pos  = _economy.towns[_player_data.current_town].get("position", Vector2.ZERO)
+	travel_end_map_pos    = _economy.towns[town_name].get("position", Vector2.ZERO)
+	travel_start_pos      = _map_to_screen(travel_start_map_pos)
+	travel_end_pos        = _map_to_screen(travel_end_map_pos)
 	travel_total_days     = _calc_travel_days(town_name)
 	travel_days_remaining = travel_total_days
+	travel_elapsed_seconds = 0.0
 
 	_refresh_buttons()
 	_update_ui()
@@ -346,6 +641,7 @@ func _arrive() -> void:
 	travel_destination = ""
 	travel_days_remaining = 0
 	travel_total_days = 0
+	travel_elapsed_seconds = 0.0
 	_refresh_buttons()
 
 	# Saldırı kontrolü - şehre vardığında değil, varış anında roll
@@ -359,19 +655,55 @@ func _arrive() -> void:
 
 func _open_town(town_name: String) -> void:
 	_day_timer.paused = true
-	var town_scene: Node = preload("res://scenes/TownScene.tscn").instantiate()
+	_set_map_view_visible(false)
+	if _town_view_host != null and is_instance_valid(_town_view_host):
+		_town_view_host.queue_free()
+
+	var ui := get_node("UI")
+	_town_view_host = Control.new()
+	_town_view_host.name = "TownViewHost"
+	_town_view_host.mouse_filter = Control.MOUSE_FILTER_STOP
+	ui.add_child(_town_view_host)
+	_layout_town_view_host()
+
+	var town_scene: Control = preload("res://scenes/TownScene.tscn").instantiate()
 	town_scene.set("town_name", town_name)
-	get_node("UI").add_child(town_scene)
+	town_scene.set("embedded_in_map_view", true)
+	_town_view_host.add_child(town_scene)
+	town_scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_active_town_scene = town_scene
 	town_scene.connect("closed", Callable(self, "_on_town_ui_closed"))
 
 func _on_town_ui_closed() -> void:
+	if _town_view_host != null and is_instance_valid(_town_view_host):
+		_town_view_host.queue_free()
+	_town_view_host = null
+	_active_town_scene = null
+	_set_map_view_visible(true)
 	if game_speed > 0:
 		_day_timer.paused = false
 	_update_ui()
 	_refresh_buttons()
 	_update_cargo_panel()
 
+func _set_map_view_visible(visible: bool) -> void:
+	var map_content := get_node_or_null("MapContent") as CanvasItem
+	if map_content:
+		map_content.visible = visible
+	var player := get_node_or_null("Player") as CanvasItem
+	if player:
+		player.visible = visible
+	var town_buttons_layer := get_node_or_null("TownButtons") as CanvasLayer
+	if town_buttons_layer:
+		town_buttons_layer.visible = visible
+	var ui := get_node_or_null("UI")
+	if ui:
+		for child in ui.get_children():
+			if child is CanvasItem and str(child.name).begins_with("TraderLabel_"):
+				(child as CanvasItem).visible = visible
+
 func _refresh_buttons() -> void:
+	_position_town_buttons()
 	for town_name in town_buttons:
 		var btn: Button = town_buttons[town_name]
 		if is_traveling:
@@ -952,6 +1284,13 @@ func _build_trader_labels() -> void:
 
 func _update_trader_labels() -> void:
 	if _traders == null:
+		return
+	if _active_town_scene != null and is_instance_valid(_active_town_scene):
+		var ui := get_node_or_null("UI")
+		if ui:
+			for child in ui.get_children():
+				if child is CanvasItem and str(child.name).begins_with("TraderLabel_"):
+					(child as CanvasItem).visible = false
 		return
 	for trader_id in _traders.traders:
 		var lbl := get_node_or_null("UI/TraderLabel_%s" % trader_id) as Label

@@ -5,6 +5,7 @@ const PRIMARY_BUTTON_TEXTURE: Texture2D = preload("res://assets/ui_kit/UI-003_Pr
 const SECONDARY_BUTTON_TEXTURE: Texture2D = preload("res://assets/ui_kit/UI-004_Secondary Button_trimmed.png")
 
 var town_name: String = ""
+var embedded_in_map_view: bool = false
 
 signal closed
 
@@ -22,16 +23,18 @@ func _build_layout() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var backdrop := ColorRect.new()
-	backdrop.color = Color(0.05, 0.035, 0.02, 0.92)
+	backdrop.color = Color(0.05, 0.035, 0.02, 1.0 if embedded_in_map_view else 0.92)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 64)
-	margin.add_theme_constant_override("margin_right", 64)
-	margin.add_theme_constant_override("margin_top", 96)
-	margin.add_theme_constant_override("margin_bottom", 64)
+	var edge_margin := 32 if embedded_in_map_view else 64
+	var top_margin := 28 if embedded_in_map_view else 96
+	margin.add_theme_constant_override("margin_left", edge_margin)
+	margin.add_theme_constant_override("margin_right", edge_margin)
+	margin.add_theme_constant_override("margin_top", top_margin)
+	margin.add_theme_constant_override("margin_bottom", edge_margin)
 	add_child(margin)
 
 	var root := VBoxContainer.new()

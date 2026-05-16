@@ -5,7 +5,6 @@ var trade_qty: int = 1
 var market_view: String = "trade"
 
 const GOODS_PROJECTION_DAYS := 14
-
 func build() -> void:
 	panel.offset_right = 760.0
 	panel.offset_bottom = -10.0
@@ -44,9 +43,7 @@ func build() -> void:
 		_build_goods_projection_view(container)
 		return
 
-	_build_trade_header(container)
-	for item in _economy.BASE_PRICES:
-		_build_trade_row(container, String(item))
+	_build_trade_table(container)
 
 	container.add_child(HSeparator.new())
 	_build_trade_panel(container)
@@ -80,51 +77,47 @@ func _build_view_switch(container: VBoxContainer) -> void:
 
 	container.add_child(HSeparator.new())
 
-func _build_trade_header(container: VBoxContainer) -> void:
-	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 10)
-	container.add_child(header)
+func _build_trade_table(container: VBoxContainer) -> void:
+	var table := MarketTableView.new()
+	table.custom_minimum_size.x = 720
+	table.row_selected.connect(_select_item)
+	container.add_child(table)
 
-	_add_header_label(header, "Goods", 150)
-	_add_header_label(header, "Signal", 70)
-	_add_header_label(header, "Cargo", 70)
-	_add_header_label(header, "City", 70)
-	_add_header_label(header, "Ref", 74)
-	_add_header_label(header, "Buy", 74)
-	_add_header_label(header, "Sell", 74)
+	var rows: Array[Dictionary] = []
+	for item in _economy.BASE_PRICES:
+		rows.append(_get_trade_table_row_data(String(item)))
+	table.set_rows(rows, selected_item)
 
-func _build_trade_row(container: VBoxContainer, item: String) -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	container.add_child(row)
+func _get_trade_table_row_data(item: String) -> Dictionary:
+	var town: Dictionary = _economy.get_town(town_name)
+	var town_stock := int(town.get("inventory", {}).get(item, 0))
+	var cargo := int(_player.get_item_count(item))
+	var ref_price := float(_economy.get_price(town_name, item))
+	var buy_avg: float = float(_economy.get_buy_quote_average(town_name, item, 1))
+	var sell_avg: float = float(_economy.get_sell_quote_average(town_name, item, 1))
 
-	var item_btn := Button.new()
-	item_btn.text = _get_item_name(item)
-	item_btn.toggle_mode = true
-	item_btn.button_pressed = item == selected_item
-	item_btn.pressed.connect(_select_item.bind(item))
-	if item == selected_item:
-		ui.apply_primary_button_style(item_btn)
-	else:
-		ui.apply_secondary_button_style(item_btn)
-	item_btn.custom_minimum_size = Vector2(150, 34)
-	row.add_child(item_btn)
+	return {
+		"id": item,
+		"good": _get_item_name(item),
+		"trend": _get_price_trend_arrow(item),
+		"trend_color": _get_price_signal_color(item),
+		"city_stock": "%d" % town_stock,
+		"cargo": "%d" % cargo,
+		"ref": "%.1f" % ref_price,
+		"buy": _format_quote_cell(buy_avg).replace("g", ""),
+		"sell": _format_quote_cell(sell_avg).replace("g", ""),
+	}
 
-	var signal_lbl := Label.new()
-	signal_lbl.text = _get_price_signal_text(item)
-	signal_lbl.custom_minimum_size.x = 70
-	signal_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	signal_lbl.add_theme_color_override("font_color", _get_price_signal_color(item))
-	row.add_child(signal_lbl)
-
-	_add_value_label(row, "%d" % int(_player.get_item_count(item)), 70)
-	_add_value_label(row, "%d" % int(_economy.get_town(town_name).get("inventory", {}).get(item, 0)), 70)
-	_add_value_label(row, "%.1fg" % float(_economy.get_price(town_name, item)), 74)
-
-	var buy_avg: float = _economy.get_buy_quote_average(town_name, item, 1)
-	var sell_avg: float = _economy.get_sell_quote_average(town_name, item, 1)
-	_add_value_label(row, _format_quote_cell(buy_avg), 74)
-	_add_value_label(row, _format_quote_cell(sell_avg), 74)
+func _get_price_trend_arrow(item: String) -> String:
+	var base: float = float(_economy.BASE_PRICES.get(item, 0.0))
+	if base <= 0.0:
+		return "-"
+	var ratio: float = float(_economy.get_price(town_name, item)) / base
+	if ratio >= 1.15:
+		return "^"
+	if ratio <= 0.85:
+		return "v"
+	return "->"
 
 func _build_goods_projection_view(container: VBoxContainer) -> void:
 	var explain := Label.new()
