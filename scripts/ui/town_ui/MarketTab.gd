@@ -24,8 +24,9 @@ func build() -> void:
 	panel.offset_right = 760.0
 	panel.offset_bottom = -10.0
 
-	var trade_host := _get_trade_panel_host()
-	var container: VBoxContainer = panel.get_node("ScrollContainer/ItemList") as VBoxContainer
+	var layout := _ensure_market_layout()
+	var container := layout["item_list"] as VBoxContainer
+	var trade_host := layout["trade_host"] as VBoxContainer
 	for child in container.get_children():
 		child.queue_free()
 	for child in trade_host.get_children():
@@ -46,16 +47,68 @@ func build() -> void:
 	trade_host.visible = true
 	_build_trade_panel(trade_host)
 
-func _get_trade_panel_host() -> VBoxContainer:
-	var host := panel.get_node_or_null("TradePanelHost") as VBoxContainer
+func _ensure_market_layout() -> Dictionary:
+	var frame := panel.get_node_or_null("MarketFrame") as PanelContainer
+	var body: VBoxContainer
+	if frame == null:
+		var scroll := panel.get_node("ScrollContainer") as ScrollContainer
+		panel.remove_child(scroll)
+
+		frame = PanelContainer.new()
+		frame.name = "MarketFrame"
+		frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		frame.add_theme_stylebox_override("panel", _make_market_frame_style())
+		panel.add_child(frame)
+
+		body = VBoxContainer.new()
+		body.name = "MarketBody"
+		body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		body.add_theme_constant_override("separation", 0)
+		frame.add_child(body)
+
+		scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		body.add_child(scroll)
+	else:
+		body = frame.get_node("MarketBody") as VBoxContainer
+		frame.add_theme_stylebox_override("panel", _make_market_frame_style())
+
+	var host := body.get_node_or_null("TradePanelHost") as VBoxContainer
 	if host == null:
 		host = VBoxContainer.new()
 		host.name = "TradePanelHost"
 		host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		host.size_flags_vertical = Control.SIZE_SHRINK_END
 		host.add_theme_constant_override("separation", 0)
-		panel.add_child(host)
-	return host
+		body.add_child(host)
+
+	return {
+		"item_list": body.get_node("ScrollContainer/ItemList"),
+		"trade_host": host,
+	}
+
+func _make_market_frame_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.045, 0.036, 0.028, 0.985)
+	style.border_color = Color(0.34, 0.235, 0.105, 0.86)
+	style.border_width_left = 3
+	style.border_width_top = 3
+	style.border_width_right = 3
+	style.border_width_bottom = 4
+	style.corner_radius_top_left = 2
+	style.corner_radius_top_right = 2
+	style.corner_radius_bottom_left = 2
+	style.corner_radius_bottom_right = 2
+	style.content_margin_left = 8
+	style.content_margin_right = 8
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.64)
+	style.shadow_size = 3
+	style.shadow_offset = Vector2(0, 2)
+	return style
 
 func _build_view_switch(container: VBoxContainer) -> void:
 	var row := HBoxContainer.new()
@@ -185,6 +238,8 @@ func _build_goods_projection_row(container: VBoxContainer, item: String) -> void
 func _build_trade_panel(container: VBoxContainer) -> void:
 	if selected_item == "":
 		return
+
+	container.add_child(_make_market_divider())
 
 	var item: String = selected_item
 	var player_has: int = int(_player.get_item_count(item))
@@ -324,6 +379,45 @@ func _make_trade_section() -> PanelContainer:
 	panel.add_theme_stylebox_override("panel", _make_panel_style(PANEL_BG, PANEL_BORDER_DARK, 3, 22.0, true))
 	return panel
 
+func _make_market_divider() -> Control:
+	var divider := Control.new()
+	divider.custom_minimum_size.y = 14
+	divider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var groove := ColorRect.new()
+	groove.color = Color(0.018, 0.014, 0.010, 1.0)
+	groove.anchor_left = 0.0
+	groove.anchor_top = 0.5
+	groove.anchor_right = 1.0
+	groove.anchor_bottom = 0.5
+	groove.offset_top = -3
+	groove.offset_bottom = 3
+	groove.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	divider.add_child(groove)
+
+	var top_line := ColorRect.new()
+	top_line.color = Color(0.60, 0.42, 0.18, 0.34)
+	top_line.anchor_left = 0.0
+	top_line.anchor_top = 0.5
+	top_line.anchor_right = 1.0
+	top_line.anchor_bottom = 0.5
+	top_line.offset_top = -4
+	top_line.offset_bottom = -3
+	top_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	divider.add_child(top_line)
+
+	var bottom_line := ColorRect.new()
+	bottom_line.color = Color(0.0, 0.0, 0.0, 0.58)
+	bottom_line.anchor_left = 0.0
+	bottom_line.anchor_top = 0.5
+	bottom_line.anchor_right = 1.0
+	bottom_line.anchor_bottom = 0.5
+	bottom_line.offset_top = 3
+	bottom_line.offset_bottom = 4
+	bottom_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	divider.add_child(bottom_line)
+	return divider
+
 func _make_framed_panel(min_size: Vector2, emphasized: bool) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = min_size
@@ -426,7 +520,7 @@ func _make_input_style(focused: bool) -> StyleBoxFlat:
 	return style
 
 func _apply_market_slider_style(slider: HSlider) -> void:
-	slider.custom_minimum_size = Vector2(0, 42)
+	slider.custom_minimum_size = Vector2(0, 46)
 	slider.add_theme_stylebox_override("slider", _make_slider_track_style(false))
 	slider.add_theme_stylebox_override("grabber_area", _make_slider_track_style(true))
 	slider.add_theme_stylebox_override("grabber_area_highlight", _make_slider_track_style(true))
@@ -439,15 +533,15 @@ func _make_slider_track_style(filled: bool) -> StyleBoxFlat:
 	style.bg_color = Color(0.275, 0.185, 0.085, 0.96) if filled else Color(0.018, 0.016, 0.014, 1.0)
 	style.border_color = Color(0.52, 0.36, 0.15, 0.78) if filled else Color(0.075, 0.052, 0.032, 1.0)
 	style.border_width_left = 2
-	style.border_width_top = 3
+	style.border_width_top = 4
 	style.border_width_right = 2
-	style.border_width_bottom = 2
+	style.border_width_bottom = 3
 	style.corner_radius_top_left = 1
 	style.corner_radius_top_right = 1
 	style.corner_radius_bottom_left = 1
 	style.corner_radius_bottom_right = 1
-	style.content_margin_top = 8
-	style.content_margin_bottom = 8
+	style.content_margin_top = 9
+	style.content_margin_bottom = 9
 	style.shadow_color = Color(0.0, 0.0, 0.0, 0.48)
 	style.shadow_size = 1
 	style.shadow_offset = Vector2(0, 1)
@@ -518,7 +612,7 @@ func _make_small_button_style(state: String) -> StyleBoxFlat:
 	return style
 
 func apply_market_trade_button_style(button: Button, primary: bool) -> void:
-	button.custom_minimum_size = Vector2(154, 60)
+	button.custom_minimum_size = Vector2(168, 66)
 	button.add_theme_font_size_override("font_size", 18)
 	button.add_theme_color_override("font_color", TRADE_BUTTON_TEXT if primary else Color(0.78, 0.68, 0.47))
 	button.add_theme_color_override("font_hover_color", TRADE_BUTTON_TEXT_HOVER)
@@ -537,10 +631,10 @@ func apply_market_trade_button_style(button: Button, primary: bool) -> void:
 
 func _make_trade_button_style(primary: bool, state: String) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.content_margin_left = 24.0
-	style.content_margin_right = 24.0
-	style.content_margin_top = 14.0
-	style.content_margin_bottom = 14.0
+	style.content_margin_left = 26.0
+	style.content_margin_right = 26.0
+	style.content_margin_top = 16.0
+	style.content_margin_bottom = 16.0
 	style.corner_radius_top_left = 2
 	style.corner_radius_top_right = 2
 	style.corner_radius_bottom_left = 2
@@ -548,7 +642,7 @@ func _make_trade_button_style(primary: bool, state: String) -> StyleBoxFlat:
 	style.border_width_left = 3
 	style.border_width_top = 3
 	style.border_width_right = 3
-	style.border_width_bottom = 5
+	style.border_width_bottom = 6
 	style.shadow_color = Color(0.0, 0.0, 0.0, 0.62)
 	style.shadow_size = 3
 	style.shadow_offset = Vector2(0, 3)
@@ -601,6 +695,12 @@ func _add_quote_block(parent: HBoxContainer, title: String, total: float, avg: f
 	avg_lbl.text = "Avg %.1fg" % avg
 	avg_lbl.label_settings = _make_trade_label_settings(12, Color(0.72, 0.64, 0.46))
 	vbox.add_child(avg_lbl)
+
+	var divider := ColorRect.new()
+	divider.custom_minimum_size.y = 2
+	divider.color = Color(0.50, 0.34, 0.14, 0.22)
+	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(divider)
 
 	var max_lbl := Label.new()
 	max_lbl.text = "Max %d" % max_qty
