@@ -1,5 +1,15 @@
 # Project Instructions
 
+## UI Workflow
+
+Build and refactor UI as if it is being assembled in the Godot editor.
+
+Prefer scene nodes, `.tscn` structure, reusable `.tres` resources, themes, StyleBoxes, ShaderMaterials, and exported/inspectable properties over runtime-only UI construction. When adding or changing major UI layout, controls, backgrounds, button states, table sections, or panel hierarchy, make the result visible and adjustable in the editor whenever practical.
+
+Runtime code should primarily bind data, update labels/values, connect interactions, and toggle state. Avoid creating large UI hierarchies entirely in code unless the UI is genuinely dynamic or there is a clear reason. If runtime-created UI is necessary, keep it small, named consistently, and explain why it cannot reasonably live in the scene.
+
+For image-backed UI elements, create reusable `.tres` StyleBoxTexture/resources and assign them to scene nodes so editor preview and runtime match. Do not rely on code-only theme overrides for important visuals if the same effect can be represented in the scene/resource inspector.
+
 ## Mechanics Documentation
 
 `docs/mechanics.md` is the source of truth for gameplay mechanics.

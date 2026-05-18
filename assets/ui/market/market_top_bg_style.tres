@@ -1,0 +1,6 @@
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://market_top_bg_style"]
+
+[ext_resource type="Texture2D" uid="uid://215hwhpwvak7" path="res://assets/ui/market/Market_Top_bg.png" id="1"]
+
+[resource]
+texture = ExtResource("1")

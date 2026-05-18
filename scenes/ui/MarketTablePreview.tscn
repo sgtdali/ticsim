@@ -1,10 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://b34k8q72uvlkb"]
+[gd_scene format=3 uid="uid://b0ylq75qxloko"]
 
 [ext_resource type="Script" uid="uid://or2mp8q47ocy" path="res://scripts/ui/MarketTableView.gd" id="1_market_table"]
-[ext_resource type="Material" path="res://assets/ui/table_noise_material.tres" id="2_table_noise"]
-[ext_resource type="Material" path="res://assets/ui/table_selected_noise_material.tres" id="3_selected_noise"]
-[ext_resource type="Material" path="res://assets/ui/selected_row_border_material.tres" id="4_selected_border"]
-[ext_resource type="Material" path="res://assets/ui/table_header_noise_material.tres" id="5_header_noise"]
 
 [node name="MarketTablePreview" type="Control" unique_id=1441435964]
 custom_minimum_size = Vector2(760, 360)
@@ -41,7 +37,3 @@ custom_minimum_size = Vector2(720, 0)
 layout_mode = 2
 theme_override_constants/separation = 0
 script = ExtResource("1_market_table")
-table_noise_material = ExtResource("2_table_noise")
-header_noise_material = ExtResource("5_header_noise")
-selected_noise_material = ExtResource("3_selected_noise")
-selected_border_material = ExtResource("4_selected_border")
