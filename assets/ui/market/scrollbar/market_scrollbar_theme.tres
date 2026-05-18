@@ -1,0 +1,25 @@
+[gd_resource type="Theme" format=3]
+
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/scroll_track.tres" id="1_track"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/grabber_style.tres" id="2_grabber"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/grabber_hover.tres" id="3_grabber_hover"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/grabber_pressed.tres" id="4_grabber_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/increment_style.tres" id="5_increment"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/increment_hover.tres" id="6_increment_hover"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/increment_pressed.tres" id="7_increment_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/decrement_style.tres" id="8_decrement"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/decrement_hover.tres" id="9_decrement_hover"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/market/scrollbar/decrement_pressed.tres" id="10_decrement_pressed"]
+
+[resource]
+VScrollBar/styles/scroll = ExtResource("1_track")
+VScrollBar/styles/scroll_focus = ExtResource("1_track")
+VScrollBar/styles/grabber = ExtResource("2_grabber")
+VScrollBar/styles/grabber_highlight = ExtResource("3_grabber_hover")
+VScrollBar/styles/grabber_pressed = ExtResource("4_grabber_pressed")
+VScrollBar/styles/increment = ExtResource("5_increment")
+VScrollBar/styles/increment_highlight = ExtResource("6_increment_hover")
+VScrollBar/styles/increment_pressed = ExtResource("7_increment_pressed")
+VScrollBar/styles/decrement = ExtResource("8_decrement")
+VScrollBar/styles/decrement_highlight = ExtResource("9_decrement_hover")
+VScrollBar/styles/decrement_pressed = ExtResource("10_decrement_pressed")

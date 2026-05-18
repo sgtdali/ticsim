@@ -42,7 +42,19 @@ const MARKET_DIVIDER_TEXTURE := "res://assets/ui/buy_button/divider.png"
 const MARKET_SEC_BG_STYLE := "res://assets/ui/buy_button/market_sec_bg_style.tres"
 const MARKET_BOTTOM_BG_STYLE := "res://assets/ui/buy_button/market_bottom_bg_style.tres"
 const MARKET_CLOSED_ROW_BG_STYLE := "res://assets/ui/market/market_closed_row_bg_style.tres"
+const SB_TRACK := "res://assets/ui/market/scrollbar/scroll_track.tres"
+const SB_GRABBER := "res://assets/ui/market/scrollbar/grabber_style.tres"
+const SB_GRABBER_HOVER := "res://assets/ui/market/scrollbar/grabber_hover.tres"
+const SB_GRABBER_PRESSED := "res://assets/ui/market/scrollbar/grabber_pressed.tres"
+const SB_INCREMENT := "res://assets/ui/market/scrollbar/increment_style.tres"
+const SB_INCREMENT_HOVER := "res://assets/ui/market/scrollbar/increment_hover.tres"
+const SB_INCREMENT_PRESSED := "res://assets/ui/market/scrollbar/increment_pressed.tres"
+const SB_DECREMENT := "res://assets/ui/market/scrollbar/decrement_style.tres"
+const SB_DECREMENT_HOVER := "res://assets/ui/market/scrollbar/decrement_hover.tres"
+const SB_DECREMENT_PRESSED := "res://assets/ui/market/scrollbar/decrement_pressed.tres"
 const MARKET_OPENED_ROW_BG_STYLE := "res://assets/ui/market/market_opened_row_bg_style.tres"
+const MARKET_TAB_SELECTED_STYLE := "res://assets/ui/market/market_top_section_button/market_tab_selected_style.tres"
+const MARKET_TAB_UNSELECTED_STYLE := "res://assets/ui/market/market_top_section_button/market_tab_unselected_style.tres"
 const MARKET_BUY_BUTTON_STYLES := {
 	"normal": "res://assets/ui/market/market_buy_button/market_buy_normal_style.tres",
 	"hover": "res://assets/ui/market/market_buy_button/market_buy_hover_style.tres",
@@ -64,6 +76,7 @@ func build() -> void:
 	trade_qty = maxi(trade_qty, 1)
 
 	_build_market_hall_layout()
+	_apply_scrollbar_style()
 
 func _build_market_hall_layout() -> void:
 	_prepare_market_panel()
@@ -78,13 +91,12 @@ func _build_market_hall_layout() -> void:
 	var city_visible := market_view == "city_info"
 
 	_set_node_visible(root, "TownStrip", trade_visible)
-	_set_node_visible(root, "TradeTableHeader", trade_visible)
-	_set_node_visible(root, "MarketRowsScroll", trade_visible)
+	_set_node_visible(root, "TradeArea", trade_visible)
 	_set_node_visible(root, "GoodsProjection", goods_visible)
 	_set_node_visible(root, "CityInfoPlaceholder", city_visible)
 
 	if trade_visible:
-		var list := root.get_node("MarketRowsScroll/MarketRows") as VBoxContainer
+		var list := root.get_node("TradeArea/TradeAreaBox/MarketRowsScroll/MarketRows") as VBoxContainer
 		for child in list.get_children():
 			child.queue_free()
 		for item in _economy.BASE_PRICES:
@@ -101,6 +113,28 @@ func _build_market_hall_layout() -> void:
 
 func _prepare_market_panel() -> void:
 	panel.visible = true
+
+func _apply_scrollbar_style() -> void:
+	var scroll := panel.get_node_or_null("MarketHallFrame/MarketHallRoot/TradeArea/TradeAreaBox/MarketRowsScroll") as ScrollContainer
+	if scroll == null:
+		return
+	var vbar := scroll.get_v_scroll_bar()
+	if vbar == null:
+		return
+	vbar.custom_minimum_size.x = 25
+	scroll.add_theme_constant_override("scrollbar_h_separation", 30)
+	var track_style := (load(SB_TRACK) as StyleBoxTexture).duplicate() as StyleBoxTexture
+	track_style.expand_margin_left = -3.0
+	track_style.expand_margin_right = -3.0
+	track_style.expand_margin_top = -25.0
+	track_style.expand_margin_bottom = -25.0
+	track_style.content_margin_top = 25.0
+	track_style.content_margin_bottom = 25.0
+	vbar.add_theme_stylebox_override("scroll", track_style)
+	vbar.add_theme_stylebox_override("scroll_focus", track_style)
+	vbar.add_theme_stylebox_override("grabber", load(SB_GRABBER))
+	vbar.add_theme_stylebox_override("grabber_highlight", load(SB_GRABBER_HOVER))
+	vbar.add_theme_stylebox_override("grabber_pressed", load(SB_GRABBER_PRESSED))
 
 func _update_market_hall_static(root: VBoxContainer) -> void:
 	var town: Dictionary = _economy.get_town(town_name)
@@ -159,18 +193,13 @@ func _connect_market_hall_button(root: Node, path: String, callback: Callable) -
 		button.set_meta("market_button_connected", true)
 
 func _apply_market_hall_styles(root: Node) -> void:
-	_style_panel(root, "MarketHeader", Color(0.045, 0.043, 0.039, 1.0), Color(0.24, 0.18, 0.10, 0.95), 2, 8.0, true)
-	_style_panel(root, "MarketTabs", Color(0.030, 0.029, 0.027, 1.0), Color(0.18, 0.13, 0.07, 0.92), 1, 4.0, false)
 	_style_panel(root, "TownStrip/TownRow/TownImageSlot", Color(0.030, 0.029, 0.026, 1.0), Color(0.20, 0.15, 0.08, 0.90), 2, 8.0, false)
 	_style_panel(root, "TownStrip/TownRow/StorageImageSlot", Color(0.030, 0.029, 0.026, 1.0), Color(0.20, 0.15, 0.08, 0.90), 2, 8.0, false)
-	var header_node := root.get_node_or_null("TradeTableHeader") as PanelContainer
-	if header_node != null:
-		header_node.add_theme_stylebox_override("panel", load(MARKET_CLOSED_ROW_BG_STYLE))
 	_style_panel(root, "CityInfoPlaceholder", Color(0.060, 0.055, 0.047, 1.0), Color(0.25, 0.18, 0.09, 0.90), 2, 24.0, true)
 	var switch_btn := root.get_node_or_null("TownStrip/TownRow/SwitchButton") as Button
 	if switch_btn != null:
 		apply_market_small_button_style(switch_btn)
-	_update_static_label(root, "MarketHeader/HeaderRow/Title", "Market Hall", 36, TITLE_PARCHMENT, HORIZONTAL_ALIGNMENT_CENTER)
+	_update_static_label(root, "MarketHeader/HeaderRow/Title", "Market Hall", 72, TITLE_PARCHMENT, HORIZONTAL_ALIGNMENT_CENTER)
 	_update_static_label(root, "TownStrip/TownRow/TownImageSlot/PlaceholderLabel", "Town Image", 14, Color(0.45, 0.39, 0.30), HORIZONTAL_ALIGNMENT_CENTER)
 	_update_static_label(root, "TownStrip/TownRow/StorageImageSlot/PlaceholderLabel", "Market Storage", 14, Color(0.45, 0.39, 0.30), HORIZONTAL_ALIGNMENT_CENTER)
 	_update_static_label(root, "TownStrip/TownRow/StorageInfo/StorageTitle", "Storage", 17, LABEL_MUTED_GOLD, HORIZONTAL_ALIGNMENT_LEFT)
@@ -193,11 +222,11 @@ func _update_static_label(root: Node, path: String, text: String, font_size: int
 
 func _update_header_labels(root: Node) -> void:
 	var labels := {
-		"TradeTableHeader/HeaderCells/GoodsHeader": ["Goods", HORIZONTAL_ALIGNMENT_LEFT],
-		"TradeTableHeader/HeaderCells/TrendHeader": ["Trend", HORIZONTAL_ALIGNMENT_CENTER],
-		"TradeTableHeader/HeaderCells/StockHeader": ["City Stock", HORIZONTAL_ALIGNMENT_CENTER],
-		"TradeTableHeader/HeaderCells/PriceHeader": ["Price", HORIZONTAL_ALIGNMENT_CENTER],
-		"TradeTableHeader/HeaderCells/CargoHeader": ["Cargo", HORIZONTAL_ALIGNMENT_CENTER],
+		"TradeArea/TradeAreaBox/TradeTableHeader/HeaderCells/GoodsHeader": ["Goods", HORIZONTAL_ALIGNMENT_LEFT],
+		"TradeArea/TradeAreaBox/TradeTableHeader/HeaderCells/TrendHeader": ["Trend", HORIZONTAL_ALIGNMENT_CENTER],
+		"TradeArea/TradeAreaBox/TradeTableHeader/HeaderCells/StockHeader": ["City Stock", HORIZONTAL_ALIGNMENT_CENTER],
+		"TradeArea/TradeAreaBox/TradeTableHeader/HeaderCells/PriceHeader": ["Price", HORIZONTAL_ALIGNMENT_CENTER],
+		"TradeArea/TradeAreaBox/TradeTableHeader/HeaderCells/CargoHeader": ["Cargo", HORIZONTAL_ALIGNMENT_CENTER],
 	}
 	for path in labels:
 		var data: Array = labels[path]
@@ -294,7 +323,9 @@ func _make_market_expanded_row(item: String) -> Control:
 	panel_box.name = "Expanded_%s" % item
 	panel_box.custom_minimum_size.y = 156
 	panel_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel_box.add_theme_stylebox_override("panel", load(MARKET_OPENED_ROW_BG_STYLE))
+	var expanded_style := (load(MARKET_OPENED_ROW_BG_STYLE) as StyleBoxTexture).duplicate() as StyleBoxTexture
+	expanded_style.modulate_color = Color(1.3, 1.3, 1.3, 1.0)
+	panel_box.add_theme_stylebox_override("panel", expanded_style)
 
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 18)
@@ -1328,9 +1359,11 @@ func apply_market_tab_button_style(button: Button, selected: bool) -> void:
 	button.add_theme_color_override("font_disabled_color", TRADE_BUTTON_TEXT_DISABLED)
 	button.add_theme_color_override("font_outline_color", TRADE_BUTTON_OUTLINE)
 	button.add_theme_constant_override("outline_size", 1)
-	button.add_theme_stylebox_override("normal", _make_market_tab_button_style(selected, "normal"))
-	button.add_theme_stylebox_override("hover", _make_market_tab_button_style(selected, "hover"))
-	button.add_theme_stylebox_override("pressed", _make_market_tab_button_style(selected, "pressed"))
+	var selected_style := load(MARKET_TAB_SELECTED_STYLE) as StyleBoxTexture
+	var unselected_style := load(MARKET_TAB_UNSELECTED_STYLE) as StyleBoxTexture
+	button.add_theme_stylebox_override("normal", selected_style if selected else unselected_style)
+	button.add_theme_stylebox_override("hover", selected_style)
+	button.add_theme_stylebox_override("pressed", selected_style)
 	button.focus_mode = Control.FOCUS_NONE
 
 func _make_market_tab_button_style(selected: bool, state: String) -> StyleBoxFlat:
