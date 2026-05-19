@@ -6,16 +6,17 @@ signal finance_requested
 
 const HORIZONTAL_MARGIN_RATIO := 0.05
 
-@onready var content_margin: MarginContainer = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin
-@onready var gold_slot: Control = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot
-@onready var time_label: Label = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/DaySlot/DayStat/Text/Value
-@onready var gold_label: Label = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/GoldSlot/GoldStat/Text/Value
-@onready var cargo_label: Label = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/CargoSlot/CargoStat/Text/Value
-@onready var location_label: Label = $HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/LocationSlot/LocationStat/Text/Value
-@onready var speed_buttons: Array[Button] = [
-	$HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot/Controls/PauseButton,
-	$HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot/Controls/PlayButton,
-	$HeaderTexture/MiddleRow/MiddleCenter/ContentMargin/Content/SpeedSlot/Controls/FastButton,
+@onready var content_margin: MarginContainer = $ContentMargin
+@onready var gold_slot: Control = $ContentMargin/Content/GoldSlot
+@onready var time_label: Label = $ContentMargin/Content/DateSpeedSlot/Inner/TopRow/DateInfo/DateLabel
+@onready var season_label: Label = $ContentMargin/Content/DateSpeedSlot/Inner/TopRow/DateInfo/SeasonLabel
+@onready var gold_label: Label = $ContentMargin/Content/GoldSlot/GoldStat/Text/Value
+@onready var cargo_label: Label = $ContentMargin/Content/CargoSlot/CargoStat/Text/Value
+@onready var location_label: Label = $ContentMargin/Content/LocationSlot/LocationStat/Text/Value
+@onready var speed_buttons: Array[BaseButton] = [
+	$ContentMargin/Content/DateSpeedSlot/Inner/BottomRow/PauseButton,
+	$ContentMargin/Content/DateSpeedSlot/Inner/BottomRow/PlayButton,
+	$ContentMargin/Content/DateSpeedSlot/Inner/BottomRow/FastButton,
 ]
 
 func _ready() -> void:
@@ -84,4 +85,3 @@ func show_notification(message: String, color: Color = Color(1.0, 0.82, 0.36)) -
 	timer.timeout.connect(func(): notif.queue_free(); timer.queue_free())
 	add_child(timer)
 	timer.start()
-

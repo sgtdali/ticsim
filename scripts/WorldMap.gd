@@ -171,38 +171,31 @@ func _layout_ui() -> void:
 		_finance_panel.offset_top = top_bar_height + UI_GAP
 		_finance_panel.offset_right = vp.x - UI_GAP
 
-	var rank_panel := get_node_or_null("UI/RankPanel") as Control
-	if rank_panel:
-		rank_panel.anchor_left = 0.0
-		rank_panel.anchor_top = 0.0
-		rank_panel.anchor_right = 0.0
-		rank_panel.anchor_bottom = 0.0
-		rank_panel.offset_left = UI_GAP
-		rank_panel.offset_top = vp.y - BOTTOM_BAR_HEIGHT + UI_GAP
-		rank_panel.offset_right = 290.0
-		rank_panel.offset_bottom = vp.y - UI_GAP
+	var ui := get_node("UI")
+	var right_stack := ui.get_node_or_null("RightBottomStack") as VBoxContainer
+	if right_stack == null:
+		right_stack = VBoxContainer.new()
+		right_stack.name = "RightBottomStack"
+		right_stack.add_theme_constant_override("separation", int(UI_GAP))
+		ui.add_child(right_stack)
+		var spacer := Control.new()
+		spacer.name = "Spacer"
+		spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		right_stack.add_child(spacer)
 
-	var goal_panel := get_node_or_null("UI/GoalPanel") as Control
-	if goal_panel:
-		goal_panel.anchor_left = 0.0
-		goal_panel.anchor_top = 0.0
-		goal_panel.anchor_right = 0.0
-		goal_panel.anchor_bottom = 0.0
-		goal_panel.offset_left = 300.0
-		goal_panel.offset_top = vp.y - BOTTOM_BAR_HEIGHT + UI_GAP
-		goal_panel.offset_right = minf(_map_view_rect.end.x - UI_GAP, 720.0)
-		goal_panel.offset_bottom = vp.y - UI_GAP
+	right_stack.anchor_left = 0.0
+	right_stack.anchor_top = 0.0
+	right_stack.anchor_right = 0.0
+	right_stack.anchor_bottom = 0.0
+	right_stack.offset_left = side_left + UI_GAP
+	right_stack.offset_top = top_bar_height + UI_GAP
+	right_stack.offset_right = vp.x - UI_GAP
+	right_stack.offset_bottom = vp.y - UI_GAP
 
-	var cargo_panel := get_node_or_null("UI/CargoPanel") as Control
-	if cargo_panel:
-		cargo_panel.anchor_left = 0.0
-		cargo_panel.anchor_top = 0.0
-		cargo_panel.anchor_right = 0.0
-		cargo_panel.anchor_bottom = 0.0
-		cargo_panel.offset_left = side_left + UI_GAP
-		cargo_panel.offset_top = maxf(top_bar_height + 360.0, vp.y - 230.0)
-		cargo_panel.offset_right = vp.x - UI_GAP
-		cargo_panel.offset_bottom = vp.y - UI_GAP
+	for panel_name in ["GoalPanel", "RankPanel", "CargoPanel"]:
+		var p := get_node_or_null("UI/" + panel_name)
+		if p != null and p.get_parent() != right_stack:
+			p.reparent(right_stack)
 
 	_layout_town_view_host()
 
@@ -223,12 +216,14 @@ func _layout_backdrops(vp: Vector2, top_bar_height: float, side_left: float) -> 
 	if ui == null:
 		return
 
-	var right_dock := ui.get_node_or_null("RightDockBackdrop") as ColorRect
+	var bg_style := load("res://assets/ui/topbar/topbar_bg_style.tres") as StyleBox
+
+	var right_dock := ui.get_node_or_null("RightDockBackdrop") as PanelContainer
 	if right_dock == null:
-		right_dock = ColorRect.new()
+		right_dock = PanelContainer.new()
 		right_dock.name = "RightDockBackdrop"
-		right_dock.color = Color(0.055, 0.045, 0.035, 0.96)
 		right_dock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		right_dock.add_theme_stylebox_override("panel", bg_style)
 		ui.add_child(right_dock)
 		ui.move_child(right_dock, 0)
 	right_dock.anchor_left = 0.0
@@ -240,12 +235,12 @@ func _layout_backdrops(vp: Vector2, top_bar_height: float, side_left: float) -> 
 	right_dock.offset_right = vp.x
 	right_dock.offset_bottom = vp.y
 
-	var bottom_bar := ui.get_node_or_null("BottomDockBackdrop") as ColorRect
+	var bottom_bar := ui.get_node_or_null("BottomDockBackdrop") as PanelContainer
 	if bottom_bar == null:
-		bottom_bar = ColorRect.new()
+		bottom_bar = PanelContainer.new()
 		bottom_bar.name = "BottomDockBackdrop"
-		bottom_bar.color = Color(0.055, 0.045, 0.035, 0.96)
 		bottom_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		bottom_bar.add_theme_stylebox_override("panel", bg_style)
 		ui.add_child(bottom_bar)
 		ui.move_child(bottom_bar, 0)
 	bottom_bar.anchor_left = 0.0
@@ -1000,15 +995,7 @@ func _build_rank_panel() -> void:
 
 	var panel := PanelContainer.new()
 	panel.name = "RankPanel"
-	panel.anchors_preset = 3  # bottom-left
-	panel.anchor_left = 0.0
-	panel.anchor_top = 1.0
-	panel.anchor_right = 0.0
-	panel.anchor_bottom = 1.0
-	panel.offset_left = 10.0
-	panel.offset_top = -340.0
-	panel.offset_right = 280.0
-	panel.offset_bottom = -190.0
+	panel.add_theme_stylebox_override("panel", load("res://assets/ui/topbar/topbar_section_bg_style.tres"))
 	ui.add_child(panel)
 
 	var vbox := VBoxContainer.new()
@@ -1072,15 +1059,7 @@ func _build_goal_panel() -> void:
 
 	var panel := PanelContainer.new()
 	panel.name = "GoalPanel"
-	panel.anchors_preset = 3  # bottom-left
-	panel.anchor_left = 0.0
-	panel.anchor_top = 1.0
-	panel.anchor_right = 0.0
-	panel.anchor_bottom = 1.0
-	panel.offset_left = 10.0
-	panel.offset_top = -180.0
-	panel.offset_right = 280.0
-	panel.offset_bottom = -10.0
+	panel.add_theme_stylebox_override("panel", load("res://assets/ui/topbar/topbar_section_bg_style.tres"))
 	ui.add_child(panel)
 
 	var vbox := VBoxContainer.new()
@@ -1185,6 +1164,7 @@ func _build_cargo_panel() -> void:
 	panel.offset_top = -220.0
 	panel.offset_right = -10.0
 	panel.offset_bottom = -10.0
+	panel.add_theme_stylebox_override("panel", load("res://assets/ui/topbar/topbar_section_bg_style.tres"))
 	ui.add_child(panel)
 
 	var vbox := VBoxContainer.new()

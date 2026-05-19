@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://3q2q4cmt126x" path="res://assets/ui/TradeArea_bg.png" id="1"]
 
 [resource]
-content_margin_right = 10.0
 texture = ExtResource("1")
 texture_margin_left = 5.0
 texture_margin_top = 5.0

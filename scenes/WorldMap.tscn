@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="3_8rtnk"]
 [ext_resource type="Texture2D" uid="uid://bc2hmtwn5eeh" path="res://assets/map_kit/MAP-001_Normal City Marker_trimmed.png" id="4_pj4xh"]
 [ext_resource type="PackedScene" uid="uid://c0hxejklifmr5" path="res://scenes/ui/TopBar.tscn" id="5_topbar"]
+[ext_resource type="StyleBox" uid="uid://chc0tfhqsb0uo" path="res://assets/ui/topbar/topbar_bg_style.tres" id="6_topbar_bg"]
 
 [node name="WorldMap" type="Node2D" unique_id=279374750]
 script = ExtResource("1")
@@ -98,6 +99,7 @@ offset_left = -230.0
 offset_top = 10.0
 offset_right = -10.0
 offset_bottom = 150.0
+theme_override_styles/panel = ExtResource("6_topbar_bg")
 
 [node name="VBox" type="VBoxContainer" parent="UI/InfoPanel" unique_id=21730778]
 layout_mode = 2
@@ -131,7 +133,6 @@ grow_horizontal = 0
 text = "Contracts (0)"
 
 [node name="ContractsPanel" type="PanelContainer" parent="UI" unique_id=1113226552]
-visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -140,6 +141,7 @@ offset_top = 138.0
 offset_right = -12.0
 offset_bottom = 430.0
 grow_horizontal = 0
+theme_override_styles/panel = ExtResource("6_topbar_bg")
 
 [node name="VBox" type="VBoxContainer" parent="UI/ContractsPanel" unique_id=1019648211]
 layout_mode = 2
