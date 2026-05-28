@@ -35,6 +35,43 @@ func get_upgrade_cost(item: String, level: int, stock_upgrade := false) -> int:
 		base_cost = int(eco.items_data[item].get(base_key))
 	return int(base_cost * pow(2, level))
 
+func get_slot_cost(town_name: String, slot_type: String) -> int:
+	var town = eco.towns.get(town_name, {})
+	var allocated = town["slots"][slot_type]["allocated"]
+	var current_count := 0
+	for count in allocated.values():
+		current_count += int(count)
+	var base_cost = 200 if slot_type == "mine" else 150
+	return int(base_cost * pow(2, current_count))
+
+func add_slot(town_name: String, slot_type: String, item: String) -> bool:
+	var town = eco.towns.get(town_name, {})
+	if town.is_empty():
+		return false
+	if not eco.items_data.has(item):
+		return false
+	if eco.items_data[item].slot_type != slot_type:
+		return false
+	if not eco.items_data[item].is_natural_resource:
+		return false
+	var allocated = town["slots"][slot_type]["allocated"]
+	var current_count := 0
+	for count in allocated.values():
+		current_count += int(count)
+	if current_count >= int(town["slots"][slot_type]["max"]):
+		return false
+	if eco._player.has_debt():
+		return false
+	var cost = get_slot_cost(town_name, slot_type)
+	if not eco._player.remove_gold(cost):
+		return false
+	if allocated.has(item):
+		allocated[item] += 1
+	else:
+		allocated[item] = 1
+	eco.progression_updated.emit()
+	return true
+
 func calculate_effective_output(base_output: float, season_multiplier: float, efficiency: float, upgrade_level: int) -> float:
 	var upgrade_multiplier = 1.0 + (eco.BASE_UPGRADE_MULTIPLIER * upgrade_level)
 	return base_output * season_multiplier * efficiency * upgrade_multiplier
