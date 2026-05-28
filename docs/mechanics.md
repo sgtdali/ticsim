@@ -104,8 +104,19 @@ Trading Post, Merchant rutbesinde acilir ve oyuncunun sehirde fiziksel olarak bu
 - **Rutbe gereksinimi:** Merchant.
 - **Depo kapasitesi:** 50 birim.
 - **Depot:** Oyuncu cargodan depoya mal birakabilir veya depodan cargo alabilir.
-- **Buy rule:** Ortalama alim quote'u limitin altindaysa, depodaki miktar hedefin altindaysa ve gunluk limit dolmadiysa alir.
-- **Sell rule:** Ortalama satis quote'u limitin ustundeyse, depodaki miktar hedefin ustundeyse ve markette yer varsa satar.
+- **Buy rule:** Ortalama alım quote'u limit fiyatın altındaysa, depodaki miktar depot_limit'in altındaysa, markette stok varsa ve günlük limit dolmadıysa alır. Alım işlemi market sistemi üzerinden marginal pricing ile gerçekleşir.
+
+- **Sell rule:** Ortalama satış quote'u limit fiyatın üstündeyse, depodaki miktar depot_limit'in üstündeyse, markette yer varsa ve günlük limit dolmadıysa satar.
+
+- **Rule durumları:** Her rule her gün otomatik olarak bir status alır:
+  - `active` → koşullar sağlanıyor, işlem yapılabilir
+  - `waiting_price` → fiyat koşulu henüz sağlanmadı
+  - `waiting_stock` → markette yeterli stok yok (buy)
+  - `waiting_market` → markette satış için yer yok (sell)
+  - `depot_full` → depot limiti doldu, alım durdu (buy)
+  - `depot_empty` → depot limiti altına düştü, satış durdu (sell)
+
+  Sadece `active` durumundaki rule'lar işlem yapar. UI'da her rule'un mevcut durumu gösterilir.
 - **Gunluk maksimum:** Her kural kendi daily max degerine sahiptir.
 
 ## 7. Kontratlar
