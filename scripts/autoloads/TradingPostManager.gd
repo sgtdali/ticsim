@@ -109,6 +109,7 @@ func get_rules(town_name: String) -> Array:
 func add_rule(town_name: String, rule_data: Dictionary) -> void:
 	if not has_post(town_name):
 		return
+	rule_data["status"] = "waiting_price"
 	posts[town_name]["rules"].append(rule_data)
 	emit_signal("post_updated", town_name)
 
@@ -126,6 +127,7 @@ func toggle_rule(town_name: String, idx: int, enabled: bool) -> void:
 	var rules: Array = posts[town_name]["rules"]
 	if idx >= 0 and idx < rules.size():
 		rules[idx]["enabled"] = enabled
+		_update_rule_status(town_name, rules[idx])
 		emit_signal("post_updated", town_name)
 
 func suspend_most_valuable_post() -> bool:
@@ -152,6 +154,33 @@ func _get_depot_value(town_name: String) -> float:
 		value += float(_economy.BASE_PRICES.get(item, 0.0)) * float(depot[item])
 	return value
 
+func _update_rule_status(town_name: String, rule: Dictionary) -> void:
+	var item: String = str(rule.get("item", ""))
+	var type: String = str(rule.get("type", "buy"))
+	var limit_price: float = float(rule.get("price_limit", 0.0))
+	var depot_limit: int = int(rule.get("depot_limit", 0))
+	var current_depot: int = get_depot_item_count(town_name, item)
+	var current_price: float = float(_economy.get_price(town_name, item))
+
+	if type == "buy":
+		if current_depot >= depot_limit or get_depot_total(town_name) >= DEPOT_CAPACITY:
+			rule["status"] = "depot_full"
+		elif current_price >= limit_price:
+			rule["status"] = "waiting_price"
+		elif int(_economy.get_town(town_name).get("inventory", {}).get(item, 0)) == 0:
+			rule["status"] = "waiting_stock"
+		else:
+			rule["status"] = "active"
+	elif type == "sell":
+		if current_depot <= depot_limit:
+			rule["status"] = "depot_empty"
+		elif current_price <= limit_price:
+			rule["status"] = "waiting_price"
+		elif int(_economy.get_town_free_stock(town_name, item)) == 0:
+			rule["status"] = "waiting_market"
+		else:
+			rule["status"] = "active"
+
 func process_day() -> void:
 	var trades_happened := false
 	var debt_stops_all_trade: bool = _player.should_stop_trading_post_auto_trade()
@@ -177,7 +206,11 @@ func process_day() -> void:
 				
 			var current_price: float = float(_economy.get_price(town_name, item))
 			var current_depot: int = get_depot_item_count(town_name, item)
-			
+
+			_update_rule_status(town_name, rule)
+			if rule.get("status", "active") != "active":
+				continue
+
 			if type == "buy":
 				if _player.has_debt():
 					continue
@@ -189,19 +222,11 @@ func process_day() -> void:
 					
 					var qty := mini(daily_max, mini(market_stock, space))
 					if qty > 0:
-						var cost: float = _economy.get_buy_quote_total(town_name, item, qty)
-						var average_cost: float = cost / float(qty)
-						if average_cost < limit_price and _player.gold >= cost:
-							_player.remove_gold(cost)
-							# take from market
-							var town_data: Dictionary = _economy.get_town(town_name)
-							town_data["inventory"][item] -= qty
-							if town_data["inventory"][item] <= 0:
-								town_data["inventory"].erase(item)
-							
-							# add to depot silently without emitting signal repeatedly
-							posts[town_name]["depot"][item] = current_depot + qty
-							print("[Post] %s: bought %dx %s for %.1fg" % [town_name, qty, item, cost])
+						var gold_ref := [_player.gold]
+						if _economy.town_buy(posts[town_name]["depot"], gold_ref, town_name, item, qty):
+							_player.gold = gold_ref[0]
+							posts[town_name]["depot"][item] = get_depot_item_count(town_name, item)
+							print("[Post] %s: bought %dx %s" % [town_name, qty, item])
 							trades_happened = true
 			
 			elif type == "sell":
