@@ -31,6 +31,7 @@ var _contracts: Node
 var _traders: Node
 var _posts: Node
 var _rank: Node
+var _masters: Node
 
 # Sub-systems
 var market: MarketSystem
@@ -44,6 +45,7 @@ func _ready() -> void:
 	_traders = get_node_or_null("/root/TraderManager")
 	_posts = get_node_or_null("/root/TradingPostManager")
 	_rank = get_node_or_null("/root/RankManager")
+	_masters = get_node_or_null("/root/CaravanMasterManager")
 	
 	market = MarketSystem.new(self)
 	simulation = TownSimulation.new(self)
@@ -133,6 +135,7 @@ func advance_day() -> void:
 	market.recalculate_all_prices()
 	investment.daily_prosperity_earned.clear()
 	_process_traders()
+	_process_masters()
 	_process_contracts()
 	_process_events()
 	_check_rank()
@@ -148,6 +151,12 @@ func _process_traders() -> void:
 		_traders = get_node_or_null("/root/TraderManager")
 	if _traders != null and _traders.has_method("process_day"):
 		_traders.call("process_day")
+
+func _process_masters() -> void:
+	if _masters == null:
+		_masters = get_node_or_null("/root/CaravanMasterManager")
+	if _masters != null and _masters.has_method("process_day"):
+		_masters.call("process_day")
 
 func _process_contracts() -> void:
 	if _contracts == null:
