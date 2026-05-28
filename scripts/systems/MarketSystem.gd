@@ -205,13 +205,37 @@ func player_sell(town_name: String, item: String, qty: int) -> bool:
 		return false
 	if not eco._player.remove_item(item, qty):
 		return false
-		
+
 	if eco._player.get_item_count(item) == 0:
 		eco._player.purchase_prices.erase(item)
-	
+
 	var total_earnings: float = get_sell_quote_total(town_name, item, qty)
-	
+
 	eco._player.add_gold(total_earnings)
+	town["inventory"][item] = current_stock + qty
+	recalculate_all_prices()
+	return true
+
+func town_sell(seller_inventory: Dictionary, seller_gold_ref: Array, town_name: String, item: String, qty: int) -> bool:
+	if qty <= 0:
+		return false
+	var town = eco.towns.get(town_name, {})
+	if town.is_empty():
+		return false
+	var cap: int = int(eco.simulation.get_stock_cap(town, item))
+	var current_stock = int(town["inventory"].get(item, 0))
+	if current_stock + qty > cap:
+		return false
+	if int(seller_inventory.get(item, 0)) < qty:
+		return false
+
+	seller_inventory[item] = int(seller_inventory.get(item, 0)) - qty
+	if int(seller_inventory[item]) <= 0:
+		seller_inventory.erase(item)
+
+	var total_earnings: float = get_sell_quote_total(town_name, item, qty)
+
+	seller_gold_ref[0] = float(seller_gold_ref[0]) + total_earnings
 	town["inventory"][item] = current_stock + qty
 	recalculate_all_prices()
 	return true

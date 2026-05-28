@@ -145,13 +145,10 @@ func _trader_sell(trader_id: String) -> void:
 			var sell_qty: int = mini(qty, free_space)
 			if sell_qty <= 0:
 				continue
-			t["inventory"][item] = qty - sell_qty
-			if int(t["inventory"][item]) <= 0:
-				t["inventory"].erase(item)
-			var earned: float = current * float(sell_qty)
-			t["gold"] = float(t.get("gold", 0.0)) + earned
-			_economy.add_town_stock(town_name, item, sell_qty, true)
-			emit_signal("trader_traded", trader_id, town_name, "sell", item, sell_qty)
+			var gold_ref := [float(t.get("gold", 0.0))]
+			if _economy.town_sell(t["inventory"], gold_ref, town_name, item, sell_qty):
+				t["gold"] = gold_ref[0]
+				emit_signal("trader_traded", trader_id, town_name, "sell", item, sell_qty)
 
 func _trader_buy(trader_id: String) -> void:
 	var t: Dictionary = traders[trader_id]
