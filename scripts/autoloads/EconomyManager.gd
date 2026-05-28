@@ -70,25 +70,28 @@ func _init_towns() -> void:
 		"Ashford": {
 			"name": "Ashford", "faction": "Northern Kingdom", "population": 120, "population_cap": 180,
 			"prosperity": 0, "population_history": [],
-			"inventory": {"wheat": 30, "flour": 8, "wood": 15}, "prices": {}, "position": Vector2(480, 360),
-			"production_plan": {"wheat": 6, "wood": 4, "flour": 2},
+			"inventory": {"wheat": 30, "flour": 8, "wood": 15, "bread": 10}, "prices": {}, "position": Vector2(480, 360),
+			"production_plan": {"wood": 4, "flour": 2, "bread": 3},
 			"consumption_rules": {"bread": 0.05, "tool": 0.006},
+			"slots": {"farm": {"max": 8, "allocated": {"wheat": 3}}, "mine": {"max": 0, "allocated": {}}},
 			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 		"Ironmere": {
 			"name": "Ironmere", "faction": "Merchants Guild", "population": 200, "population_cap": 280,
 			"prosperity": 0, "population_history": [],
-			"inventory": {"iron_ore": 20, "iron_bar": 5, "sword": 2}, "prices": {}, "position": Vector2(2200, 440),
-			"production_plan": {"iron_ore": 5, "iron_bar": 2, "tool": 1, "sword": 1},
-			"consumption_rules": {"wheat": 0.04, "flour": 0.03, "wood": 0.025},
+			"inventory": {"iron_ore": 20, "iron_bar": 5, "sword": 2, "wheat": 10}, "prices": {}, "position": Vector2(2200, 440),
+			"production_plan": {"iron_bar": 2, "tool": 1, "sword": 1},
+			"consumption_rules": {"wheat": 0.04, "wood": 0.025},
+			"slots": {"farm": {"max": 2, "allocated": {"wheat": 1}}, "mine": {"max": 6, "allocated": {"iron_ore": 3}}},
 			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 		"Stonebridge": {
 			"name": "Stonebridge", "faction": "Merchants Guild", "population": 160, "population_cap": 240,
 			"prosperity": 0, "population_history": [],
-			"inventory": {"grapes": 20, "must": 8, "wine": 4, "wood": 10}, "prices": {}, "position": Vector2(1380, 1080),
-			"production_plan": {"grapes": 7, "must": 2, "wine": 1, "wood": 3},
-			"consumption_rules": {"wheat": 0.03, "bread": 0.02, "iron_bar": 0.015},
+			"inventory": {"grapes": 20, "must": 8, "wine": 4, "wood": 10, "wheat": 10}, "prices": {}, "position": Vector2(1380, 1080),
+			"production_plan": {"must": 2, "wine": 1, "wood": 3, "wheat": 2},
+			"consumption_rules": {"wheat": 0.03, "iron_bar": 0.015},
+			"slots": {"farm": {"max": 3, "allocated": {"grapes": 2}}, "mine": {"max": 1, "allocated": {}}},
 			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
 		},
 	}
@@ -218,3 +221,24 @@ func get_prosperity_multiplier(town_name: String) -> float:
 
 func invest_gold(town_name: String, gold_amount: float) -> Variant:
 	return investment.invest_gold(town_name, gold_amount)
+
+# --- Slot API ---
+
+func get_slot_cost(town_name: String, slot_type: String) -> int:
+	return simulation.get_slot_cost(town_name, slot_type)
+
+func add_slot(town_name: String, slot_type: String, item: String) -> bool:
+	return simulation.add_slot(town_name, slot_type, item)
+
+func get_allocated_slots(town_name: String, slot_type: String) -> int:
+	var town = towns.get(town_name, {})
+	if town.is_empty(): return 0
+	var allocated = town.get("slots", {}).get(slot_type, {}).get("allocated", {})
+	var total := 0
+	for count in allocated.values():
+		total += int(count)
+	return total
+
+func get_max_slots(town_name: String, slot_type: String) -> int:
+	var town = towns.get(town_name, {})
+	return int(town.get("slots", {}).get(slot_type, {}).get("max", 0))

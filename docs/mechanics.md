@@ -35,12 +35,29 @@ Her sehir kendi stok, uretim, tuketim, nufus ve fiyat durumuna sahiptir. Fiyatla
 
 Sehirler gunluk uretim ve tuketim tick'i ile yasar. Dunya oyuncu bir sey yapmasa da degismeye devam eder.
 
-- **Production plan:** Her sehir belirli mallari uretir.
-- **Recipe inputs:** Bazi mallar baska mallari input olarak ister. Input yetersizse uretim verimi duser.
-- **Season multiplier:** Mevsimler bazi mallarin uretimini degistirir. Ornek: wheat yaz/kis farkli uretir, grapes yazin daha guclu, wood kisin daha iyi olabilir.
-- **Consumption rules:** Nufus her gun belirli mallari tuketir.
-- **Nufus degisimi:** Survival kategorisindeki kritik tuketim karsilanamazsa nufus azalir. Yeterli temel gida varsa nufus artabilir.
-- **Population trend:** Haritada sehirlerin nufus trendi yukari/asagi/stabil olarak gosterilir.
+- **Doğal kaynaklar ve slot sistemi:** Wheat, grapes ve iron_ore doğal kaynaklardır. 
+ Her şehirde coğrafyaya göre belirlenmiş `farm_slots` ve `mine_slots` kapasitesi vardır. 
+ Oyuncu slot satın alarak doğal kaynak üretimini artırabilir. 
+ Her slot günde 2 birim üretir. Slot maliyeti `base_cost × 2^mevcut_slot_sayısı` formülüyle artar.
+ - Ashford: max 8 farm slot (başlangıç: 3 wheat slotu dolu)
+ - Ironmere: max 6 mine slot, max 2 farm slot (başlangıç: 3 iron_ore + 1 wheat dolu)
+ - Stonebridge: max 3 farm slot, max 1 mine slot (başlangıç: 2 grapes dolu)
+
+- **İşleme ürünleri:** Flour, bread, iron_bar, tool, wine, must gibi ürünler 
+ recipe input gerektiren işleme ürünleridir. Üretim kapasitesi slot'a bağlı değildir; 
+ production_plan ile manuel tanımlanır ve upgrade ile artırılabilir.
+
+- **Recipe inputs:** Bazi mallar baska mallari input olarak ister. Input yetersizse üretim verimi düşer.
+
+- **Season multiplier:** Mevsimler bazı malların üretimini değiştirir.
+
+- **Consumption rules:** Nüfus her gün belirli malları tüketir.
+
+- **Nüfus değişimi:** Survival malı kritik tüketim karşılanamazsa nüfus %3 azalır. 
+ Aksi halde nüfus prosperity level'a göre büyür:
+ - Level 1 (Struggling): %1 büyüme
+ - Level 2 (Growing): %1.5 büyüme
+ - Level 3 (Prosperous): %2 büyüme
 
 ## 4. Olaylar
 
@@ -56,14 +73,28 @@ Olaylar sehirlerin arz-talep dengesini gecici olarak bozar ve kâr firsatlari ya
 
 ## 5. Prosperity ve Yatirim
 
-Oyuncu sehirlere gold yatirarak prosperity artirir. Prosperity hem progression hem de ekonomi icin ana yatirim eksenidir.
+Prosperity iki kaynaktan değişir: survival malı stok durumu (otomatik) ve oyuncu gold yatırımı (manuel).
 
-- **Yatirim orani:** 25 gold = 1 prosperity puani.
-- **Gunluk limit:** Sehir basina gunde en fazla 50 prosperity puani kazanilabilir.
-- **Maksimum prosperity:** 100.
-- **Struggling (< 30):** Carpani x1.0.
-- **Growing (30-64):** Uretim ve talep carpani x1.20. Satis bonusu, bu farkin %30'u kadar uygulanir.
-- **Prosperous (>= 65):** Uretim ve talep carpani x1.50. Satis bonusu, bu farkin %30'u kadar uygulanir.
+**Otomatik stok bazlı değişim (her gün, tüketim sonrası):**
+Şehrin survival kategorisindeki her mal için günlük tüketim bazında stok hesaplanır:
+- 14 gün ve üzeri stok → +2 prosperity
+- 7-14 gün arası stok → 0 (değişim yok)
+- 0-7 gün arası stok → -3 prosperity
+- Stok tükenmiş (0) → -5 prosperity
+
+Birden fazla survival malı varsa tüm deltalar toplanır.
+
+**Manuel gold yatırımı:**
+- 25 gold = 1 prosperity puanı
+- Günlük limit: şehir başına 50 prosperity puanı
+- Debt varken yatırım yapılamaz
+
+**Prosperity seviyeleri:**
+- Struggling (< 30): Çarpan x1.0
+- Growing (30-64): Üretim ve talep çarpanı x1.20. Satış bonusu bu farkın %30'u.
+- Prosperous (>= 65): Üretim ve talep çarpanı x1.50. Satış bonusu bu farkın %30'u.
+
+**Maksimum prosperity:** 100.
 
 ## 6. Trading Post ve Otomatik Ticaret
 

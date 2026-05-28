@@ -12,4 +12,6 @@ stock_cap = 160
 stock_cap_base_cost = 55
 production_base_cost = 70
 production_interval_days = 1
+is_natural_resource = false
+slot_type = "none"
 recipe_inputs = {"wheat": 2}
