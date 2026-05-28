@@ -130,15 +130,22 @@ func process_town_consumption(town: Dictionary) -> void:
 			town["report"]["critical_consumption_issues"].append(item)
 		town["inventory"][item] = max(current_stock - consume_amount, 0)
 
-	var has_critical_survival := false
-	for item in town["report"].get("critical_consumption_issues", []):
-		if eco.get_goods_category(item) == "survival":
-			has_critical_survival = true
-			break
-	if has_critical_survival:
-		eco.investment.add_prosperity(town["name"], -5)
-	else:
-		eco.investment.add_prosperity(town["name"], 2)
+	var total_delta := 0
+	for item in town.get("consumption_rules", {}):
+		if eco.get_goods_category(item) != "survival":
+			continue
+		var daily_consumption: int = estimate_daily_consumption(town, item)
+		var current_stock: int = int(town["inventory"].get(item, 0))
+		var days_of_stock: float = float(current_stock) / float(maxi(daily_consumption, 1))
+		if days_of_stock >= 14.0:
+			total_delta += 2
+		elif days_of_stock >= 7.0:
+			total_delta += 0
+		elif days_of_stock > 0.0:
+			total_delta -= 3
+		else:
+			total_delta -= 5
+	eco.investment.add_prosperity(town["name"], total_delta)
 
 func process_population_change(town: Dictionary) -> void:
 	var change := 0
