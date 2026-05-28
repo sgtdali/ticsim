@@ -171,6 +171,28 @@ func player_buy(town_name: String, item: String, qty: int) -> bool:
 	recalculate_all_prices()
 	return true
 
+func town_buy(buyer_inventory: Dictionary, buyer_gold_ref: Array, town_name: String, item: String, qty: int) -> bool:
+	if qty <= 0:
+		return false
+	var town = eco.towns.get(town_name, {})
+	if town.is_empty() or town["inventory"].get(item, 0) < qty:
+		return false
+
+	var total_cost: float = get_buy_quote_total(town_name, item, qty)
+
+	if float(buyer_gold_ref[0]) < total_cost:
+		return false
+
+	buyer_gold_ref[0] = float(buyer_gold_ref[0]) - total_cost
+
+	town["inventory"][item] -= qty
+	if town["inventory"][item] == 0:
+		town["inventory"].erase(item)
+
+	buyer_inventory[item] = int(buyer_inventory.get(item, 0)) + qty
+	recalculate_all_prices()
+	return true
+
 func player_sell(town_name: String, item: String, qty: int) -> bool:
 	if qty <= 0:
 		return false

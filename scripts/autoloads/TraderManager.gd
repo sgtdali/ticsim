@@ -179,13 +179,11 @@ func _trader_buy(trader_id: String) -> void:
 		var price: float = float(_economy.get_price(town_name, item)) * float(buy_qty)
 		if float(t.get("gold", 0.0)) < price:
 			continue
-		# Stoktan düş
-		var town = _economy.get_town(town_name)
-		town["inventory"][item] = town_stock - buy_qty
-		t["gold"] = float(t.get("gold", 0.0)) - price
-		t["inventory"][item] = int(t.get("inventory", {}).get(item, 0)) + buy_qty
-		free_capacity -= buy_qty
-		emit_signal("trader_traded", trader_id, town_name, "buy", item, buy_qty)
+		var gold_ref := [float(t.get("gold", 0.0))]
+		if _economy.town_buy(t["inventory"], gold_ref, town_name, item, buy_qty):
+			t["gold"] = gold_ref[0]
+			free_capacity -= buy_qty
+			emit_signal("trader_traded", trader_id, town_name, "buy", item, buy_qty)
 
 func _get_buy_candidates(trader_id: String, town_name: String) -> Array:
 	var t: Dictionary = traders[trader_id]
