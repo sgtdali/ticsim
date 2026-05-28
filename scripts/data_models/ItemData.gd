@@ -10,6 +10,9 @@ class_name ItemData
 @export var stock_cap: int = 100
 @export var stock_cap_base_cost: int = 50
 
+@export var is_natural_resource: bool = false
+@export var slot_type: String = "none"
+
 @export_group("Production")
 @export var production_base_cost: int = 50
 @export var production_interval_days: int = 1

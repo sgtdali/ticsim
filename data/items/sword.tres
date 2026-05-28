@@ -12,4 +12,6 @@ stock_cap = 80
 stock_cap_base_cost = 120
 production_base_cost = 220
 production_interval_days = 2
+is_natural_resource = false
+slot_type = "none"
 recipe_inputs = {"iron_bar": 2}

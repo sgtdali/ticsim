@@ -12,4 +12,6 @@ stock_cap = 140
 stock_cap_base_cost = 85
 production_base_cost = 100
 production_interval_days = 1
+is_natural_resource = false
+slot_type = "none"
 recipe_inputs = {"grapes": 3}
