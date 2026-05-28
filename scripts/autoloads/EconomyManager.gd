@@ -221,3 +221,24 @@ func get_prosperity_multiplier(town_name: String) -> float:
 
 func invest_gold(town_name: String, gold_amount: float) -> Variant:
 	return investment.invest_gold(town_name, gold_amount)
+
+# --- Slot API ---
+
+func get_slot_cost(town_name: String, slot_type: String) -> int:
+	return simulation.get_slot_cost(town_name, slot_type)
+
+func add_slot(town_name: String, slot_type: String, item: String) -> bool:
+	return simulation.add_slot(town_name, slot_type, item)
+
+func get_allocated_slots(town_name: String, slot_type: String) -> int:
+	var town = towns.get(town_name, {})
+	if town.is_empty(): return 0
+	var allocated = town.get("slots", {}).get(slot_type, {}).get("allocated", {})
+	var total := 0
+	for count in allocated.values():
+		total += int(count)
+	return total
+
+func get_max_slots(town_name: String, slot_type: String) -> int:
+	var town = towns.get(town_name, {})
+	return int(town.get("slots", {}).get(slot_type, {}).get("max", 0))
