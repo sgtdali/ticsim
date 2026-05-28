@@ -196,6 +196,9 @@ func player_buy(town_name: String, item: String, qty: int) -> bool:
 func player_sell(town_name: String, item: String, qty: int) -> bool:
 	return market.player_sell(town_name, item, qty)
 
+func town_buy(buyer_inventory: Dictionary, buyer_gold_ref: Array, town_name: String, item: String, qty: int) -> bool:
+	return market.town_buy(buyer_inventory, buyer_gold_ref, town_name, item, qty)
+
 # --- Investment API ---
 
 func get_prosperity(town_name: String) -> int:

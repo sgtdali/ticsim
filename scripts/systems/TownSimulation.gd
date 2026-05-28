@@ -130,6 +130,16 @@ func process_town_consumption(town: Dictionary) -> void:
 			town["report"]["critical_consumption_issues"].append(item)
 		town["inventory"][item] = max(current_stock - consume_amount, 0)
 
+	var has_critical_survival := false
+	for item in town["report"].get("critical_consumption_issues", []):
+		if eco.get_goods_category(item) == "survival":
+			has_critical_survival = true
+			break
+	if has_critical_survival:
+		eco.investment.add_prosperity(town["name"], -5)
+	else:
+		eco.investment.add_prosperity(town["name"], 2)
+
 func process_population_change(town: Dictionary) -> void:
 	var change := 0
 	var has_critical_survival := false
@@ -137,12 +147,18 @@ func process_population_change(town: Dictionary) -> void:
 		if eco.get_goods_category(item) == "survival":
 			has_critical_survival = true
 			break
-			
+
 	if has_critical_survival:
 		change -= int(ceil(town["population"] * 0.03))
-	elif town["inventory"].get("bread", 0) > 10 or town["inventory"].get("wheat", 0) > 20:
-		change += int(ceil(town["population"] * 0.01))
-		
+	else:
+		var level := eco.investment.get_prosperity_level(town["name"])
+		if level >= 3:
+			change += int(ceil(town["population"] * 0.02))
+		elif level == 2:
+			change += int(ceil(town["population"] * 0.015))
+		else:
+			change += int(ceil(town["population"] * 0.01))
+
 	town["population"] = clamp(town["population"] + change, 10, town.get("population_cap", 200))
 
 	var history: Array = town.get("population_history", [])
