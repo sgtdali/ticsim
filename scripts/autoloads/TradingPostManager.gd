@@ -189,19 +189,11 @@ func process_day() -> void:
 					
 					var qty := mini(daily_max, mini(market_stock, space))
 					if qty > 0:
-						var cost: float = _economy.get_buy_quote_total(town_name, item, qty)
-						var average_cost: float = cost / float(qty)
-						if average_cost < limit_price and _player.gold >= cost:
-							_player.remove_gold(cost)
-							# take from market
-							var town_data: Dictionary = _economy.get_town(town_name)
-							town_data["inventory"][item] -= qty
-							if town_data["inventory"][item] <= 0:
-								town_data["inventory"].erase(item)
-							
-							# add to depot silently without emitting signal repeatedly
-							posts[town_name]["depot"][item] = current_depot + qty
-							print("[Post] %s: bought %dx %s for %.1fg" % [town_name, qty, item, cost])
+						var gold_ref := [_player.gold]
+						if _economy.town_buy(posts[town_name]["depot"], gold_ref, town_name, item, qty):
+							_player.gold = gold_ref[0]
+							posts[town_name]["depot"][item] = get_depot_item_count(town_name, item)
+							print("[Post] %s: bought %dx %s" % [town_name, qty, item])
 							trades_happened = true
 			
 			elif type == "sell":
