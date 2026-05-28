@@ -6,14 +6,6 @@ var eco: Node
 func _init(_eco: Node) -> void:
 	eco = _eco
 
-func advance_day() -> void:
-	eco.current_day += 1
-	process_town_production_phase()
-	process_town_consumption_phase()
-	process_population_phase()
-	eco.market.recalculate_all_prices()
-	eco.investment.daily_prosperity_earned.clear()
-
 func process_town_production_phase() -> void:
 	for town_name in eco.towns:
 		process_town_production(eco.towns[town_name])
