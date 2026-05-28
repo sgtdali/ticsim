@@ -58,6 +58,11 @@ func get_stock_cap(town: Dictionary, item: String) -> int:
 	var upgrade_level = get_upgrade_level(town.get("stock_cap_upgrades", {}), item)
 	return int(round(base_cap * (1.0 + (eco.BASE_UPGRADE_MULTIPLIER * upgrade_level))))
 
+func get_natural_resource_output(town: Dictionary, item: String) -> int:
+	var slot_type = eco.items_data[item].slot_type
+	var allocated_count = town["slots"][slot_type]["allocated"].get(item, 0)
+	return allocated_count * 2
+
 func estimate_effective_daily_supply(town: Dictionary, item: String) -> float:
 	var planned_output := float(town.get("production_plan", {}).get(item, 0))
 	if planned_output <= 0.0:
@@ -91,6 +96,25 @@ func process_town_production(town: Dictionary) -> void:
 		"stock_blocked": {},
 		"critical_consumption_issues": [],
 	}
+	for item in eco.items_data:
+		if not eco.items_data[item].is_natural_resource:
+			continue
+		var base_output = get_natural_resource_output(town, item)
+		if base_output <= 0:
+			continue
+		var upgrade_level = get_upgrade_level(town.get("production_upgrades", {}), item)
+		var final_output = calculate_effective_output(float(base_output), get_season_multiplier(item), 1.0, upgrade_level)
+		final_output *= eco.investment.get_prosperity_multiplier(town["name"])
+		if eco._events != null:
+			final_output *= float(eco._events.get_production_multiplier(town["name"], item))
+		var stock_cap = get_stock_cap(town, item)
+		var in_stock = int(town["inventory"].get(item, 0))
+		var free_space = max(stock_cap - in_stock, 0)
+		var actual = int(min(round(final_output), free_space))
+		town["inventory"][item] = in_stock + actual
+		report["base_production"][item] = base_output
+		report["final_production"][item] = actual
+
 	for item in town.get("production_plan", {}):
 		var interval = (eco.items_data[item].production_interval_days if eco.items_data.has(item) else 1)
 		if interval <= 0 or eco.current_day % interval != 0:
