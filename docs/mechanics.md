@@ -8,11 +8,11 @@ Oyuncunun ana hedefi rutbe atlayarak **Patrician** seviyesine ulasmak ve oyunu k
 
 | Rutbe | Sartlar | Acilan Ozellikler |
 | :--- | :--- | :--- |
-| **Peddler** | Baslangic | Temel al-sat, basic/standard kontratlar |
-| **Trader** | 500 gold + 1 Friendly faction | **Caravan Upgrades:** Horse Cart ve Small Caravan |
-| **Merchant** | 1500 gold + 2 Friendly factions | **Trading Posts:** Sehirlerde depo ve otomatik ticaret kurallari |
-| **Guild Master** | 4000 gold + 3 Friendly factions + 2 Trading Posts + 1 Growing city | **Urgent Contracts:** Yuksek odullu kontratlar; kontrat reputation odullerine +%50 bonus |
-| **Patrician** | 10000 gold + 3 Allied factions + 3 Prosperous cities | **Win condition:** Oyun biter |
+| **Peddler** | Baslangic | Temel al-sat, basic/standard kontratlar; Caravan Master: 0 |
+| **Trader** | 500 gold + 1 Friendly faction | **Caravan Upgrades:** Horse Cart ve Small Caravan; Caravan Master: max 1 |
+| **Merchant** | 1500 gold + 2 Friendly factions | **Trading Posts:** Sehirlerde depo ve otomatik ticaret kurallari; Caravan Master: max 2 |
+| **Guild Master** | 4000 gold + 3 Friendly factions + 2 Trading Posts + 1 Growing city | **Urgent Contracts:** Yuksek odullu kontratlar; kontrat reputation odullerine +%50 bonus; Caravan Master: max 4 |
+| **Patrician** | 10000 gold + 3 Allied factions + 3 Prosperous cities | **Win condition:** Oyun biter; Caravan Master: max 6 |
 
 Not: Trading Post, Merchant rutbesinde acildigi icin Merchant sartlari Trading Post isteyemez. Trading Post sayisi ilk kez Guild Master sartinda kullanilir.
 
@@ -173,7 +173,48 @@ Caravan kapasitesi oyuncunun ticaret hacmini ve dolayli olarak riskini belirler.
 | Horse Cart | 35 | 300 | Trader |
 | Small Caravan | 50 | 800 | Trader |
 
-## 12. Upkeep ve Debt
+## 12. Caravan Master ve Rota Sistemi
+
+Oyuncu caravan master kiralayarak otomatik ticaret rotaları kurabilir. 
+Master'lar Trading Post depoları arasında mal taşır.
+
+**İşe alım:**
+- Tek seferlik işe alım ücreti + günlük maaş (upkeep'e eklenir)
+- Debt varken işe alım yapılamaz
+- Kiralanan master sayısı rank'a göre sınırlıdır
+
+**Master özellikleri (1-5 arası, seviye atladıkça artar):**
+- **Hız:** Seyahat süresini kısaltır. Her puan %10 azaltır (max %40).
+- **Kapasite:** Taşıyabileceği mal miktarı. Temel 15, her puan +5 birim.
+- **Pazarlık:** Alımda indirim, satışta bonus. Her puan %0.5.
+- **Cesaret:** Saldırı riskini azaltır. Her puan %3.
+
+**Tecrübe sistemi:**
+- Her durak tamamlandığında 25 XP kazanır
+- Her seviyede XP eşiği: level × 100
+- Max seviye: 5
+- Seviye atladığında bir özellik puanı kazanır
+
+**Rota sistemi:**
+- Oyuncu durakları belirler (A→B→C→A veya A→B→C→D→B→A gibi)
+- Her durak bir Trading Post'a bağlıdır — Post olmayan şehre durak eklenemez
+- Her durakta "al" veya "sat" kuralları tanımlanır:
+  - Hangi mal, fiyat limiti, max miktar
+- Master şehre varınca önce sat kurallarını, sonra al kurallarını işler
+- Al: Trading Post deposundan master envanterine
+- Sat: Master envanterinden Trading Post deposuna
+
+**Seyahat ve risk:**
+- Seyahat süresi şehirler arası mesafeye ve master hızına göre hesaplanır
+- Her seyahat günü saldırı riski kontrol edilir
+- Cesaret özelliği saldırı şansını düşürür
+- Saldırı olursa taşınan malların yaklaşık 1/3'ü kaybolur
+
+**Upkeep:**
+- Her master'ın günlük maaşı PlayerData upkeep'ine eklenir
+- Debt durumunda master işe alınamaz ancak mevcut master'lar çalışmaya devam eder
+
+## 13. Upkeep ve Debt
 
 Oyuncu her gun caravan, Trading Post ve rutbe yasam standardi icin upkeep oder. Upkeep, gold ekonomisini sadece birikim degil hayatta kalma baskisi haline getirir.
 
@@ -205,7 +246,7 @@ Debt sure cezasi:
 - **30 gun debt:** Mevcut Trading Postlar otomatik ticareti tamamen durdurur.
 - **60 gun debt:** Depo degeri en yuksek aktif Trading Post suspended olur. Suspended post aktif post sayilmaz ve tekrar acilmasi gerekir.
 
-## 13. Gunluk Tick Sirasi
+## 14. Gunluk Tick Sirasi
 
 Gun ilerlemesi `EconomyManager.advance_day()` tarafindan merkezi olarak yonetilir. Sistemler sinyal baglanti sirasina guvenmez; gameplay sirasi aciktir.
 
@@ -217,12 +258,13 @@ Gun ilerlemesi `EconomyManager.advance_day()` tarafindan merkezi olarak yonetili
 6. Nufus degisimi islenir.
 7. Market fiyatlari yeniden hesaplanir ve gunluk investment limiti resetlenir.
 8. NPC trader'lar hareket/ticaret yapar.
+8b. Caravan Master'lar hareket eder ve durak işlemlerini yapar.
 9. Kontratlar expire/check edilir ve eksik sehir kontratlari yenilenir.
 10. Event'ler expire/spawn edilir.
 11. Rank check yapilir.
 12. WorldMap/UI refresh edilir.
 
-## 14. Core Loop
+## 15. Core Loop
 
 1. **Al-sat ve kontrat yap** -> gold, faction reputation ve NPC relation kazan.
 2. **Pazar firsatlarini oku** -> stok, fiyat, event, nufus trendi ve risk bilgilerini kullan.

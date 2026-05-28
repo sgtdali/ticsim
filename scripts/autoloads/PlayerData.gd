@@ -140,13 +140,21 @@ func has_debt() -> bool:
 
 func get_daily_upkeep() -> float:
 	var upkeep: float = _get_caravan_upkeep() + _get_rank_upkeep() + _get_trading_post_upkeep()
-	return upkeep
+	var master_manager: Node = get_node_or_null("/root/CaravanMasterManager")
+	var master_wages: float = 0.0
+	if master_manager != null:
+		master_wages = float(master_manager.get_total_daily_wage())
+	return upkeep + master_wages
 
 func get_finance_summary() -> Dictionary:
 	var rank_name := "Peddler"
 	var rank_manager: Node = get_node_or_null("/root/RankManager")
 	if rank_manager != null and rank_manager.has_method("get_current_rank"):
 		rank_name = str(rank_manager.call("get_current_rank"))
+	var master_manager: Node = get_node_or_null("/root/CaravanMasterManager")
+	var master_wages: float = 0.0
+	if master_manager != null:
+		master_wages = float(master_manager.get_total_daily_wage())
 	return {
 		"gold": gold,
 		"debt": debt,
@@ -159,6 +167,7 @@ func get_finance_summary() -> Dictionary:
 		"rank": rank_name,
 		"trading_post_upkeep": _get_trading_post_upkeep(),
 		"active_posts": _get_active_post_count(),
+		"master_wages": master_wages,
 	}
 
 func should_stop_trading_post_auto_trade() -> bool:
