@@ -1,5 +1,35 @@
 # Project Instructions
 
+## Architecture Reference
+
+`docs/architecture.md` is the source of truth for codebase structure.
+
+Before adding new autoloads, systems, scenes, signals, or data models — and before asking "where does X live?" or "how does Y connect to Z?" — read `docs/architecture.md` first. It documents:
+
+- Autoload registration order and dependency chain
+- EconomyManager sub-system structure (MarketSystem, TownSimulation, InvestmentSystem)
+- Daily tick execution order
+- Scene and script folder layout
+- EventBus signal catalogue
+- Runtime data shapes (town dict, contract dict, CaravanMaster resource)
+- Faction/town definitions and map positions
+- Rank requirements and unlock gates
+- Travel distance and attack risk formula
+
+When a code change adds a new autoload, system, scene, signal, or alters the tick order or data shape, update `docs/architecture.md` in the same task.
+
+## Design Mode
+
+When the user says **"tasarım modu aktif"**, enter design mode and follow the instructions in `docs/design/GUIDE.md`:
+
+- Do not write code or modify any file outside `docs/design/`.
+- Read `docs/design/_index.md` to see open questions and conflicts.
+- When a topic is raised, read the relevant `docs/design/*.md` file, summarize the current state, then enter the discussion.
+- As decisions are reached, update the relevant file and append a summary to its "Tartışma Notları" section.
+- Keep `_index.md` current: remove answered questions, add new questions and conflicts as they emerge.
+
+When the user says **"tasarım modu deaktif"**, return to normal mode: design restrictions are lifted, coding resumes.
+
 ## UI Workflow
 
 Build and refactor UI as if it is being assembled in the Godot editor.
