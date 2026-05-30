@@ -1,0 +1,199 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/TradeRoutePanel.gd" id="1_script"]
+[ext_resource type="StyleBox" uid="uid://q5nr6avfav84" path="res://assets/ui/market/marketpanel_bg_style.tres" id="2_market_bg"]
+[ext_resource type="StyleBox" path="res://assets/ui/market/market_top_bg_style.tres" id="3_market_top_bg"]
+[ext_resource type="StyleBox" uid="uid://bdaf3t6y7aid7" path="res://assets/ui/trade_area_bg_style.tres" id="4_trade_area_bg"]
+[ext_resource type="Texture2D" uid="uid://dl7b1x1uyppxh" path="res://assets/ui/market/exit_button_unpressed.png" id="5_exit_unpressed"]
+[ext_resource type="Texture2D" uid="uid://bpvmcbj74ygi8" path="res://assets/ui/market/exit_button_pressed.png" id="6_exit_pressed"]
+[ext_resource type="Texture2D" uid="uid://dj3ursb8188q" path="res://assets/map_kit/base_map.jpg" id="7_base_map"]
+[ext_resource type="StyleBox" path="res://assets/ui/market/market_closed_row_bg_style.tres" id="8_panel_frame"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_header"]
+
+[node name="TradeRoutePanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="RouteFrame" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("2_market_bg")
+
+[node name="RouteRoot" type="VBoxContainer" parent="RouteFrame"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="RouteFrame/RouteRoot"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_header")
+
+[node name="HeaderRow" type="HBoxContainer" parent="RouteFrame/RouteRoot/Header"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="LeftSpacer" type="Control" parent="RouteFrame/RouteRoot/Header/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="RouteFrame/RouteRoot/Header/HeaderRow"]
+custom_minimum_size = Vector2(520, 58)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "Trade Routes"
+horizontal_alignment = 1
+
+[node name="RightSpacer" type="Control" parent="RouteFrame/RouteRoot/Header/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TopStrip" type="PanelContainer" parent="RouteFrame/RouteRoot"]
+custom_minimum_size = Vector2(0, 118)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("3_market_top_bg")
+
+[node name="TopStripMargin" type="MarginContainer" parent="RouteFrame/RouteRoot/TopStrip"]
+layout_mode = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 24
+
+[node name="Intro" type="Label" parent="RouteFrame/RouteRoot/TopStrip/TopStripMargin"]
+layout_mode = 2
+text = "Choose a caravan master, build a Trading Post route, and assign buy/sell stops here."
+autowrap_mode = 3
+vertical_alignment = 1
+
+[node name="Body" type="PanelContainer" parent="RouteFrame/RouteRoot"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("4_trade_area_bg")
+
+[node name="BodyMargin" type="MarginContainer" parent="RouteFrame/RouteRoot/Body"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="BodyColumns" type="HBoxContainer" parent="RouteFrame/RouteRoot/Body/BodyMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 28
+
+[node name="MapFrame" type="PanelContainer" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.65
+theme_override_styles/panel = ExtResource("8_panel_frame")
+
+[node name="MapMargin" type="MarginContainer" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/MapFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="MapViewport" type="Control" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/MapFrame/MapMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+clip_contents = true
+
+[node name="MapTexture" type="TextureRect" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/MapFrame/MapMargin/MapViewport"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_base_map")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RoadLayer" type="Control" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/MapFrame/MapMargin/MapViewport"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarkerLayer" type="Control" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/MapFrame/MapMargin/MapViewport"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SettingsFrame" type="PanelContainer" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.0
+theme_override_styles/panel = ExtResource("8_panel_frame")
+
+[node name="SettingsMargin" type="MarginContainer" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/SettingsFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="SettingsVBox" type="VBoxContainer" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/SettingsFrame/SettingsMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="SettingsTitle" type="Label" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/SettingsFrame/SettingsMargin/SettingsVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Route Settings"
+
+[node name="SettingsHint" type="Label" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/SettingsFrame/SettingsMargin/SettingsVBox"]
+layout_mode = 2
+text = "Next we will choose a master, add stops from the map, then define buy and sell rules for each stop."
+autowrap_mode = 3
+
+[node name="SettingsSpacer" type="Control" parent="RouteFrame/RouteRoot/Body/BodyMargin/BodyColumns/SettingsFrame/SettingsMargin/SettingsVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseButton" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -86.0
+offset_top = 28.0
+offset_right = -28.0
+offset_bottom = 86.0
+grow_horizontal = 0
+texture_normal = ExtResource("5_exit_unpressed")
+texture_pressed = ExtResource("6_exit_pressed")
+texture_hover = ExtResource("6_exit_pressed")

@@ -219,7 +219,7 @@ func process_population_change(town: Dictionary) -> void:
 	if has_critical_survival:
 		change -= int(ceil(town["population"] * 0.03))
 	else:
-		var level := eco.investment.get_prosperity_level(town["name"])
+		var level: int = eco.investment.get_prosperity_level(str(town["name"]))
 		if level >= 3:
 			change += int(ceil(town["population"] * 0.02))
 		elif level == 2:

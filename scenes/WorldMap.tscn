@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://bc2hmtwn5eeh" path="res://assets/map_kit/MAP-001_Normal City Marker_trimmed.png" id="4_pj4xh"]
 [ext_resource type="PackedScene" uid="uid://c0hxejklifmr5" path="res://scenes/ui/TopBar.tscn" id="5_topbar"]
 [ext_resource type="StyleBox" uid="uid://chc0tfhqsb0uo" path="res://assets/ui/topbar/topbar_bg_style.tres" id="6_topbar_bg"]
+[ext_resource type="StyleBox" path="res://assets/ui/market/market_top_section_button/market_tab_selected_style.tres" id="7_side_tab_selected"]
+[ext_resource type="StyleBox" path="res://assets/ui/market/market_top_section_button/market_tab_unselected_style.tres" id="8_side_tab_unselected"]
+[ext_resource type="Script" uid="uid://lr1pbgjata5v" path="res://scripts/tools/RoadDataExporter.gd" id="10_road_exporter"]
 
 [node name="WorldMap" type="Node2D" unique_id=279374750]
 script = ExtResource("1")
@@ -19,16 +22,7 @@ centered = false
 [node name="Roads" type="Node2D" parent="MapContent" unique_id=1299951475]
 z_index = 1
 
-[node name="AshfordToStonebridgeShadow" type="Line2D" parent="MapContent/Roads" unique_id=1764368470]
-points = PackedVector2Array(480, 360, 489, 403, 495, 424, 509, 446, 533, 478, 585, 529, 672, 574, 729, 631, 795, 657, 829, 692, 829, 737, 937, 825, 1038, 908, 1143, 937, 1220, 1002, 1308, 1035, 1380, 1080)
-width = 7.0
-default_color = Color(0.105882, 0.0745098, 0.0392157, 0.22)
-joint_mode = 1
-begin_cap_mode = 2
-end_cap_mode = 2
-antialiased = true
-
-[node name="AshfordToStonebridge" type="Line2D" parent="MapContent/Roads" unique_id=2033146085]
+[node name="AshfordToStonebridge" type="Line2D" parent="MapContent/Roads" unique_id=381497833]
 points = PackedVector2Array(480, 360, 489, 403, 495, 424, 509, 446, 533, 478, 585, 529, 672, 574, 729, 631, 795, 657, 829, 692, 829, 737, 937, 825, 1038, 908, 1143, 937, 1220, 1002, 1308, 1035, 1380, 1080)
 width = 3.0
 default_color = Color(0.4346894, 0.32022437, 0.16825318, 1)
@@ -37,16 +31,7 @@ begin_cap_mode = 2
 end_cap_mode = 2
 antialiased = true
 
-[node name="IronmereToStonebridgeShadow" type="Line2D" parent="MapContent/Roads" unique_id=1119266991]
-points = PackedVector2Array(2200, 440, 1960, 650, 1660, 880, 1380, 1080)
-width = 7.0
-default_color = Color(0.105882, 0.0745098, 0.0392157, 0.22)
-joint_mode = 1
-begin_cap_mode = 2
-end_cap_mode = 2
-antialiased = true
-
-[node name="IronmereToStonebridge" type="Line2D" parent="MapContent/Roads" unique_id=1976442113]
+[node name="IronmereToStonebridge" type="Line2D" parent="MapContent/Roads" unique_id=1045250854]
 points = PackedVector2Array(2200, 440, 1960, 650, 1660, 880, 1380, 1080)
 width = 3.0
 default_color = Color(0.52, 0.388, 0.212, 0.68)
@@ -54,6 +39,9 @@ joint_mode = 1
 begin_cap_mode = 2
 end_cap_mode = 2
 antialiased = true
+
+[node name="RoadDataExporter" type="Node" parent="MapContent/Roads" unique_id=362706466]
+script = ExtResource("10_road_exporter")
 
 [node name="TownAnchors" type="Node2D" parent="MapContent" unique_id=1154327835]
 z_index = 2
@@ -81,7 +69,7 @@ position = Vector2(1380, 1080)
 gizmo_extents = 28.0
 
 [node name="CityMarker" type="Sprite2D" parent="MapContent/TownAnchors/Stonebridge" unique_id=1411807396]
-position = Vector2(0, -18)
+position = Vector2(-5, -18)
 scale = Vector2(0.22, 0.22)
 texture = ExtResource("4_pj4xh")
 
@@ -121,7 +109,182 @@ layout_mode = 2
 
 [node name="TopBar" parent="UI" unique_id=506667552 instance=ExtResource("5_topbar")]
 
+[node name="SidePanel" type="PanelContainer" parent="UI" unique_id=151227779]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -360.0
+offset_top = 122.0
+offset_bottom = 1080.0
+grow_horizontal = 0
+theme_override_styles/panel = ExtResource("6_topbar_bg")
+
+[node name="PanelMargin" type="MarginContainer" parent="UI/SidePanel" unique_id=838488812]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Tabs" type="TabContainer" parent="UI/SidePanel/PanelMargin" unique_id=2021819369]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/tab_unselected = ExtResource("8_side_tab_unselected")
+theme_override_styles/tab_hovered = ExtResource("7_side_tab_selected")
+theme_override_styles/tab_selected = ExtResource("7_side_tab_selected")
+theme_override_styles/tab_disabled = ExtResource("8_side_tab_unselected")
+tab_alignment = 1
+current_tab = 0
+
+[node name="Operations" type="ScrollContainer" parent="UI/SidePanel/PanelMargin/Tabs" unique_id=348859134]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_tab_index = 0
+
+[node name="OperationsVBox" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Operations" unique_id=1188111300]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="MastersTitle" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=1833538252]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Caravan Masters"
+
+[node name="MasterList" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=1064601452]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="OpenTradeRouteButton" type="Button" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=623977776]
+layout_mode = 2
+text = "Open Trade Route"
+
+[node name="HireMasterButton" type="Button" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=33081869]
+layout_mode = 2
+text = "Hire Master"
+
+[node name="OperationsSeparator" type="HSeparator" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=1617609866]
+layout_mode = 2
+
+[node name="PostsTitle" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=1034244429]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Trading Posts"
+
+[node name="PostList" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=1241023270]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="EstablishPostButton" type="Button" parent="UI/SidePanel/PanelMargin/Tabs/Operations/OperationsVBox" unique_id=293883280]
+layout_mode = 2
+text = "Establish Post"
+
+[node name="Player" type="ScrollContainer" parent="UI/SidePanel/PanelMargin/Tabs" unique_id=24949442]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_tab_index = 1
+
+[node name="PlayerVBox" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Player" unique_id=1550674367]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="CaravanTitle" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=1023172049]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Caravan"
+
+[node name="CaravanSummary" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=120645602]
+layout_mode = 2
+text = "Donkey Cart - 20"
+
+[node name="CargoSummary" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=1149286483]
+layout_mode = 2
+text = "Cargo 0/20"
+
+[node name="CargoList" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=354879327]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="UpgradeCaravanButton" type="Button" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=760990333]
+layout_mode = 2
+text = "Upgrade Caravan"
+
+[node name="PlayerSeparator" type="HSeparator" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=1160550371]
+layout_mode = 2
+
+[node name="ProgressTitle" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=2137587497]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Progress"
+
+[node name="RankLabel" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=1854833133]
+layout_mode = 2
+text = "Rank: Peddler"
+
+[node name="RankRequirements" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=742504244]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ProsperityList" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Player/PlayerVBox" unique_id=812920142]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Contracts" type="ScrollContainer" parent="UI/SidePanel/PanelMargin/Tabs" unique_id=568041169]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_tab_index = 2
+
+[node name="ContractsVBox" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Contracts" unique_id=1064936253]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="ContractsTitle" type="Label" parent="UI/SidePanel/PanelMargin/Tabs/Contracts/ContractsVBox" unique_id=1713988591]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Active Contracts"
+
+[node name="ActiveContractList" type="VBoxContainer" parent="UI/SidePanel/PanelMargin/Tabs/Contracts/ContractsVBox" unique_id=56023495]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="EventPanel" type="PanelContainer" parent="UI" unique_id=108319382]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -76.0
+offset_right = 1560.0
+grow_vertical = 0
+theme_override_styles/panel = ExtResource("6_topbar_bg")
+
+[node name="EventMargin" type="MarginContainer" parent="UI/EventPanel" unique_id=1827696739]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="EventVBox" type="VBoxContainer" parent="UI/EventPanel/EventMargin" unique_id=176798287]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="EventTitle" type="Label" parent="UI/EventPanel/EventMargin/EventVBox" unique_id=672557206]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Events"
+
+[node name="EventList" type="VBoxContainer" parent="UI/EventPanel/EventMargin/EventVBox" unique_id=70456621]
+layout_mode = 2
+theme_override_constants/separation = 2
+
 [node name="ContractsToggle" type="Button" parent="UI" unique_id=517107815]
+visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -133,6 +296,7 @@ grow_horizontal = 0
 text = "Contracts (0)"
 
 [node name="ContractsPanel" type="PanelContainer" parent="UI" unique_id=1113226552]
+visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0

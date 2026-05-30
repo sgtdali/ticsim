@@ -62,6 +62,7 @@ Sehirler gunluk uretim ve tuketim tick'i ile yasar. Dunya oyuncu bir sey yapmasa
 ## 4. Olaylar
 
 Olaylar sehirlerin arz-talep dengesini gecici olarak bozar ve kâr firsatlari yaratir. Olaylar rastgele tetiklenir, sureleri vardir ve sehir bazlidir.
+Olay baslangic ve bitis bildirimleri harita ekraninin alt event panelinde gosterilir.
 
 | Olay | Etki Alani | Fiyat | Uretim | Tuketim | Tasarim Amaci |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -180,6 +181,7 @@ Master'lar Trading Post depoları arasında mal taşır.
 
 **İşe alım:**
 - Tek seferlik işe alım ücreti + günlük maaş (upkeep'e eklenir)
+- Sag paneldeki Hire Master aksiyonu mevcut varsayilan master adayini ise alir: 120 gold tek seferlik ucret ve 4 gold gunluk maas.
 - Debt varken işe alım yapılamaz
 - Kiralanan master sayısı rank'a göre sınırlıdır
 
