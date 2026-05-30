@@ -24,7 +24,6 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - [ ] **Vergi mekanik olarak uygulanmıyor.** Faction rep'e bağlı tax rate hesaplanıyor ama al-sat fiyatını etkilemiyor (spread üzerinden etki var). Bu kasıtlı mı, geçici mi? `economy.md`
 - [ ] **Kaç kasaba olacak?** Şu an 3 kasaba hardcode. 4-5'e çıkma planı var mı, yoksa 3 kasaba bitiş vizyonu mu? `world.md`
 - [ ] **Oyun bitiş ekranı var mı?** Patrician'a ulaşıldığında gerçek bir bitiş sahnesi/kutlama var mı? `progression.md`
-- [ ] **Caravan Master aday sistemi?** Şu an tek sabit aday (120g/4g). Farklı özellikli, farklı maliyetli adaylar gelecek mi? `trading_post.md`
 
 ## Çelişkiler / Gerilimler
 
