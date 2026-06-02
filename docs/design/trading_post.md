@@ -52,10 +52,11 @@ Bu değişikliğin nedeni: Trading Post artık Caravan Master, depot, route, car
 - Mastersız route veya taslak route sistemi bulunmaz.
 - Bir master başka route'a atanmak istenirse önce mevcut route iptal edilir, sonra aynı master ile yeni route kurulur.
 - Route iptal davranışı aynen geçerlidir: master bulunduğu yerde idle olur ve cargo üzerinde kalır.
-- Yeni route oluşturulurken master'ın mevcut cargo'su için cargo uyumluluğu tekrar kontrol edilir.
+- Yeni route atanırken master üzerinde cargo varsa cargo uyumluluğu kontrol edilir. Eğer yeni rotada uygun Unload kuralı yoksa sistem kritik uyarı gösterir; oyuncu `Proceed Anyway` demeden route aktifleşmez. Temporary Unload seçeneği sunulur. Bu kontrol canlı rota düzenlemesiyle aynı mekanizmayı kullanır; kapsam yeni route atama anını da kapsar.
 - Boşta master yeni route'a bulunduğu şehirden başlar.
 - Yeni route'un ilk durağı master'ın bulunduğu şehir olmak zorunda değildir.
 - Eğer ilk durak farklı şehirdeyse master önce route'un ilk durağına seyahat eder; sonra route kuralları işlemeye başlar.
+- Reposition seyahati sırasında master üzerindeki cargo olduğu gibi taşınır; yolda Load/Unload kuralı çalışmaz. Cargo uyumsuzluğu kontrolü route atama anında yapıldığı için reposition sırasında ayrıca müdahale gerekmez.
 
 **Trade route yapısı:**
 - Caravan Master rotaları çok duraklı olabilir.
@@ -100,6 +101,7 @@ Bu değişikliğin nedeni: Trading Post artık Caravan Master, depot, route, car
 - Sistem cargo'ya otomatik dokunmaz; cargo master üzerinde kalır.
 - Oyuncu bu durumdan çıkmak için rotaya ilgili mal için bir Unload kuralı ekleyebilir.
 - Uyarı ekranı oyuncuya çözüm olarak ilgili mal için geçici boşaltma durağı/kuralı ekleme seçeneği sunmalıdır.
+- Bu cargo uyumluluk kontrolü yeni route atama anında da çalışır (yalnızca canlı düzenlemeyle sınırlı değildir).
 
 **Temporary Unload Stop / Rule:**
 - Uyumsuz cargo durumunda oyuncu geçici boşaltma durağı veya geçici Unload kuralı ekleyebilir.
@@ -207,7 +209,7 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 - Debt nedeniyle Trading Post suspended olmadığından, debt uyarıları Post/Route UI'ını bozacak şekilde değil global finance/debt uyarısı olarak gösterilmelidir.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
-  - “Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
+  - "Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit"
 - Bu zincir görünürlüğü, Post ve Master sistemlerinin ayrı UI'lardan yönetilmesinin yaratacağı zihinsel yükü azaltmak için ana çözüm yönüdür.
 
 ## Açık Sorular
@@ -243,6 +245,7 @@ Debt cezasının Trading Post veya route ağını doğrudan bozması çok fazla 
 
 ## Tartışma Notları
 
+- [2026-06-02] Reposition seyahati sırasında cargo davranışı netleştirildi. Yeni route atanırken master üzerinde cargo varsa canlı rota düzenlemesiyle aynı cargo uyumluluk kontrolü çalışır. Yeni rotada uygun Unload kuralı yoksa kritik uyarı gösterilir ve oyuncu `Proceed Anyway` demeden route aktifleşmez; Temporary Unload seçeneği sunulur. Reposition seyahati sırasında cargo olduğu gibi taşınır, yolda Load/Unload çalışmaz; kontrol route atama anında yapıldığı için yolda ayrıca müdahale gerekmez.
 - [2026-06-02] Debt cezası revize edildi. Eski `30 günde auto-trade durur, 60 günde en değerli Trading Post suspended olur` kararı kaldırıldı. Yeni modelde debt 30 gün sürerse reputation penalty ve debt fee artışı uygulanacak; Trading Post auto-trade durmayacak ve post suspended olmayacak. Debt 60 gün sürerse daha büyük reputation penalty uygulanacak, Caravan Master'lar unpaid status alacak ve route'lar pause olacak. Borç kapatılınca route'lar kaldığı yerden devam edecek. Numeric penalty değerleri balance aşamasında netleştirilecek.
 - [2026-06-02] Trade Routes mini map route gösterimi netleştirildi. Route çizgileri route kimliğine göre otomatik farklı renk alacak; mal bazlı renk kullanılmayacak. Seçili route kalın çizilecek, diğer route'lar soluklaşacak. Seçili route'un durak sırası küçük sıra numaralarıyla gösterilecek. Ok, animasyonlu çizgi veya hareket efekti şimdilik kullanılmayacak.
 - [2026-06-02] Trade Routes UI kararları alındı. Caravan Master / Trade Route yönetimi world map üzerinden açılan ayrı bir panelden yapılacak; TownUI/Post tab şehir içi Trading Post kuralları için kalacak. Panel ana görünümü route odaklı olacak. Panel içinde şehirleri, yolları, aktif route çizgilerini ve master konumlarını gösteren interaktif mini map bulunacak. Yeni route şehirleri mini map üzerinden tıklanarak oluşturulacak. Mini mapte tüm route'lar çizilecek, seçili route güçlü şekilde vurgulanacak.
