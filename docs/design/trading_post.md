@@ -14,24 +14,26 @@ Sell rule: fiyat limitin üstündeyse + depot_limit aşıldıysa + markette yer 
 
 Her rule her gün bir status alır (active, waiting_price, waiting_stock, waiting_market, depot_full, depot_empty). Sadece active olanlar işlem yapar.
 
-## Debt ve Otomasyon Cezası (Karar verilmiş)
+## Debt ve Game Over Modeli (Karar verilmiş)
 
 Eski karar olan `Debt 30 günde auto-trade durur, 60 günde en değerli post suspended olur` kaldırılmıştır.
+Eski karar olan `60. günde upkeep durur, master'lar unpaid olur, route'lar pause olur` da kaldırılmıştır.
 
-**Debt modeli:**
-- Oyuncunun tek bir bakiyesi vardır. Bu bakiye negatife düşebilir; negatife düştüğü an debt başlar.
-- Tüm upkeep'ler (Trading Post, Caravan Master) bakiyeyi düşürmeye devam eder; bu upkeep'ler debt süresince de işlemeye devam eder.
-- Debt 30 gün sürerse: reputation penalty uygulanır, debt fee artar.
-- Debt 60 gün sürerse: daha büyük reputation penalty uygulanır. Trading Post ve Caravan Master upkeep'leri artık bakiyeden düşmez. Caravan Master'lar `unpaid` status alır ve route'lar pause olur. Trading Post auto-trade de durur.
-- 60. günden sonra tüm otomasyon sistemi donmuş olur; borç büyümez ama hiçbir şey çalışmaz.
-- Borç kapatılınca unpaid status kalkar, upkeep'ler yeniden işlemeye başlar ve route'lar kaldığı yerden devam eder.
-- Debt cezası mevcut Trading Post depolarını, mevcut route stop'larını, mevcut cargo'yu, Temporary Unload sistemini veya route validity yapısını otomatik bozmaz.
+**Debt modeli — üç bölge:**
+
+- **0-30 gün (Acı ama kurtarılabilir):** Bakiye negatif, tüm upkeep'ler düşmeye devam eder, otomasyon çalışır. Reputation penalty ve debt fee uygulanır. Oyuncu fark edip düzeltebilir.
+- **30-60 gün (Kritik ama çıkış var):** Daha büyük reputation penalty uygulanır. Tüm upkeep'ler hâlâ düşer, Trading Post ve Caravan Master otomasyonu çalışmaya devam eder. Oyuncunun kurtulma şansı vardır.
+- **60. gün (Game Over):** Sistem oyuncuya game over ekranı gösterir. Otomasyon sistemi ayrıca durdurulmaz; zaten oyun bitiyor.
+
+**Temel kararlar:**
+- Oyuncunun tek bir bakiyesi vardır; bu bakiye negatife düşebilir.
+- Bakiye negatife düştüğü an debt başlar ve gün sayacı işlemeye başlar.
+- Debt süresince tüm upkeep'ler (Trading Post + Caravan Master) işlemeye devam eder; otomasyon sistemi bozulmaz.
+- Borç kapatılırsa gün sayacı sıfırlanır; oyun devam eder.
+- Debt cezası mevcut Trading Post depolarını, route stop'larını, cargo'yu veya route validity yapısını otomatik bozmaz.
 - Reputation penalty ve debt fee için numeric değerler balance aşamasında netleştirilecektir.
 
-**Debt trigger mekanizması:**
-- Unpaid ve pause kararı master başına ayrı sayaçla değil, genel debt süresine göre verilir. Bakiye negatife düştükten 60 gün sonra tüm master'lar ve post'lar aynı anda durur.
-
-Bu değişikliğin nedeni: Trading Post artık Caravan Master, depot, route, cargo uyumu ve Temporary Unload sisteminin merkez düğümüdür. Debt yüzünden bir Trading Post'u kapatmak çok fazla edge-case ve entegrasyon problemi üretir.
+Bu modelin nedeni: 60. günde sistemi durdurmak gereksiz karmaşıklık katıyordu ve oyuncuya dönüş yolu bırakmıyordu. Otomasyon bozulunca zaten parası olmayan oyuncu manuel alım satım da yapamaz hale gelir — ölüm sarmalı kaçınılmaz olur. Game over ile direkt bitirmek hem daha temiz hem daha dürüst.
 
 ## Caravan Master Temel Rolü (Karar verilmiş)
 
@@ -206,7 +208,7 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 - Route çizgileri otomatik farklı renkler kullanmalı; mal bazlı renk kullanılmamalıdır.
 - Seçili route kalın çizilmeli, diğer route'lar soluklaştırılmalıdır.
 - Seçili route'un durak sırası küçük sıra numaralarıyla gösterilmelidir.
-- Debt nedeniyle Trading Post suspended olmadığından, debt uyarıları Post/Route UI'ını bozacak şekilde değil global finance/debt uyarısı olarak gösterilmelidir.
+- Debt uyarıları global finance/debt uyarısı olarak gösterilmeli; Post/Route UI'ını bozacak şekilde değil.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
   - "Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit"
@@ -242,16 +244,15 @@ Trade Routes panelinde tüm aktif route'lar mini map üzerinde çizilecektir. Ro
 
 ## Tartışma Notları
 
-- [2026-06-02] Debt trigger mekanizması netleştirildi. Unpaid ve pause kararı master başına ayrı sayaçla değil, genel debt süresine göre verilir. Oyuncunun bakiyesi negatife düşünce debt başlar; tüm upkeep'ler (Trading Post + Caravan Master) düşmeye devam eder. 30. günde rep penalty + debt fee. 60. günde tüm upkeep'ler durur, Trading Post auto-trade durur, tüm master'lar unpaid olur ve route'lar pause olur. Borç daha fazla büyümez ama hiçbir otomasyon çalışmaz. Borç kapatılınca her şey kaldığı yerden devam eder.
-- [2026-06-02] Reposition seyahati sırasında cargo davranışı netleştirildi. Yeni route atanırken master üzerinde cargo varsa canlı rota düzenlemesiyle aynı cargo uyumluluk kontrolü çalışır. Yeni rotada uygun Unload kuralı yoksa kritik uyarı gösterilir ve oyuncu `Proceed Anyway` demeden route aktifleşmez; Temporary Unload seçeneği sunulur. Reposition seyahati sırasında cargo olduğu gibi taşınır, yolda Load/Unload çalışmaz; kontrol route atama anında yapıldığı için yolda ayrıca müdahale gerekmez.
-- [2026-06-02] Debt cezası revize edildi. Eski `30 günde auto-trade durur, 60 günde en değerli Trading Post suspended olur` kararı kaldırıldı.
+- [2026-06-02] Debt modeli ve game over kararı alındı. Eski "60. günde upkeep durur, master'lar unpaid olur, route'lar pause olur" kararı iptal edildi. Yeni model: 0-30 gün arası acı ama kurtarılabilir (otomasyon çalışır, rep penalty + debt fee); 30-60 gün arası kritik ama çıkış var (otomasyon hâlâ çalışır, daha büyük rep penalty); 60. günde game over ekranı. Otomasyon ayrıca durdurulmaz — oyun zaten bitiyor. Eski modelde 60. günde sistemi durdurmak ölüm sarmalı yaratıyordu: parası olmayan oyuncu manuel alım satım da yapamaz hale geliyordu.
+- [2026-06-02] Debt trigger mekanizması netleştirildi. Genel debt süresine göre çalışır; master başına ayrı sayaç yok. Bakiye negatife düşünce gün sayacı başlar.
+- [2026-06-02] Reposition seyahati sırasında cargo davranışı netleştirildi. Yeni route atanırken master üzerinde cargo varsa canlı rota düzenlemesiyle aynı cargo uyumluluk kontrolü çalışır. Yeni rotada uygun Unload kuralı yoksa kritik uyarı gösterilir ve oyuncu `Proceed Anyway` demeden route aktifleşmez; Temporary Unload seçeneği sunulur. Reposition seyahati sırasında cargo olduğu gibi taşınır, yolda Load/Unload çalışmaz.
 - [2026-06-02] Trade Routes mini map route gösterimi netleştirildi. Route çizgileri route kimliğine göre otomatik farklı renk alacak; mal bazlı renk kullanılmayacak. Seçili route kalın çizilecek, diğer route'lar soluklaşacak. Seçili route'un durak sırası küçük sıra numaralarıyla gösterilecek. Ok, animasyonlu çizgi veya hareket efekti şimdilik kullanılmayacak.
-- [2026-06-02] Trade Routes UI kararları alındı. Caravan Master / Trade Route yönetimi world map üzerinden açılan ayrı bir panelden yapılacak; TownUI/Post tab şehir içi Trading Post kuralları için kalacak. Panel ana görünümü route odaklı olacak. Panel içinde şehirleri, yolları, aktif route çizgilerini ve master konumlarını gösteren interaktif mini map bulunacak. Yeni route şehirleri mini map üzerinden tıklanarak oluşturulacak. Mini mapte tüm route'lar çizilecek, seçili route güçlü şekilde vurgulanacak.
-- [2026-06-02] Master-route atama kuralları netleştirildi. Bir Caravan Master aynı anda yalnızca bir aktif route yönetebilir. Route oluşturmak için boşta master seçmek zorunludur; mastersız veya taslak route sistemi olmayacak. Master başka route'a atanacaksa önce mevcut route iptal edilir, sonra yeni route kurulur. Boşta master yeni route'a bulunduğu şehirden başlar; ilk durak farklıysa master önce ilk durağa reposition seyahati yapar.
-- [2026-06-02] Temporary Unload hedef seçimi ve rezervasyon davranışı netleştirildi. Sistem en yakın uygun Trading Post'u önerir; önce cargo'yu tam boşaltabilecek post aranır, yoksa partial unload yapabilecek post önerilir. Temporary Unload önerisi depo alanı rezerve etmez; master hedefe vardığında gerçek boşluk tekrar kontrol edilir. Yer yoksa cargo master üzerinde kalır ve Temporary Unload görevi silinmeden sonraki döngüde tekrar denenir. Temporary Unload Stop/Rule oyuncu tarafından manuel silinebilir; silinirse cargo uyumluluğu yeniden kontrol edilir.
-- [2026-06-02] Canlı rota düzenlemesinde cargo uyumu kararı alındı. Master üzerindeki cargo yeni rotada Unload karşılığı bulamazsa sistem kritik uyarı verir ve oyuncu `Proceed Anyway` demeden rota aktifleşmez. Oyuncu uyumsuz cargo'yu çözmek için ilgili mal için geçici Unload durağı/kuralı ekleyebilir. Geçici unload mevcut cargo tamamen boşalınca otomatik kaldırılır; sırf bu iş için eklenen geçici durak da cargo boşalınca silinir.
-- [2026-06-02] Caravan Master rota çalışma davranışı netleştirildi. Rotalar tek seferlik değil, kullanıcı iptal edene kadar sonsuz döngü şeklinde çalışacak. İptal edildiğinde master bulunduğu yerde idle olur ve cargo üzerinde kalır. Rota canlı düzenlenebilir; ancak değişiklikler master'ı ışınlamaz, mevcut seyahati bozmaz ve master bir sonraki şehre vardığında uygulanır. Bu karar teknik risk taşıdığı için implementation aşamasında runtime route state dikkatli korunmalıdır.
-- [2026-06-02] Caravan Master durak yürütme kuralları netleştirildi. Unload sırasında hedef depoda yeterli alan yoksa mümkün olan kadar boşaltılır ve kalan cargo master üzerinde taşınmaya devam eder. Bir durakta çalışma sırası sistem tarafından önce Unload, sonra Load olarak uygulanır. Birden fazla Load kuralında kapasite yetmezse yükleme listedeki sıraya göre yapılır; ayrı priority alanı kullanılmaz. Aynı durakta aynı mal için hem Load hem Unload tanımlanamaz.
-- [2026-06-02] Caravan Master durak kural sistemi netleştirildi. Bir durakta birden fazla kural olabilir. İşlem adları Buy/Sell değil Load/Unload olacak. Caravan Master kuralında fiyat limiti olmayacak; fiyat limitleri Trading Post buy/sell kurallarına ait kalacak. Load için kullanıcı davranış modu seçebilecek: Load Available, Wait Until Full, Wait Until Amount, Take Exact Amount. Bu bekleme/koşul sistemi yalnızca Load tarafında olacak; Unload tarafında kullanılmayacak.
-- [2026-06-02] Caravan Master trade route yapısı çok duraklı olarak netleştirildi. Oyuncu şehirleri world map üzerinden kendisi seçecek; rota standart döngüye zorlanmayacak. Aynı şehir rota içinde tekrar edebilecek.
-- [2026-05-31] Caravan Master sistemi Patrician trade route yaklaşımından ilhamla netleştirildi. Master doğrudan markete girmeyecek; Trading Post şehir içi otomasyon, Caravan Master şehirler arası depot-to-depot lojistik olarak konumlandı. Tek sabit aday yerine 3 adaylı, 30 günde yenilenen aday havuzu kararı alındı.
+- [2026-06-02] Trade Routes UI kararları alındı. Caravan Master / Trade Route yönetimi world map üzerinden açılan ayrı bir panelden yapılacak; TownUI/Post tab şehir içi Trading Post kuralları için kalacak.
+- [2026-06-02] Master-route atama kuralları netleştirildi. Bir Caravan Master aynı anda yalnızca bir aktif route yönetebilir. Route oluşturmak için boşta master seçmek zorunludur; mastersız veya taslak route sistemi olmayacak.
+- [2026-06-02] Temporary Unload hedef seçimi ve rezervasyon davranışı netleştirildi. Sistem en yakın uygun Trading Post'u önerir; depo alanı rezerve etmez.
+- [2026-06-02] Canlı rota düzenlemesinde cargo uyumu kararı alındı. Uyumsuz cargo varsa kritik uyarı, `Proceed Anyway` olmadan rota aktifleşmez, Temporary Unload sunulur.
+- [2026-06-02] Caravan Master rota çalışma davranışı netleştirildi. Sonsuz döngü, iptal edilince idle, canlı düzenleme mevcut seyahati bozmaz.
+- [2026-06-02] Caravan Master durak yürütme kuralları netleştirildi. Önce Unload sonra Load, partial unload kabul edilir, kapasite yetmezse listedeki sıraya göre yükleme.
+- [2026-06-02] Caravan Master durak kural sistemi netleştirildi. Load/Unload isimleri, fiyat limiti yok, Load için 4 davranış modu.
+- [2026-05-31] Caravan Master sistemi Patrician trade route yaklaşımından ilhamla netleştirildi. Master doğrudan markete girmeyecek; 3 adaylı aday havuzu kararı alındı.
