@@ -63,6 +63,14 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Eğer geçici unload için rota içine yeni bir durak eklendiyse, cargo tamamen boşalınca bu geçici durak da otomatik kaldırılır.
 - Eğer geçici Unload mevcut bir durak üzerine eklendiyse, sadece geçici kural kaldırılır; durak rotada kalır.
 - Hedef depoda yeterli yer yoksa partial unload yapılır; cargo tamamen boşalmadıysa geçici unload görevi silinmez ve sonraki uygun uğramada tekrar denenir.
+- Temporary Unload Stop / Rule oyuncu tarafından manuel silinebilir.
+- Geçici unload manuel silinirse sistem cargo uyumluluğunu tekrar kontrol eder ve gerekirse kritik uyarıyı yeniden gösterir.
+- Temporary Unload hedefi için sistem en yakın uygun Trading Post'u önerir; oyuncu öneriyi kabul edebilir veya başka post seçebilir.
+- Uygun Trading Post seçimi önceliklidir: sistem önce cargo'yu tam boşaltabilecek post arar, yoksa partial unload yapabilecek post önerir.
+- Temporary Unload önerisi depo alanı rezerve etmez.
+- Öneri yapıldığı andaki depo boşluğu yalnızca bilgilendirme niteliğindedir; master hedefe vardığında gerçek depo boşluğu tekrar kontrol edilir.
+- Master hedefe vardığında yer varsa unload yapılır, kısmi yer varsa partial unload yapılır, hiç yer yoksa cargo master üzerinde kalır.
+- Yer olmadığı için unload yapılamazsa Temporary Unload görevi silinmez; rota döngüsünde sonraki uygun uğramada tekrar denenir.
 - Normal route stop ve temporary cleanup stop UI'da ayırt edilebilir olmalıdır.
 
 **Durak kural yapısı:**
@@ -145,6 +153,7 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 - Route ekranında beklenen kârlılık gösterilecekse, bu bilgi Trading Post buy/sell fiyat kurallarından türetilmelidir.
 - Cargo uyumsuzluğu uyarısı kritik seviyede gösterilmeli ve oyuncu `Proceed Anyway` demeden rota aktifleşmemelidir.
 - Temporary Unload Stop / Rule normal rota duraklarından görsel olarak ayrılmalıdır.
+- Temporary Unload önerilerinde mevcut boş alan gösterilebilir; ancak oyuncuya bu alanın rezerve edilmediği açıkça belirtilmelidir.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
   - “Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
@@ -172,8 +181,12 @@ Master rota üzerindeyken rota düzenlenebildiği için mevcut seyahat, current 
 **Temporary Unload karmaşıklığı**
 Geçici unload durakları oyuncuya güçlü bir kurtarma yolu sağlar; ancak normal rota duraklarıyla karışırsa kafa karıştırabilir. UI'da temporary stop/rule açık işaretlenmeli ve cargo tamamen boşalınca otomatik kaldırıldığı anlaşılmalıdır.
 
+**Temporary Unload rezervasyon yapmama riski**
+Temporary Unload hedefi önerildiğinde depo alanı rezerve edilmez. Başka route veya Trading Post işlemleri master hedefe varmadan alanı doldurabilir. Bu durumda unload başarısız olabilir veya partial gerçekleşebilir. Sistem bunu kabul eder; temporary unload görevi cargo tamamen boşalana kadar silinmez.
+
 ## Tartışma Notları
 
+- [2026-06-02] Temporary Unload hedef seçimi ve rezervasyon davranışı netleştirildi. Sistem en yakın uygun Trading Post'u önerir; önce cargo'yu tam boşaltabilecek post aranır, yoksa partial unload yapabilecek post önerilir. Temporary Unload önerisi depo alanı rezerve etmez; master hedefe vardığında gerçek boşluk tekrar kontrol edilir. Yer yoksa cargo master üzerinde kalır ve Temporary Unload görevi silinmeden sonraki döngüde tekrar denenir. Temporary Unload Stop/Rule oyuncu tarafından manuel silinebilir; silinirse cargo uyumluluğu yeniden kontrol edilir.
 - [2026-06-02] Canlı rota düzenlemesinde cargo uyumu kararı alındı. Master üzerindeki cargo yeni rotada Unload karşılığı bulamazsa sistem kritik uyarı verir ve oyuncu `Proceed Anyway` demeden rota aktifleşmez. Oyuncu uyumsuz cargo'yu çözmek için ilgili mal için geçici Unload durağı/kuralı ekleyebilir. Geçici unload mevcut cargo tamamen boşalınca otomatik kaldırılır; sırf bu iş için eklenen geçici durak da cargo boşalınca silinir.
 - [2026-06-02] Caravan Master rota çalışma davranışı netleştirildi. Rotalar tek seferlik değil, kullanıcı iptal edene kadar sonsuz döngü şeklinde çalışacak. İptal edildiğinde master bulunduğu yerde idle olur ve cargo üzerinde kalır. Rota canlı düzenlenebilir; ancak değişiklikler master'ı ışınlamaz, mevcut seyahati bozmaz ve master bir sonraki şehre vardığında uygulanır. Bu karar teknik risk taşıdığı için implementation aşamasında runtime route state dikkatli korunmalıdır.
 - [2026-06-02] Caravan Master durak yürütme kuralları netleştirildi. Unload sırasında hedef depoda yeterli alan yoksa mümkün olan kadar boşaltılır ve kalan cargo master üzerinde taşınmaya devam eder. Bir durakta çalışma sırası sistem tarafından önce Unload, sonra Load olarak uygulanır. Birden fazla Load kuralında kapasite yetmezse yükleme listedeki sıraya göre yapılır; ayrı priority alanı kullanılmaz. Aynı durakta aynı mal için hem Load hem Unload tanımlanamaz.
