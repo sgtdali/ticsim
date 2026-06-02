@@ -22,7 +22,8 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Master'ın rota kuralları depot-to-depot akışı kurar: kaynak post deposundan alır, hedef post deposuna bırakır.
 - Rota en az 2 duraktan oluşur.
 - Her durakta Trading Post şarttır.
-- Her durakta "al" veya "sat" kuralı vardır: hangi mal, fiyat limiti ve max miktar görünür olmalıdır.
+- Her durakta Load veya Unload kuralı olabilir; hangi mal, işlem tipi ve miktar sınırı görünür olmalıdır.
+- Caravan Master kuralında fiyat limiti bulunmaz. Fiyat limitleri Trading Post buy/sell kurallarına aittir.
 - Master özellikleri korunur: Hız, Kapasite, Pazarlık, Cesaret.
 - XP ve rank cap sistemi korunur.
 
@@ -34,6 +35,22 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Rota ister basit döngü olabilir: `Ironmere Post → Stonebridge Post → Kingsport Post → Ironmere Post`.
 - Rota ister geri dönüşlü/tekrar duraklı olabilir: `Ironmere Post → Stonebridge Post → Kingsport Post → Stonebridge Post → Ironmere Post`.
 - Sistem oyuncuya lojistik hattın şeklini kurma özgürlüğü vermelidir; UI durak sırasını açıkça göstermelidir.
+
+**Durak kural yapısı:**
+- Bir durakta birden fazla işlem kuralı olabilir.
+- İşlem adları Buy/Sell değil, Load/Unload olacaktır.
+- Load: Master'ın ilgili Trading Post deposundan mal almasıdır.
+- Unload: Master'ın taşıdığı malı ilgili Trading Post deposuna bırakmasıdır.
+- Buy/Sell ifadeleri Caravan Master UI'ında kullanılmamalıdır; bunlar Trading Post'un market işlemleriyle karışır.
+- Unload tarafında bekleme/koşul modu bulunmaz; hedef depoya kapasite izin verdiği ölçüde mal bırakılır.
+
+**Load davranış modları:**
+- Load Available: Depoda ne varsa, kapasite ve max miktar sınırına kadar yükler; beklemez.
+- Wait Until Full: Belirlenen max miktara ulaşmadan hareket etmez.
+- Wait Until Amount: Kullanıcının belirlediği minimum miktara ulaşınca yükler; max miktarı aşmaz.
+- Take Exact Amount: Belirlenen adedi yükler; o adet yoksa bekler, daha fazlasını almaz.
+- Load davranış modu sadece Load kuralları için geçerlidir; Unload kurallarında kullanılmaz.
+- Varsayılan Load modu: Load Available. Bu mod rota kilitlenme riskini azaltır.
 
 **Master özellikleri (1-5 arası, seviye atladıkça):**
 - Hız: -%10/puan (max -%40 seyahat süresi)
@@ -86,10 +103,12 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 ## UI / Okunabilirlik Notları
 
 - Rota sistemi şehir/durak bazlı ve mal bazlı okunmalıdır.
-- Her durakta hangi maldan ne kadar alınacağı/satılacağı ve fiyat limitinin ne olduğu net görünmelidir.
+- Her durakta hangi maldan ne kadar yükleneceği/boşaltılacağı ve Load davranış modu net görünmelidir.
+- Caravan Master UI'ında fiyat limiti rota kuralı olarak girilmez.
+- Route ekranında beklenen kârlılık gösterilecekse, bu bilgi Trading Post buy/sell fiyat kurallarından türetilmelidir.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
-  - “Ironmere Post buys Bread under 22g → Master carries Bread to Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
+  - “Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
 - Bu zincir görünürlüğü, Post ve Master sistemlerinin ayrı UI'lardan yönetilmesinin yaratacağı zihinsel yükü azaltmak için ana çözüm yönüdür.
 
 ## Açık Sorular
@@ -103,12 +122,13 @@ Debt 60 günde post suspended olunca oyuncu onu tekrar açmak için 300 gold dah
 ## Gerilimler
 
 **Otomasyon karmaşıklığı**
-Post buy/sell kuralları + master rota kuralları + master özellik sistemi birlikte oldukça derin. Erken oyuncunun bunu kavraması zor olabilir. Çözüm yönü: UI'da otomasyon zinciri, rota durakları, mal miktarları, fiyat limitleri ve beklenen margin açık gösterilmeli.
+Post buy/sell kuralları + master route kuralları + Load davranış modları + master özellik sistemi birlikte oldukça derin. Erken oyuncunun bunu kavraması zor olabilir. Çözüm yönü: UI'da otomasyon zinciri, rota durakları, mal miktarları, Load davranışı ve beklenen margin açık gösterilmeli.
 
 **Master ve player yarışması**
 Oyuncu bir kasabada ucuz malı bulmak isterken post buy rule'u o malı zaten almış olabilir. Ya da tam tersi — master bir malı taşırken oyuncu onu başka yere satmak isteyebilir. Bu çatışma kasıtlı mı (kaynak yönetimi), rahatsız edici mi?
 
 ## Tartışma Notları
 
+- [2026-06-02] Caravan Master durak kural sistemi netleştirildi. Bir durakta birden fazla kural olabilir. İşlem adları Buy/Sell değil Load/Unload olacak. Caravan Master kuralında fiyat limiti olmayacak; fiyat limitleri Trading Post buy/sell kurallarına ait kalacak. Load için kullanıcı davranış modu seçebilecek: Load Available, Wait Until Full, Wait Until Amount, Take Exact Amount. Bu bekleme/koşul sistemi yalnızca Load tarafında olacak; Unload tarafında kullanılmayacak.
 - [2026-06-02] Caravan Master trade route yapısı çok duraklı olarak netleştirildi. Oyuncu şehirleri world map üzerinden kendisi seçecek; rota standart döngüye zorlanmayacak. Aynı şehir rota içinde tekrar edebilecek. Örnek akışlar: Ironmere → Stonebridge → Kingsport → Ironmere veya Ironmere → Stonebridge → Kingsport → Stonebridge → Ironmere.
 - [2026-05-31] Caravan Master sistemi Patrician trade route yaklaşımından ilhamla netleştirildi. Master doğrudan markete girmeyecek; Trading Post şehir içi otomasyon, Caravan Master şehirler arası depot-to-depot lojistik olarak konumlandı. Tek sabit aday yerine 3 adaylı, 30 günde yenilenen aday havuzu kararı alındı.
