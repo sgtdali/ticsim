@@ -27,6 +27,17 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Master özellikleri korunur: Hız, Kapasite, Pazarlık, Cesaret.
 - XP ve rank cap sistemi korunur.
 
+**Master ve route ataması:**
+- Bir Caravan Master aynı anda yalnızca bir aktif route yönetebilir.
+- Bir route oluşturmak için boşta bir Caravan Master seçmek zorunludur.
+- Mastersız route veya taslak route sistemi bulunmaz.
+- Bir master başka route'a atanmak istenirse önce mevcut route iptal edilir, sonra aynı master ile yeni route kurulur.
+- Route iptal davranışı aynen geçerlidir: master bulunduğu yerde idle olur ve cargo üzerinde kalır.
+- Yeni route oluşturulurken master'ın mevcut cargo'su için cargo uyumluluğu tekrar kontrol edilir.
+- Boşta master yeni route'a bulunduğu şehirden başlar.
+- Yeni route'un ilk durağı master'ın bulunduğu şehir olmak zorunda değildir.
+- Eğer ilk durak farklı şehirdeyse master önce route'un ilk durağına seyahat eder; sonra route kuralları işlemeye başlar.
+
 **Trade route yapısı:**
 - Caravan Master rotaları çok duraklı olabilir.
 - Oyuncu rota duraklarını world map üzerinden kendisi seçer.
@@ -154,6 +165,7 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 - Cargo uyumsuzluğu uyarısı kritik seviyede gösterilmeli ve oyuncu `Proceed Anyway` demeden rota aktifleşmemelidir.
 - Temporary Unload Stop / Rule normal rota duraklarından görsel olarak ayrılmalıdır.
 - Temporary Unload önerilerinde mevcut boş alan gösterilebilir; ancak oyuncuya bu alanın rezerve edilmediği açıkça belirtilmelidir.
+- Route oluşturma akışında önce boşta Caravan Master seçimi, sonra rota durakları ve kuralları gelmelidir.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
   - “Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
@@ -184,8 +196,12 @@ Geçici unload durakları oyuncuya güçlü bir kurtarma yolu sağlar; ancak nor
 **Temporary Unload rezervasyon yapmama riski**
 Temporary Unload hedefi önerildiğinde depo alanı rezerve edilmez. Başka route veya Trading Post işlemleri master hedefe varmadan alanı doldurabilir. Bu durumda unload başarısız olabilir veya partial gerçekleşebilir. Sistem bunu kabul eder; temporary unload görevi cargo tamamen boşalana kadar silinmez.
 
+**Route başlangıç ve reposition riski**
+Yeni route'un ilk durağı master'ın bulunduğu şehir olmak zorunda değildir. Bu nedenle master önce ilk durağa boş veya mevcut cargo ile reposition seyahati yapabilir. UI bu başlangıç seyahatini açık göstermelidir; aksi halde oyuncu route'un neden hemen işlem yapmadığını anlamayabilir.
+
 ## Tartışma Notları
 
+- [2026-06-02] Master-route atama kuralları netleştirildi. Bir Caravan Master aynı anda yalnızca bir aktif route yönetebilir. Route oluşturmak için boşta master seçmek zorunludur; mastersız veya taslak route sistemi olmayacak. Master başka route'a atanacaksa önce mevcut route iptal edilir, sonra yeni route kurulur. Boşta master yeni route'a bulunduğu şehirden başlar; ilk durak farklıysa master önce ilk durağa reposition seyahati yapar.
 - [2026-06-02] Temporary Unload hedef seçimi ve rezervasyon davranışı netleştirildi. Sistem en yakın uygun Trading Post'u önerir; önce cargo'yu tam boşaltabilecek post aranır, yoksa partial unload yapabilecek post önerilir. Temporary Unload önerisi depo alanı rezerve etmez; master hedefe vardığında gerçek boşluk tekrar kontrol edilir. Yer yoksa cargo master üzerinde kalır ve Temporary Unload görevi silinmeden sonraki döngüde tekrar denenir. Temporary Unload Stop/Rule oyuncu tarafından manuel silinebilir; silinirse cargo uyumluluğu yeniden kontrol edilir.
 - [2026-06-02] Canlı rota düzenlemesinde cargo uyumu kararı alındı. Master üzerindeki cargo yeni rotada Unload karşılığı bulamazsa sistem kritik uyarı verir ve oyuncu `Proceed Anyway` demeden rota aktifleşmez. Oyuncu uyumsuz cargo'yu çözmek için ilgili mal için geçici Unload durağı/kuralı ekleyebilir. Geçici unload mevcut cargo tamamen boşalınca otomatik kaldırılır; sırf bu iş için eklenen geçici durak da cargo boşalınca silinir.
 - [2026-06-02] Caravan Master rota çalışma davranışı netleştirildi. Rotalar tek seferlik değil, kullanıcı iptal edene kadar sonsuz döngü şeklinde çalışacak. İptal edildiğinde master bulunduğu yerde idle olur ve cargo üzerinde kalır. Rota canlı düzenlenebilir; ancak değişiklikler master'ı ışınlamaz, mevcut seyahati bozmaz ve master bir sonraki şehre vardığında uygulanır. Bu karar teknik risk taşıdığı için implementation aşamasında runtime route state dikkatli korunmalıdır.
