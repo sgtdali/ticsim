@@ -71,8 +71,13 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 ### 4. Güncellemeler Hakkında
 
 - Güncellemeyi tartışma bitmeden yapma — konuşma akarken dosyayı düzenleme.
-- Karar netleşince "kaydediyorum" de ve güncelle.
-- Birden fazla konu tartışıldıysa her biri için ayrı güncelleme yap.
+- Her küçük soru/cevap sonrası dosya güncellemek zorunlu değildir.
+- 3-4 net karar birikince toplu güncelleme yapılabilir.
+- Toplu güncellemede her karar kendi ilgili design dosyasına yazılmalıdır.
+- Birden fazla konu tartışıldıysa her konu kendi dosyasında güncellenir.
+- Açık soru kapanırsa hem konu dosyasından hem `_index.md` dosyasından kaldırılır.
+- Yeni açık soru veya çelişki doğarsa hem konu dosyasına hem `_index.md` dosyasına eklenir.
+- Kullanıcı açıkça kaydetmeyi isterse ilgili dosya beklemeden güncellenir.
 - `_index.md` her zaman güncel kalsın: yanıtlanan sorular silinsin, yeni sorular eklensin.
 
 ---
