@@ -31,13 +31,37 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Yapılacaklar / Implementation Senkronu
 
-- [ ] **Debt modeli kod ve mekanik dokümanla senkronize edilecek.** Yeni model: 0-30 gün rep penalty + debt fee (otomasyon çalışır); 30-60 gün daha büyük rep penalty (otomasyon hâlâ çalışır); 60. günde game over ekranı. Eski `suspended`, `unpaid`, `route pause`, `auto-trade stop` mantıklarının tamamı kaldırılmalı. `docs/mechanics.md` ve ilgili debt/Trading Post/CaravanMaster kodları bu modele göre güncellenmeli. Bkz. `trading_post.md`.
-- [ ] **Thieves Brotherhood koddan kaldırılacak.** `FactionManager.gd` içindeki `FACTIONS` dict'inden `"Thieves Brotherhood"` girdisi silinmeli. Northern Kingdom ve Merchants Guild'deki `relations` alanından da Thieves referansları temizlenmeli. Kodda başka yerlerde `"Thieves Brotherhood"` string'i geçiyorsa onlar da kaldırılmalı.
-- [ ] **Rank sistemi kodu güncellenmeli.** `RankManager.gd` içindeki rank koşullarından faksiyon rep kontrolleri kaldırılmalı (Friendly/Allied eşik kontrolleri). Koşullar gold + şehir prosperity (Growing/Prosperous) bazlı olacak şekilde yeniden yazılmalı. Bkz. `progression.md` güncel rank tablosu.
-- [ ] **Event sistemi koddan kaldırılacak.** `EventManager.gd` ve ilgili event tetikleme/uygulama kodları kaldırılmalı. Event UI bildirimleri de temizlenmeli. Tasarım referansı `economy.md`'de korunuyor.
+### Debt & Game Over
+- [ ] **PlayerData.gd: Debt sabitleri ve davranışları güncellenecek.** `DEBT_REP_PENALTY_DAYS=14` → 30 olacak. `DEBT_POST_TRADE_STOP_DAYS` ve `should_stop_trading_post_auto_trade()` kaldırılacak (auto-trade artık durmuyor). `_apply_debt_duration_penalties()` içindeki `suspend_most_valuable_post()` çağrısı kaldırılacak; 60. günde game over tetiklenecek.
+- [ ] **TradingPostManager.gd: suspended mekanik kaldırılacak.** `suspended` field, `suspend_most_valuable_post()`, `has_post()` içindeki suspended kontrolü ve `process_day()` içindeki `debt_stops_all_trade` kontrolü kaldırılacak.
+- [ ] **Game over ekranı eklenecek.** `debt_days >= 60` olunca oyunu sonlandıran bir game over ekranı/akışı oluşturulacak. Şu an hiç yok.
+
+### Rank Sistemi
+- [ ] **RankManager.gd: Faksiyon koşulları kaldırılacak.** `get_rank_requirements()` içindeki `friendly_factions` ve `allied_factions` alanları kaldırılacak. `get_progress_data()` içindeki faction sayım kodu kaldırılacak. Koşullar gold + şehir prosperity bazlı yeniden yazılacak. Bkz. `progression.md`.
+- [ ] **Thieves Brotherhood koddan kaldırılacak.** `FactionManager.gd` içindeki `FACTIONS` dict'inden `"Thieves Brotherhood"` girdisi ve diğer faksiyonların `relations` alanındaki Thieves referansları silinecek.
+
+### Event Sistemi
+- [ ] **Event sistemi koddan kaldırılacak.** `EventManager.gd` ve event tetikleme/uygulama kodları kaldırılacak. Event UI bildirimleri de temizlenecek. Tasarım referansı `economy.md`'de korunuyor.
+
+### Caravan Master — Route Kuralları
+- [ ] **CaravanMasterManager.gd: Rule type "buy"/"sell" → "load"/"unload" olacak.** Route kurallarındaki `type` field değerleri ve buna bağlı tüm `_process_stop()` mantığı Load/Unload terminolojisine taşınacak. Bkz. `trading_post.md`.
+- [ ] **CaravanMasterManager.gd: Route kurallarından price_limit kaldırılacak.** Caravan Master kuralında fiyat limiti yok; fiyat kararları Trading Post'a ait. Route rule dict'inden `price_limit` alanı ve bunu kullanan `_process_stop()` kontrolü kaldırılacak.
+- [ ] **CaravanMasterManager.gd: Load davranış modları eklenecek.** Load Available / Wait Until Full / Wait Until Amount / Take Exact Amount. Şu an sadece "depoda ne varsa al" mantığı var; bekleme/koşul modları hiç yok.
+- [ ] **CaravanMasterManager.gd: Durak çalışma sırası zorlanacak.** `_process_stop()` şu an kuralları array sırasına göre işliyor. Tasarıma göre önce tüm Unload kuralları, sonra tüm Load kuralları çalışmalı; oyuncunun ekleme sırasından bağımsız.
+
+### Caravan Master — Route Yaşam Döngüsü
+- [ ] **CaravanMasterManager.gd: Cargo uyumluluk kontrolü eklenecek.** `set_route()` ve `start_route()` sırasında master üzerinde cargo varsa yeni rotada Unload karşılığı aranacak. Yoksa kritik uyarı gösterilecek, `Proceed Anyway` olmadan rota aktifleşmeyecek. Aynı kontrol canlı düzenlemeyi de kapsayacak.
+- [ ] **CaravanMasterManager.gd: Canlı rota düzenleme davranışı düzeltilecek.** `set_route()` şu an `current_stop_index=0` yapıyor — bu master'ı ışınlar. Tasarıma göre değişiklikler master'ın bir sonraki şehre varışıyla uygulanmalı; mevcut seyahat bozulmamalı.
+- [ ] **CaravanMasterManager.gd: Reposition seyahati eklenecek.** `start_route()` sırasında ilk durak master'ın bulunduğu şehirden farklıysa master önce ilk durağa boş seyahat yapacak, sonra rota kuralları işlemeye başlayacak. Şu an yok.
+- [ ] **CaravanMasterManager.gd: Temporary Unload sistemi eklenecek.** Cargo uyumsuzluğu durumunda geçici Unload durağı/kuralı mekanizması; cargo boşalınca otomatik kaldırma; partial unload desteği. Tamamen eksik.
+
+### Caravan Master — Aday & Seviye Sistemi
+- [ ] **CaravanMasterManager.gd + CaravanMaster.gd: Aday havuzu sistemi eklenecek.** Şu an `hire_master()` tek bir master nesnesi alıyor. Tasarıma göre 3 adaylı, 30 günde yenilenen, archetype bazlı farklı stat/maliyet/wage dağılımına sahip bir aday havuzu olacak. Bkz. `trading_post.md` Master Archetype Yönleri.
+- [ ] **CaravanMaster.gd: Seviye atlayınca özellik puanı sistemi eklenecek.** `add_xp()` şu an sadece `level` artırıyor. Tasarıma göre her seviye atlamada oyuncunun harcayabileceği bir özellik puanı kazanılacak (speed/capacity/bargaining/courage'a dağıtılacak).
 
 ## Son Tartışma Notları
 
+- [2026-06-02] Caravan Master / Trading Post kod-tasarım farkları tespit edildi. Yapılacaklar listesine eklendi.
 - [2026-06-02] Event sistemi MVP'den çıkarıldı. Temel dinamizm stok/NPC/mevsimden geliyor; event'ler bu aşamada gereksiz karmaşıklık. Koddan temizlenmesi yapılacaklara eklendi. Tasarım referansı `economy.md`'de korunuyor.
 - [2026-06-02] Debt modeli yeniden tasarlandı. Eski "30 günde auto-trade durur, 60 günde suspended" ve "60 günde upkeep durur, master unpaid, route pause" kararlarının ikisi de iptal edildi. Yeni model üç bölgeli: 0-30 gün kurtarılabilir, 30-60 gün kritik ama çıkış var, 60. günde game over. Otomasyon hiçbir zaman sistem tarafından durdurulmaz. Bkz. `trading_post.md`.
 - [2026-06-02] Vergi mekaniği kapatıldı. Ayrı bir tax rate uygulanmayacak; spread + faction rep etkisi yeterli. Bkz. `economy.md`.
