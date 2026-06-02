@@ -19,7 +19,6 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Açık Sorular (Yanıtsız)
 
-- [ ] **Thieves Brotherhood'un kasabası yok.** Oyuncu bu faksiyon ile nasıl etkileşime giriyor? Rep nasıl kazanılıyor? `factions.md`
 - [ ] **NPC relation ne işe yarıyor?** Şu an kontratla artıyor ama hiçbir sistem bunu okumuyor. Kapı açacak mı, indirim mi, özel kontrat mı? `factions.md`
 - [ ] **Kaç kasaba olacak?** Şu an 3 kasaba hardcode. 4-5'e çıkma planı var mı, yoksa 3 kasaba bitiş vizyonu mu? `world.md`
 - [ ] **Oyun bitiş ekranı var mı?** Patrician'a ulaşıldığında gerçek bir bitiş sahnesi/kutlama var mı? `progression.md`
@@ -33,8 +32,10 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 ## Yapılacaklar / Implementation Senkronu
 
 - [ ] **Debt cezası kod ve mekanik dokümanla senkronize edilecek.** Tasarım kararına göre Trading Post artık debt nedeniyle suspended olmayacak ve auto-trade 30 günde durmayacak. `docs/mechanics.md` ve ilgili kodlar, özellikle eski `suspended` mantığı içerebilecek Trading Post/debt kodları, yeni modele göre güncellenmeli: 30 günde reputation penalty + debt fee, 60 günde daha büyük reputation penalty + Caravan Master unpaid status + route pause; borç kapanınca route'lar kaldığı yerden devam etmeli.
+- [ ] **Thieves Brotherhood koddan kaldırılacak.** `FactionManager.gd` içindeki `FACTIONS` dict'inden `"Thieves Brotherhood"` girdisi silinmeli. Northern Kingdom ve Merchants Guild'deki `relations` alanından da Thieves referansları temizlenmeli. Kodda başka yerlerde `"Thieves Brotherhood"` string'i geçiyorsa onlar da kaldırılmalı.
 
 ## Son Tartışma Notları
 
 - [2026-06-02] Debt cezası revize edildi. Trading Post suspended/auto-trade stop yaklaşımı tasarımda kaldırıldı. Kod ve mechanics dokümanında eski mantığın izleri olabileceği için implementation senkronu yapılacaklar listesine eklendi.
 - [2026-06-02] Vergi mekaniği kapatıldı. Ayrı bir tax rate uygulanmayacak; spread + faction rep etkisi yeterli. Bkz. `economy.md`.
+- [2026-06-02] Thieves Brotherhood kaldırıldı. Agent tarafından eklenmiş, hiçbir tasarım temeli yok. Koddan temizlenmesi yapılacaklara eklendi.
