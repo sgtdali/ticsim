@@ -27,6 +27,18 @@ Bir tasarım konusu açıldığında, ilk adım olarak ilgili `docs/design/*.md`
 
 Bunu kısa tut — kullanıcı zaten bağlamı biliyor. Amaç tartışmaya girmeden önce aynı sayfada olmak.
 
+### 1.1. Karar Kontrolü Yapmadan Soru Sorma
+
+Tasarım tartışmasında kullanıcıya soru sormadan önce ilgili design dosyasındaki mevcut kararlar mutlaka kontrol edilmelidir.
+
+- "Karar verilmiş", "Temel Rol", "Karar" veya benzeri bölümlerde cevaplanmış bir konu tekrar açık soru gibi sorulmaz.
+- Eğer konu daha önce karara bağlandıysa, önce mevcut karar hatırlatılır ve tartışma o kararın devamındaki açık noktadan sürdürülür.
+- Eğer kullanıcı daha önce verilmiş bir kararı yeniden tartışmak istiyorsa, bu açıkça "mevcut kararı revize ediyoruz" şeklinde ele alınır.
+- 1 soru / 1 cevap şeklinde ilerlenirken sorular yalnızca ilgili dosyadaki gerçek açık sorulardan, henüz karara bağlanmamış alt detaylardan veya yeni ortaya çıkan çatışmalardan seçilir.
+- Bir sorunun cevaplanmış olup olmadığından emin olunamıyorsa, önce dosyadaki mevcut karar kısa şekilde belirtilir; sonra sadece eksik kalan nokta sorulur.
+
+Amaç, önceki oturumlarda verilmiş kararları yok sayan veya kullanıcıya aynı kararı tekrar aldıran konuşma akışlarını engellemektir.
+
 ### 2. Tartışma Sırasında
 
 - Kullanıcı bir fikir önerirse: avantajları, dezavantajları ve mevcut sistemlerle çatışmaları söyle.
