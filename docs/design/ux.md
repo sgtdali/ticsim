@@ -20,6 +20,9 @@
 - Trade Routes paneli route odaklıdır; route listesi, bağlı master, status, cargo özeti ve route uyarılarını gösterir.
 - Trade Routes panelinde şehirleri, yolları, route çizgilerini ve master konumlarını gösteren interaktif mini map bulunur.
 - Mini mapte tüm aktif route'lar çizilir; seçili route güçlü şekilde vurgulanır.
+- Route çizgileri route kimliğine göre otomatik farklı renk alır; renkler taşıdığı mala göre belirlenmez.
+- Seçili route çizgisi kalınlaşır, diğer route'lar soluklaşır.
+- Seçili route'un durak sırası mini map üzerinde küçük sıra numaralarıyla gösterilir.
 - Yeni route oluştururken şehirler mini map üzerinden sırayla tıklanarak seçilir.
 
 ## Açık Sorular
@@ -49,4 +52,5 @@ Trade Routes panelinde tüm route'ların aynı anda çizilmesi lojistik ağı ok
 
 ## Tartışma Notları
 
+- [2026-06-02] Trade Routes mini map route gösterimi netleştirildi. Route çizgileri route kimliğine göre otomatik farklı renk alacak; mal bazlı renk kullanılmayacak. Seçili route kalın çizilecek, diğer route'lar soluklaşacak. Seçili route'un durak sırası küçük sıra numaralarıyla gösterilecek.
 - [2026-06-02] Trade Routes paneli world map üzerinden açılan ayrı bir yönetim paneli olarak kararlaştırıldı. Panel route odaklı olacak, içinde interaktif mini map bulunacak. Mini mapte şehirler, yollar, aktif route çizgileri ve master konumları gösterilecek. Yeni route oluştururken şehirler mini map üzerinden sırayla tıklanarak seçilecek. Mini mapte tüm route'lar görünecek, seçili route vurgulanacak.
