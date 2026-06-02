@@ -10,6 +10,7 @@
 - NPC trader'lar haritada label ile görünüyor.
 - Seyahat sırasında oyuncu kasabaya giremez, risk animasyonu var.
 - Caravan Master / Trade Route yönetimi world map üzerinden açılan ayrı `Trade Routes` panelinde yapılır.
+- Caravan Master işe alma TownUI içinden açılan ayrı `Tavern` panelinde yapılır.
 
 ## Bilgi Sunumu (Karar verilmiş)
 
@@ -24,6 +25,9 @@
 - Seçili route çizgisi kalınlaşır, diğer route'lar soluklaşır.
 - Seçili route'un durak sırası mini map üzerinde küçük sıra numaralarıyla gösterilir.
 - Yeni route oluştururken şehirler mini map üzerinden sırayla tıklanarak seçilir.
+- Tavern paneli şehirdeki Caravan Master adaylarını gösterir.
+- Tavern panelinde aday adı, archetype, hire cost, daily upkeep, Speed, Capacity, Bargain ve Courage net görünmelidir.
+- Aday yoksa Tavern paneli oyuncuya başka şehir kontrol etmesini veya daha sonra dönmesini söylemelidir.
 
 ## Açık Sorular
 
@@ -50,7 +54,11 @@ TownUI'da 7 tab var. Yeni başlayan oyuncu için bunaltıcı olabilir. Rank iler
 **Trade Routes mini map kalabalığı**
 Trade Routes panelinde tüm route'ların aynı anda çizilmesi lojistik ağı okumayı güçlendirebilir; ancak route sayısı arttıkça mini map kalabalıklaşabilir. Seçili route vurgusu güçlü olmalı; gerekirse ileride filtre/layer seçenekleri değerlendirilebilir.
 
+**Tavern aday belirsizliği**
+Caravan Master adaylarının her şehirde garanti çıkmaması arama hissi oluşturur; ancak oyuncu çok uzun süre aday bulamazsa sinir bozucu olabilir. Bu ihtimal balance aşamasında kontrol edilmelidir.
+
 ## Tartışma Notları
 
+- [2026-06-02] Caravan Master işe alma akışı TownUI içinden açılan ayrı Tavern paneline bağlandı. Tavern paneli MarketUI gibi ayrı bir panel olarak açılacak; şehir bazlı adayları gösterecek. Adaylar her zaman çıkmayacak ve aday kalitesi oyuncu rank'ına göre değişecek.
 - [2026-06-02] Trade Routes mini map route gösterimi netleştirildi. Route çizgileri route kimliğine göre otomatik farklı renk alacak; mal bazlı renk kullanılmayacak. Seçili route kalın çizilecek, diğer route'lar soluklaşacak. Seçili route'un durak sırası küçük sıra numaralarıyla gösterilecek.
 - [2026-06-02] Trade Routes paneli world map üzerinden açılan ayrı bir yönetim paneli olarak kararlaştırıldı. Panel route odaklı olacak, içinde interaktif mini map bulunacak. Mini mapte şehirler, yollar, aktif route çizgileri ve master konumları gösterilecek. Yeni route oluştururken şehirler mini map üzerinden sırayla tıklanarak seçilecek. Mini mapte tüm route'lar görünecek, seçili route vurgulanacak.
