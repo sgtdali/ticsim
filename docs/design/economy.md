@@ -40,11 +40,31 @@ NPC'ler town_buy/town_sell üzerinden işlem yapıyor — yani marginal pricing 
 ## Gerilimler
 
 **3 kasaba ekonomisinin sınırları**
-Sadece 3 kasabayla fiyat farkı az. Mira tipi careful trader'ın profitable olabileceği rotalar kısıtlı. Oyuncu hangi kasabadan alıp nereye satacağını hızlıca ezberleyebilir — dinamizm azalıyor. Bu daha fazla kasabayla mı çözülmeli, yoksa event/season varyasyonuyla mı?
+Sadece 3 kasabayla fiyat farkı az. Oyuncu hangi kasabadan alıp nereye satacağını hızlıca ezberleyebilir — dinamizm azalıyor. Şehir sayısı ilerleyen versiyonlarda artınca bu kendiliğinden çözülecek.
 
 **Bolluk spiraline karşı mekanizma**
 Oyuncu çok para kazanınca prosperity'ye yatırım yapıyor → satış bonusu artıyor → daha çok kazanıyor. Bu pozitif geri besleme döngüsünü kıran bir şey var mı? Debt+upkeep baskısı erken oyunda bunu dengeliyor ama geç oyunda?
 
+## Event Sistemi — Ertelenmiş (Referans)
+
+Event sistemi MVP kapsamından çıkarıldı. Temel ekonomi otururken gereksiz karmaşıklık katıyordu; piyasa dinamizmi stok değişimi + NPC hareketleri + mevsim çarpanlarıyla zaten sağlanıyor. İleride eklenecekse bu bölüm referans olarak kullanılabilir.
+
+**Mevcut tasarım (koddan kaldırılacak):**
+
+| Event | Etki Alanı | Fiyat | Üretim | Tüketim |
+|-------|-----------|-------|--------|---------|
+| Festival | Comfort: wine, sword, grapes vb. | ×1.6 | ×1.0 | ×2.0 |
+| Famine | Survival: wheat, bread vb. | ×3.0 | ×0.3 | ×1.5 |
+| Demand Surge | Şehrin tükettiği seçili bir mal | ×2.5 | ×1.0 | ×3.0 |
+| Bumper Crop | Şehrin ürettiği seçili bir mal | ×0.5 | ×2.5 | ×1.0 |
+| Plague | Tüm mallar | ×1.2 | ×0.4 | ×0.4 |
+
+**Notlar (ileride tasarlanacaksa):**
+- Patrician'da event'ler saf fiyat çarpanı değil, tüketim/üretim değiştirici olarak çalışıyor — bu yön daha sağlıklı.
+- Event'in anlamlı olması için oyuncunun önceden haber alıp tepki verebilmesi lazım; rastgele tetiklenip sessizce bitmemeli.
+- Event + stok etkisi çakışması çözülmeli (stok zaten 0'sa Famine x3.0 çarpanı anlamsız).
+
 ## Tartışma Notları
 
+- [2026-06-02] Event sistemi MVP'den çıkarıldı. Temel dinamizm stok/NPC/mevsimden geliyor; event'ler bu aşamada gereksiz karmaşıklık. Koddan temizlenmesi için yapılacaklara eklendi. Tasarım referansı bu dosyada korunuyor.
 - [2026-06-02] Vergi mekaniği tartışıldı. Ayrı bir tax rate uygulanmayacak. Spread zaten aynı şehirde al-sat'ı zararlı kılıyor; faction rep'in spread bonusu olarak yansıması yeterli. Kapatıldı.
