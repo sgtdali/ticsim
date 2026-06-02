@@ -45,8 +45,25 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - İptal sırasında master üzerindeki cargo korunur; otomatik boşaltma veya home post'a dönüş yapılmaz.
 - Master rota üzerindeyken rota canlı düzenlenebilir.
 - Canlı düzenleme master'ı ışınlamaz ve mevcut seyahati bozmaz.
-- Rota değişiklikleri mevcut travel leg bittikten sonra uygulanır.
+- Rota değişiklikleri master'ın bir sonraki şehre varmasıyla uygulanır; tüm eski rota turunun bitmesi beklenmez.
 - Kod tarafında canlı rota düzenleme dikkatli ele alınmalıdır; rota listesi değişirken current_stop/current_leg gibi runtime state'ler bozulmamalıdır.
+
+**Canlı rota düzenleme ve cargo uyumu:**
+- Canlı düzenleme yapıldığında master üzerindeki mevcut cargo yeni rota ile karşılaştırılır.
+- Eğer master üzerindeki bir mal için yeni rotada uygun Unload kuralı yoksa sistem kritik uyarı gösterir.
+- Bu durumda rota doğrudan aktifleşmez; oyuncu açıkça `Proceed Anyway` demeden yeni rota uygulanmaz.
+- Sistem cargo'ya otomatik dokunmaz; cargo master üzerinde kalır.
+- Oyuncu bu durumdan çıkmak için rotaya ilgili mal için bir Unload kuralı ekleyebilir.
+- Uyarı ekranı oyuncuya çözüm olarak ilgili mal için geçici boşaltma durağı/kuralı ekleme seçeneği sunmalıdır.
+
+**Temporary Unload Stop / Rule:**
+- Uyumsuz cargo durumunda oyuncu geçici boşaltma durağı veya geçici Unload kuralı ekleyebilir.
+- Geçici unload, sadece master üzerinde kalan mevcut cargo'yu temizlemek için kullanılır.
+- İlgili cargo tamamen boşalınca geçici Unload kuralı otomatik kaldırılır.
+- Eğer geçici unload için rota içine yeni bir durak eklendiyse, cargo tamamen boşalınca bu geçici durak da otomatik kaldırılır.
+- Eğer geçici Unload mevcut bir durak üzerine eklendiyse, sadece geçici kural kaldırılır; durak rotada kalır.
+- Hedef depoda yeterli yer yoksa partial unload yapılır; cargo tamamen boşalmadıysa geçici unload görevi silinmez ve sonraki uygun uğramada tekrar denenir.
+- Normal route stop ve temporary cleanup stop UI'da ayırt edilebilir olmalıdır.
 
 **Durak kural yapısı:**
 - Bir durakta birden fazla işlem kuralı olabilir.
@@ -126,6 +143,8 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 - Her durakta hangi maldan ne kadar yükleneceği/boşaltılacağı ve Load davranış modu net görünmelidir.
 - Caravan Master UI'ında fiyat limiti rota kuralı olarak girilmez.
 - Route ekranında beklenen kârlılık gösterilecekse, bu bilgi Trading Post buy/sell fiyat kurallarından türetilmelidir.
+- Cargo uyumsuzluğu uyarısı kritik seviyede gösterilmeli ve oyuncu `Proceed Anyway` demeden rota aktifleşmemelidir.
+- Temporary Unload Stop / Rule normal rota duraklarından görsel olarak ayrılmalıdır.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
   - “Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
@@ -150,9 +169,13 @@ Oyuncu bir kasabada ucuz malı bulmak isterken post buy rule'u o malı zaten alm
 **Canlı rota düzenleme teknik riski**
 Master rota üzerindeyken rota düzenlenebildiği için mevcut seyahat, current leg, current stop index ve cargo state dikkatli korunmalıdır. Değişiklikler master'ı ışınlatmamalı, mevcut travel leg'i bozmamalı ve rota state'inde tutarsızlık üretmemelidir.
 
+**Temporary Unload karmaşıklığı**
+Geçici unload durakları oyuncuya güçlü bir kurtarma yolu sağlar; ancak normal rota duraklarıyla karışırsa kafa karıştırabilir. UI'da temporary stop/rule açık işaretlenmeli ve cargo tamamen boşalınca otomatik kaldırıldığı anlaşılmalıdır.
+
 ## Tartışma Notları
 
-- [2026-06-02] Caravan Master rota çalışma davranışı netleştirildi. Rotalar tek seferlik değil, kullanıcı iptal edene kadar sonsuz döngü şeklinde çalışacak. İptal edildiğinde master bulunduğu yerde idle olur ve cargo üzerinde kalır. Rota canlı düzenlenebilir; ancak değişiklikler master'ı ışınlamaz, mevcut seyahati bozmaz ve mevcut travel leg bittikten sonra uygulanır. Bu karar teknik risk taşıdığı için implementation aşamasında runtime route state dikkatli korunmalıdır.
+- [2026-06-02] Canlı rota düzenlemesinde cargo uyumu kararı alındı. Master üzerindeki cargo yeni rotada Unload karşılığı bulamazsa sistem kritik uyarı verir ve oyuncu `Proceed Anyway` demeden rota aktifleşmez. Oyuncu uyumsuz cargo'yu çözmek için ilgili mal için geçici Unload durağı/kuralı ekleyebilir. Geçici unload mevcut cargo tamamen boşalınca otomatik kaldırılır; sırf bu iş için eklenen geçici durak da cargo boşalınca silinir.
+- [2026-06-02] Caravan Master rota çalışma davranışı netleştirildi. Rotalar tek seferlik değil, kullanıcı iptal edene kadar sonsuz döngü şeklinde çalışacak. İptal edildiğinde master bulunduğu yerde idle olur ve cargo üzerinde kalır. Rota canlı düzenlenebilir; ancak değişiklikler master'ı ışınlamaz, mevcut seyahati bozmaz ve master bir sonraki şehre vardığında uygulanır. Bu karar teknik risk taşıdığı için implementation aşamasında runtime route state dikkatli korunmalıdır.
 - [2026-06-02] Caravan Master durak yürütme kuralları netleştirildi. Unload sırasında hedef depoda yeterli alan yoksa mümkün olan kadar boşaltılır ve kalan cargo master üzerinde taşınmaya devam eder. Bir durakta çalışma sırası sistem tarafından önce Unload, sonra Load olarak uygulanır. Birden fazla Load kuralında kapasite yetmezse yükleme listedeki sıraya göre yapılır; ayrı priority alanı kullanılmaz. Aynı durakta aynı mal için hem Load hem Unload tanımlanamaz.
 - [2026-06-02] Caravan Master durak kural sistemi netleştirildi. Bir durakta birden fazla kural olabilir. İşlem adları Buy/Sell değil Load/Unload olacak. Caravan Master kuralında fiyat limiti olmayacak; fiyat limitleri Trading Post buy/sell kurallarına ait kalacak. Load için kullanıcı davranış modu seçebilecek: Load Available, Wait Until Full, Wait Until Amount, Take Exact Amount. Bu bekleme/koşul sistemi yalnızca Load tarafında olacak; Unload tarafında kullanılmayacak.
 - [2026-06-02] Caravan Master trade route yapısı çok duraklı olarak netleştirildi. Oyuncu şehirleri world map üzerinden kendisi seçecek; rota standart döngüye zorlanmayacak. Aynı şehir rota içinde tekrar edebilecek. Örnek akışlar: Ironmere → Stonebridge → Kingsport → Ironmere veya Ironmere → Stonebridge → Kingsport → Stonebridge → Ironmere.
