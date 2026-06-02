@@ -43,6 +43,7 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Unload: Master'ın taşıdığı malı ilgili Trading Post deposuna bırakmasıdır.
 - Buy/Sell ifadeleri Caravan Master UI'ında kullanılmamalıdır; bunlar Trading Post'un market işlemleriyle karışır.
 - Unload tarafında bekleme/koşul modu bulunmaz; hedef depoya kapasite izin verdiği ölçüde mal bırakılır.
+- Aynı durakta aynı mal için hem Load hem Unload kuralı tanımlanamaz. Gerekirse oyuncu aynı şehri rota içinde ikinci kez ekleyebilir.
 
 **Load davranış modları:**
 - Load Available: Depoda ne varsa, kapasite ve max miktar sınırına kadar yükler; beklemez.
@@ -51,6 +52,13 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Take Exact Amount: Belirlenen adedi yükler; o adet yoksa bekler, daha fazlasını almaz.
 - Load davranış modu sadece Load kuralları için geçerlidir; Unload kurallarında kullanılmaz.
 - Varsayılan Load modu: Load Available. Bu mod rota kilitlenme riskini azaltır.
+
+**Durak çalışma sırası ve kapasite davranışı:**
+- Master bir durağa geldiğinde önce Unload kuralları, sonra Load kuralları çalışır.
+- Oyuncu UI'da farklı sırada görse veya eklese bile çalışma sırası sistem tarafından önce Unload, sonra Load olarak uygulanır.
+- Unload sırasında hedef depoda yeterli boş alan yoksa mümkün olan kadar mal bırakılır; kalan mal master üzerinde kalır ve rota devam eder.
+- Birden fazla Load kuralı varsa ve master kapasitesi hepsine yetmiyorsa, Load kuralları listedeki sıraya göre çalışır.
+- Load kurallarında ayrıca priority alanı kullanılmaz; oyuncu önceliği kural sırasını değiştirerek belirler.
 
 **Master özellikleri (1-5 arası, seviye atladıkça):**
 - Hız: -%10/puan (max -%40 seyahat süresi)
@@ -129,6 +137,7 @@ Oyuncu bir kasabada ucuz malı bulmak isterken post buy rule'u o malı zaten alm
 
 ## Tartışma Notları
 
+- [2026-06-02] Caravan Master durak yürütme kuralları netleştirildi. Unload sırasında hedef depoda yeterli alan yoksa mümkün olan kadar boşaltılır ve kalan cargo master üzerinde taşınmaya devam eder. Bir durakta çalışma sırası sistem tarafından önce Unload, sonra Load olarak uygulanır. Birden fazla Load kuralında kapasite yetmezse yükleme listedeki sıraya göre yapılır; ayrı priority alanı kullanılmaz. Aynı durakta aynı mal için hem Load hem Unload tanımlanamaz.
 - [2026-06-02] Caravan Master durak kural sistemi netleştirildi. Bir durakta birden fazla kural olabilir. İşlem adları Buy/Sell değil Load/Unload olacak. Caravan Master kuralında fiyat limiti olmayacak; fiyat limitleri Trading Post buy/sell kurallarına ait kalacak. Load için kullanıcı davranış modu seçebilecek: Load Available, Wait Until Full, Wait Until Amount, Take Exact Amount. Bu bekleme/koşul sistemi yalnızca Load tarafında olacak; Unload tarafında kullanılmayacak.
 - [2026-06-02] Caravan Master trade route yapısı çok duraklı olarak netleştirildi. Oyuncu şehirleri world map üzerinden kendisi seçecek; rota standart döngüye zorlanmayacak. Aynı şehir rota içinde tekrar edebilecek. Örnek akışlar: Ironmere → Stonebridge → Kingsport → Ironmere veya Ironmere → Stonebridge → Kingsport → Stonebridge → Ironmere.
 - [2026-05-31] Caravan Master sistemi Patrician trade route yaklaşımından ilhamla netleştirildi. Master doğrudan markete girmeyecek; Trading Post şehir içi otomasyon, Caravan Master şehirler arası depot-to-depot lojistik olarak konumlandı. Tek sabit aday yerine 3 adaylı, 30 günde yenilenen aday havuzu kararı alındı.
