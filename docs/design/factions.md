@@ -16,7 +16,7 @@
 - Satış geliri: rep bonusu satış çarpanına ekleniyor.
 - Rival penalty: bir faksiyon ile ticaret yaptığında, onun negatif ilişkili faksiyonun rep'i -%30 oranında düşüyor.
 - Tax rate: rep'e bağlı hesaplanıyor (formül var) ama şu an gerçek al-sat fiyatını etkilemiyor — spread üzerinden zaten etkisi var, bunun üstüne ayrı bir vergi yok.
-- Progression: Friendly (≥30) Trader/Merchant/Guild Master için, Allied (≥60) Patrician için gerekli.
+- **Rep artık rank koşulu değildir.** Rep yalnızca alım/satım spread bonusu olarak işlev görür. Rank sistemi gold + şehir prosperity koşullarına bağlıdır.
 
 **NPC relation:**
 - Kontrat tamamlandığında ilgili NPC ile relation artıyor.
@@ -34,8 +34,9 @@ Değer birikiyor ama oyunda kullanılmıyor. Olası tasarımlar:
 ## Gerilimler
 
 **Merchants Guild iki kasabada**
-Ironmere ve Stonebridge ikisi de Merchants Guild faksiyonu. Bu iki kasabayla ticaret, tek faksiyonun reputasyonunu artırıyor. Northern Kingdom sadece Ashford'da. Erken oyundan itibaren Merchants Guild rep kazanmak çok kolay, Northern Kingdom için sadece Ashford var. Bu faksiyon dengesi isteniyor mu?
+Ironmere ve Stonebridge ikisi de Merchants Guild faksiyonu. Bu iki kasabayla ticaret, tek faksiyonun reputasyonunu artırıyor. Northern Kingdom sadece Ashford'da. Rep artık rank kapısı olmadığı için bu asimetri daha az kritik — ancak rep bonusu optimizasyonu açısından Merchants Guild hâlâ çok daha kolay kazanılıyor.
 
 ## Tartışma Notları
 
 - [2026-06-02] Thieves Brotherhood kaldırılmasına karar verildi. Agent tarafından eklenmiş, hiçbir tasarım temeli yok. Koddan temizlenmesi için yapılacaklara eklendi.
+- [2026-06-02] Rep rank koşulu kaldırıldı. Rank sistemi artık gold + şehir prosperity bazlı çalışıyor. Rep yalnızca spread bonusu olarak kalıyor. Bkz. `progression.md`.
