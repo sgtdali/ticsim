@@ -47,6 +47,17 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Rota ister geri dönüşlü/tekrar duraklı olabilir: `Ironmere Post → Stonebridge Post → Kingsport Post → Stonebridge Post → Ironmere Post`.
 - Sistem oyuncuya lojistik hattın şeklini kurma özgürlüğü vermelidir; UI durak sırasını açıkça göstermelidir.
 
+**Trade Routes Panel UI:**
+- Caravan Master / Trade Route yönetimi TownUI içinden değil, world map üzerinden açılan ayrı bir `Trade Routes` panelinden yapılır.
+- TownUI / Post tab yalnızca ilgili şehrin Trading Post kuralları için kullanılır.
+- Trade Routes panelinin ana görünümü route odaklıdır; master route'un atanmış çalışanı gibi görünür.
+- Ana listede route adı, bağlı master, status, cargo özeti ve gerekirse uyarılar gösterilmelidir.
+- Panelde ana haritanın küçültülmüş interaktif bir versiyonu bulunmalıdır.
+- Mini map üzerinde şehirler, yollar, aktif route çizgileri ve Caravan Master konumları görünmelidir.
+- Yeni route oluştururken oyuncu şehirleri mini map üzerinden sırayla tıklayarak route stop'ları oluşturur.
+- Mini map üzerinde tüm aktif route'lar çizilir; seçili route diğerlerinden daha belirgin şekilde vurgulanır.
+- Seçili route'un stop sırası, yönü ve mevcut master konumu mini map üzerinde açıkça okunmalıdır.
+
 **Rota çalışma davranışı:**
 - Caravan Master rotaları sonsuz döngü şeklinde çalışır.
 - Son duraktan sonra master tekrar ilk durağa döner ve rota devam eder.
@@ -166,6 +177,7 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 - Temporary Unload Stop / Rule normal rota duraklarından görsel olarak ayrılmalıdır.
 - Temporary Unload önerilerinde mevcut boş alan gösterilebilir; ancak oyuncuya bu alanın rezerve edilmediği açıkça belirtilmelidir.
 - Route oluşturma akışında önce boşta Caravan Master seçimi, sonra rota durakları ve kuralları gelmelidir.
+- Trade Routes panelinde mini map ile route listesi birbirini desteklemelidir: listede seçilen route mini map üzerinde vurgulanmalı, mini mapten seçilen route listede aktif hale gelmelidir.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
   - “Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
@@ -199,8 +211,12 @@ Temporary Unload hedefi önerildiğinde depo alanı rezerve edilmez. Başka rout
 **Route başlangıç ve reposition riski**
 Yeni route'un ilk durağı master'ın bulunduğu şehir olmak zorunda değildir. Bu nedenle master önce ilk durağa boş veya mevcut cargo ile reposition seyahati yapabilir. UI bu başlangıç seyahatini açık göstermelidir; aksi halde oyuncu route'un neden hemen işlem yapmadığını anlamayabilir.
 
+**Mini map kalabalığı**
+Trade Routes panelinde tüm aktif route'lar mini map üzerinde çizilecektir. Route sayısı arttıkça harita kalabalıklaşabilir. Seçili route vurgusu güçlü olmalı; gerekirse ileride filtre/layer seçenekleri değerlendirilebilir.
+
 ## Tartışma Notları
 
+- [2026-06-02] Trade Routes UI kararları alındı. Caravan Master / Trade Route yönetimi world map üzerinden açılan ayrı bir panelden yapılacak; TownUI/Post tab şehir içi Trading Post kuralları için kalacak. Panel ana görünümü route odaklı olacak. Panel içinde şehirleri, yolları, aktif route çizgilerini ve master konumlarını gösteren interaktif mini map bulunacak. Yeni route şehirleri mini map üzerinden tıklanarak oluşturulacak. Mini mapte tüm route'lar çizilecek, seçili route güçlü şekilde vurgulanacak.
 - [2026-06-02] Master-route atama kuralları netleştirildi. Bir Caravan Master aynı anda yalnızca bir aktif route yönetebilir. Route oluşturmak için boşta master seçmek zorunludur; mastersız veya taslak route sistemi olmayacak. Master başka route'a atanacaksa önce mevcut route iptal edilir, sonra yeni route kurulur. Boşta master yeni route'a bulunduğu şehirden başlar; ilk durak farklıysa master önce ilk durağa reposition seyahati yapar.
 - [2026-06-02] Temporary Unload hedef seçimi ve rezervasyon davranışı netleştirildi. Sistem en yakın uygun Trading Post'u önerir; önce cargo'yu tam boşaltabilecek post aranır, yoksa partial unload yapabilecek post önerilir. Temporary Unload önerisi depo alanı rezerve etmez; master hedefe vardığında gerçek boşluk tekrar kontrol edilir. Yer yoksa cargo master üzerinde kalır ve Temporary Unload görevi silinmeden sonraki döngüde tekrar denenir. Temporary Unload Stop/Rule oyuncu tarafından manuel silinebilir; silinirse cargo uyumluluğu yeniden kontrol edilir.
 - [2026-06-02] Canlı rota düzenlemesinde cargo uyumu kararı alındı. Master üzerindeki cargo yeni rotada Unload karşılığı bulamazsa sistem kritik uyarı verir ve oyuncu `Proceed Anyway` demeden rota aktifleşmez. Oyuncu uyumsuz cargo'yu çözmek için ilgili mal için geçici Unload durağı/kuralı ekleyebilir. Geçici unload mevcut cargo tamamen boşalınca otomatik kaldırılır; sırf bu iş için eklenen geçici durak da cargo boşalınca silinir.
