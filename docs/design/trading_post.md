@@ -36,6 +36,18 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Rota ister geri dönüşlü/tekrar duraklı olabilir: `Ironmere Post → Stonebridge Post → Kingsport Post → Stonebridge Post → Ironmere Post`.
 - Sistem oyuncuya lojistik hattın şeklini kurma özgürlüğü vermelidir; UI durak sırasını açıkça göstermelidir.
 
+**Rota çalışma davranışı:**
+- Caravan Master rotaları sonsuz döngü şeklinde çalışır.
+- Son duraktan sonra master tekrar ilk durağa döner ve rota devam eder.
+- Tek seferlik rota modu bulunmaz; tek seferlik taşıma kullanıcı tarafından manuel yapılır.
+- Rota kullanıcı iptal edene kadar çalışmaya devam eder.
+- Rota iptal edildiğinde master bulunduğu yerde idle olur.
+- İptal sırasında master üzerindeki cargo korunur; otomatik boşaltma veya home post'a dönüş yapılmaz.
+- Master rota üzerindeyken rota canlı düzenlenebilir.
+- Canlı düzenleme master'ı ışınlamaz ve mevcut seyahati bozmaz.
+- Rota değişiklikleri mevcut travel leg bittikten sonra uygulanır.
+- Kod tarafında canlı rota düzenleme dikkatli ele alınmalıdır; rota listesi değişirken current_stop/current_leg gibi runtime state'ler bozulmamalıdır.
+
 **Durak kural yapısı:**
 - Bir durakta birden fazla işlem kuralı olabilir.
 - İşlem adları Buy/Sell değil, Load/Unload olacaktır.
@@ -130,13 +142,17 @@ Debt 60 günde post suspended olunca oyuncu onu tekrar açmak için 300 gold dah
 ## Gerilimler
 
 **Otomasyon karmaşıklığı**
-Post buy/sell kuralları + master route kuralları + Load davranış modları + master özellik sistemi birlikte oldukça derin. Erken oyuncunun bunu kavraması zor olabilir. Çözüm yönü: UI'da otomasyon zinciri, rota durakları, mal miktarları, Load davranışı ve beklenen margin açık gösterilmeli.
+Post buy/sell kuralları + master route kuralları + Load davranış modları + canlı rota düzenleme + master özellik sistemi birlikte oldukça derin. Erken oyuncunun bunu kavraması zor olabilir. Çözüm yönü: UI'da otomasyon zinciri, rota durakları, mal miktarları, Load davranışı ve beklenen margin açık gösterilmeli.
 
 **Master ve player yarışması**
 Oyuncu bir kasabada ucuz malı bulmak isterken post buy rule'u o malı zaten almış olabilir. Ya da tam tersi — master bir malı taşırken oyuncu onu başka yere satmak isteyebilir. Bu çatışma kasıtlı mı (kaynak yönetimi), rahatsız edici mi?
 
+**Canlı rota düzenleme teknik riski**
+Master rota üzerindeyken rota düzenlenebildiği için mevcut seyahat, current leg, current stop index ve cargo state dikkatli korunmalıdır. Değişiklikler master'ı ışınlatmamalı, mevcut travel leg'i bozmamalı ve rota state'inde tutarsızlık üretmemelidir.
+
 ## Tartışma Notları
 
+- [2026-06-02] Caravan Master rota çalışma davranışı netleştirildi. Rotalar tek seferlik değil, kullanıcı iptal edene kadar sonsuz döngü şeklinde çalışacak. İptal edildiğinde master bulunduğu yerde idle olur ve cargo üzerinde kalır. Rota canlı düzenlenebilir; ancak değişiklikler master'ı ışınlamaz, mevcut seyahati bozmaz ve mevcut travel leg bittikten sonra uygulanır. Bu karar teknik risk taşıdığı için implementation aşamasında runtime route state dikkatli korunmalıdır.
 - [2026-06-02] Caravan Master durak yürütme kuralları netleştirildi. Unload sırasında hedef depoda yeterli alan yoksa mümkün olan kadar boşaltılır ve kalan cargo master üzerinde taşınmaya devam eder. Bir durakta çalışma sırası sistem tarafından önce Unload, sonra Load olarak uygulanır. Birden fazla Load kuralında kapasite yetmezse yükleme listedeki sıraya göre yapılır; ayrı priority alanı kullanılmaz. Aynı durakta aynı mal için hem Load hem Unload tanımlanamaz.
 - [2026-06-02] Caravan Master durak kural sistemi netleştirildi. Bir durakta birden fazla kural olabilir. İşlem adları Buy/Sell değil Load/Unload olacak. Caravan Master kuralında fiyat limiti olmayacak; fiyat limitleri Trading Post buy/sell kurallarına ait kalacak. Load için kullanıcı davranış modu seçebilecek: Load Available, Wait Until Full, Wait Until Amount, Take Exact Amount. Bu bekleme/koşul sistemi yalnızca Load tarafında olacak; Unload tarafında kullanılmayacak.
 - [2026-06-02] Caravan Master trade route yapısı çok duraklı olarak netleştirildi. Oyuncu şehirleri world map üzerinden kendisi seçecek; rota standart döngüye zorlanmayacak. Aynı şehir rota içinde tekrar edebilecek. Örnek akışlar: Ironmere → Stonebridge → Kingsport → Ironmere veya Ironmere → Stonebridge → Kingsport → Stonebridge → Ironmere.
