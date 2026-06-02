@@ -13,6 +13,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 | [world.md](world.md) | Kasabalar, harita, seyahat, dünya büyümesi |
 | [contracts.md](contracts.md) | Kontrat tipleri, zorluk dengesi, ödül tasarımı |
 | [trading_post.md](trading_post.md) | Trading Post + Caravan Master sistemi |
+| [caravan_master_hiring.md](caravan_master_hiring.md) | Caravan Master adayları, şehir bazlı Tavern işe alma sistemi |
 | [ux.md](ux.md) | Oyuncu akışı, bilgi sunumu, UI kararları |
 
 ---
@@ -37,4 +38,5 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Son Tartışma Notları
 
+- [2026-06-02] Caravan Master işe alma sistemi şehir bazlı Tavern / Inn modeli olarak kararlaştırıldı. Adaylar global Trade Routes panelinden işe alınmayacak; TownUI içinden açılan ayrı Tavern panelinde görünecek. Aday çıkması garanti olmayacak ve aday kalitesi oyuncu rank'ına göre değişecek.
 - [2026-06-02] Debt cezası revize edildi. Trading Post suspended/auto-trade stop yaklaşımı tasarımda kaldırıldı. Kod ve mechanics dokümanında eski mantığın izleri olabileceği için implementation senkronu yapılacaklar listesine eklendi.
