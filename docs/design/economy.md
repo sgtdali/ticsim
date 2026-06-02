@@ -11,6 +11,7 @@
 - Faction rep alım maliyetini düşürüyor, satış gelirini artırıyor. Hem ödül hem progression bağlantısı.
 - Prosperity da satışa bonus veriyor (%30 oranında etki).
 - Satış çarpanı her zaman alım çarpanının en az %3 altında — aynı şehirde anında al-sat kâr edilemiyor.
+- **Vergi ayrı bir mekanik olarak uygulanmıyor.** Spread zaten aynı şehirde al-sat'ı zararlı kılıyor; faction rep'in spread üzerindeki etkisi bu amacı karşılıyor. Kasıtlı tasarım seçimi.
 
 ## Üretim Sistemi (Karar verilmiş)
 
@@ -26,9 +27,6 @@
 - Slot ve production upgrade alımı hem üretim hem stok cap'i artırıyor.
 
 ## Açık Sorular
-
-**Vergi mekanik olarak uygulanacak mı?**
-Şu an faction rep spread'i etkiliyor (daha iyi rep = daha düşük alım maliyeti). Buna ek olarak ayrı bir "tax rate" mekanik olarak uygulanacak mı? mechanics.md şu an bunu "altyapı/bilgi seviyesinde" diye tanımlıyor.
 
 **Mevsim görünürlüğü**
 Mevsim çarpanları kodda var ve fiyatları etkiliyor. Ama oyuncu hangi mevsimde olduğunu ve hangi malı etkilediğini UI'dan görebiliyor mu? Şu an net değil. Bu bilgiyi oyuncuya sunmak lazım mı?
@@ -49,4 +47,4 @@ Oyuncu çok para kazanınca prosperity'ye yatırım yapıyor → satış bonusu 
 
 ## Tartışma Notları
 
-*(Boş — ekonomi ilk tartışma konusu olarak seçildi, burası dolacak)*
+- [2026-06-02] Vergi mekaniği tartışıldı. Ayrı bir tax rate uygulanmayacak. Spread zaten aynı şehirde al-sat'ı zararlı kılıyor; faction rep'in spread bonusu olarak yansıması yeterli. Kapatıldı.
