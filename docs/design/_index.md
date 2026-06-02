@@ -31,13 +31,13 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Yapılacaklar / Implementation Senkronu
 
-- [ ] **Debt cezası kod ve mekanik dokümanla senkronize edilecek.** Tasarım kararına göre Trading Post artık debt nedeniyle suspended olmayacak ve auto-trade 30 günde durmayacak. `docs/mechanics.md` ve ilgili kodlar, özellikle eski `suspended` mantığı içerebilecek Trading Post/debt kodları, yeni modele göre güncellenmeli: 30 günde reputation penalty + debt fee, 60 günde daha büyük reputation penalty + Caravan Master unpaid status + route pause; borç kapanınca route'lar kaldığı yerden devam etmeli.
+- [ ] **Debt modeli kod ve mekanik dokümanla senkronize edilecek.** Yeni model: 0-30 gün rep penalty + debt fee (otomasyon çalışır); 30-60 gün daha büyük rep penalty (otomasyon hâlâ çalışır); 60. günde game over ekranı. Eski `suspended`, `unpaid`, `route pause`, `auto-trade stop` mantıklarının tamamı kaldırılmalı. `docs/mechanics.md` ve ilgili debt/Trading Post/CaravanMaster kodları bu modele göre güncellenmeli. Bkz. `trading_post.md`.
 - [ ] **Thieves Brotherhood koddan kaldırılacak.** `FactionManager.gd` içindeki `FACTIONS` dict'inden `"Thieves Brotherhood"` girdisi silinmeli. Northern Kingdom ve Merchants Guild'deki `relations` alanından da Thieves referansları temizlenmeli. Kodda başka yerlerde `"Thieves Brotherhood"` string'i geçiyorsa onlar da kaldırılmalı.
 - [ ] **Rank sistemi kodu güncellenmeli.** `RankManager.gd` içindeki rank koşullarından faksiyon rep kontrolleri kaldırılmalı (Friendly/Allied eşik kontrolleri). Koşullar gold + şehir prosperity (Growing/Prosperous) bazlı olacak şekilde yeniden yazılmalı. Bkz. `progression.md` güncel rank tablosu.
 
 ## Son Tartışma Notları
 
-- [2026-06-02] Debt cezası revize edildi. Trading Post suspended/auto-trade stop yaklaşımı tasarımda kaldırıldı. Kod ve mechanics dokümanında eski mantığın izleri olabileceği için implementation senkronu yapılacaklar listesine eklendi.
+- [2026-06-02] Debt modeli yeniden tasarlandı. Eski "30 günde auto-trade durur, 60 günde suspended" ve "60 günde upkeep durur, master unpaid, route pause" kararlarının ikisi de iptal edildi. Yeni model üç bölgeli: 0-30 gün kurtarılabilir, 30-60 gün kritik ama çıkış var, 60. günde game over. Otomasyon hiçbir zaman sistem tarafından durdurulmaz. Bkz. `trading_post.md`.
 - [2026-06-02] Vergi mekaniği kapatıldı. Ayrı bir tax rate uygulanmayacak; spread + faction rep etkisi yeterli. Bkz. `economy.md`.
 - [2026-06-02] Thieves Brotherhood kaldırıldı. Agent tarafından eklenmiş, hiçbir tasarım temeli yok. Koddan temizlenmesi yapılacaklara eklendi.
 - [2026-06-02] Rank sistemi sadeleştirildi. Faksiyon rep koşulu tamamen kaldırıldı; rank artık gold + şehir prosperity bazlı. Rep yalnızca spread bonusu olarak kalıyor. RankManager.gd güncellenmesi yapılacaklara eklendi.
