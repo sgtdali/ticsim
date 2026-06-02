@@ -26,6 +26,15 @@ Her rule her gün bir status alır (active, waiting_price, waiting_stock, waitin
 - Master özellikleri korunur: Hız, Kapasite, Pazarlık, Cesaret.
 - XP ve rank cap sistemi korunur.
 
+**Trade route yapısı:**
+- Caravan Master rotaları çok duraklı olabilir.
+- Oyuncu rota duraklarını world map üzerinden kendisi seçer.
+- Rota otomatik olarak standart döngüye zorlanmaz; durak sırası tamamen oyuncu kararına bağlıdır.
+- Aynı şehir rota içinde birden fazla kez yer alabilir.
+- Rota ister basit döngü olabilir: `Ironmere Post → Stonebridge Post → Kingsport Post → Ironmere Post`.
+- Rota ister geri dönüşlü/tekrar duraklı olabilir: `Ironmere Post → Stonebridge Post → Kingsport Post → Stonebridge Post → Ironmere Post`.
+- Sistem oyuncuya lojistik hattın şeklini kurma özgürlüğü vermelidir; UI durak sırasını açıkça göstermelidir.
+
 **Master özellikleri (1-5 arası, seviye atladıkça):**
 - Hız: -%10/puan (max -%40 seyahat süresi)
 - Kapasite: 15 + 5/puan
@@ -101,4 +110,5 @@ Oyuncu bir kasabada ucuz malı bulmak isterken post buy rule'u o malı zaten alm
 
 ## Tartışma Notları
 
+- [2026-06-02] Caravan Master trade route yapısı çok duraklı olarak netleştirildi. Oyuncu şehirleri world map üzerinden kendisi seçecek; rota standart döngüye zorlanmayacak. Aynı şehir rota içinde tekrar edebilecek. Örnek akışlar: Ironmere → Stonebridge → Kingsport → Ironmere veya Ironmere → Stonebridge → Kingsport → Stonebridge → Ironmere.
 - [2026-05-31] Caravan Master sistemi Patrician trade route yaklaşımından ilhamla netleştirildi. Master doğrudan markete girmeyecek; Trading Post şehir içi otomasyon, Caravan Master şehirler arası depot-to-depot lojistik olarak konumlandı. Tek sabit aday yerine 3 adaylı, 30 günde yenilenen aday havuzu kararı alındı.
