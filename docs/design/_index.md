@@ -31,6 +31,10 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - **Patrician upkeep sıfır.** Kazandıktan sonra baskı kalkmış — ama oyun zaten bitiyor. Bu tutarlı. `progression.md`
 - **Mevsim çarpanları var ama UI'da görünür değil.** Oyuncu mevsim etkisini fark edemiyor. `economy.md`
 
+## Yapılacaklar / Implementation Senkronu
+
+- [ ] **Debt cezası kod ve mekanik dokümanla senkronize edilecek.** Tasarım kararına göre Trading Post artık debt nedeniyle suspended olmayacak ve auto-trade 30 günde durmayacak. `docs/mechanics.md` ve ilgili kodlar, özellikle eski `suspended` mantığı içerebilecek Trading Post/debt kodları, yeni modele göre güncellenmeli: 30 günde reputation penalty + debt fee, 60 günde daha büyük reputation penalty + Caravan Master unpaid status + route pause; borç kapanınca route'lar kaldığı yerden devam etmeli.
+
 ## Son Tartışma Notları
 
-*(Her tartışma sonrası buraya özet eklenir)*
+- [2026-06-02] Debt cezası revize edildi. Trading Post suspended/auto-trade stop yaklaşımı tasarımda kaldırıldı. Kod ve mechanics dokümanında eski mantığın izleri olabileceği için implementation senkronu yapılacaklar listesine eklendi.
