@@ -5,7 +5,7 @@
 - Açılış: Merchant rank, 300 gold.
 - Depo kapasitesi: 50 birim.
 - Upkeep: 8 gold/gün.
-- Debt 30 günde auto-trade durur. 60 günde en değerli post suspended olur.
+- Debt cezası artık Trading Post'u suspended hale getirmez ve mevcut Post/Route ağını bozmaz. Debt cezası ayrı debt modeli üzerinden uygulanır.
 - Trading Post şehir içi market otomasyonudur: bulunduğu şehirde market ile oyuncu deposu arasında al/sat kurallarını işletir.
 
 **Otomasyon mantığı:**
@@ -13,6 +13,25 @@ Buy rule: fiyat limitin altındaysa + depot_limit dolmadıysa + markette stok va
 Sell rule: fiyat limitin üstündeyse + depot_limit aşıldıysa + markette yer varsa → satar.
 
 Her rule her gün bir status alır (active, waiting_price, waiting_stock, waiting_market, depot_full, depot_empty). Sadece active olanlar işlem yapar.
+
+## Debt ve Otomasyon Cezası (Karar verilmiş)
+
+Eski karar olan `Debt 30 günde auto-trade durur, 60 günde en değerli post suspended olur` kaldırılmıştır.
+
+Yeni debt cezası mevcut Trading Post ve Caravan Master ağını kırmayacak şekilde çalışmalıdır.
+
+- Debt 30 gün sürerse Trading Post auto-trade durmaz.
+- Debt 30 gün sürerse Trading Post suspended olmaz.
+- Debt 30 gün sürerse reputation penalty uygulanır.
+- Debt 30 gün sürerse debt fee artar.
+- Debt 60 gün sürerse daha büyük reputation penalty uygulanır.
+- Debt 60 gün sürerse Caravan Master'lar `unpaid` status alır.
+- Debt 60 gün sürerse Caravan Master route'ları pause olur.
+- Borç kapatılınca unpaid status kalkar ve route'lar kaldığı yerden devam eder.
+- Debt cezası mevcut Trading Post depolarını, mevcut route stop'larını, mevcut cargo'yu, Temporary Unload sistemini veya route validity yapısını otomatik bozmaz.
+- Reputation penalty ve debt fee için numeric değerler balance aşamasında netleştirilecektir.
+
+Bu değişikliğin nedeni: Trading Post artık Caravan Master, depot, route, cargo uyumu ve Temporary Unload sisteminin merkez düğümüdür. Debt yüzünden bir Trading Post'u kapatmak çok fazla edge-case ve entegrasyon problemi üretir.
 
 ## Caravan Master Temel Rolü (Karar verilmiş)
 
@@ -185,6 +204,7 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 - Route çizgileri otomatik farklı renkler kullanmalı; mal bazlı renk kullanılmamalıdır.
 - Seçili route kalın çizilmeli, diğer route'lar soluklaştırılmalıdır.
 - Seçili route'un durak sırası küçük sıra numaralarıyla gösterilmelidir.
+- Debt nedeniyle Trading Post suspended olmadığından, debt uyarıları Post/Route UI'ını bozacak şekilde değil global finance/debt uyarısı olarak gösterilmelidir.
 - Oyuncuya otomasyon zinciri açıkça gösterilmelidir.
 - Örnek okunabilir zincir:
   - “Ironmere Post buys Bread under 22g → Master loads Bread from Ironmere → Master unloads Bread at Stonebridge → Stonebridge Post sells Bread over 31g → Expected margin: +9g/unit”
@@ -194,9 +214,6 @@ Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tari
 
 **Post+Master koordinasyonu okunabilirliği**
 Trading Post buy rule mal satın alıp depoya koyuyor. Caravan Master da depodaki malı başka depoya taşıyor. Bu iki sistem ayrı UI'dan yönetiliyor. Oyuncu bu zinciri zihinsel olarak kurabilmeli; zincir ve beklenen margin yeterince görünür mü?
-
-**Suspend sonrası yeniden açış**
-Debt 60 günde post suspended olunca oyuncu onu tekrar açmak için 300 gold daha ödemek zorunda mı? Evet — bu recover yolunu kasıtlı olarak zorlaştırıyor.
 
 ## Gerilimler
 
@@ -221,8 +238,12 @@ Yeni route'un ilk durağı master'ın bulunduğu şehir olmak zorunda değildir.
 **Mini map kalabalığı**
 Trade Routes panelinde tüm aktif route'lar mini map üzerinde çizilecektir. Route sayısı arttıkça harita kalabalıklaşabilir. Route bazlı renkler, seçili route kalınlığı ve diğer route'ların soluklaştırılması okunabilirliği artırmalıdır. Gerekirse ileride filtre/layer seçenekleri değerlendirilebilir.
 
+**Debt ile otomasyon ağı çakışması**
+Debt cezasının Trading Post veya route ağını doğrudan bozması çok fazla edge-case üretir. Bu yüzden debt cezası mevcut ağın çalışmasını mümkün olduğunca korumalı; ceza reputation, debt fee ve uzun vadede master unpaid/route pause üzerinden uygulanmalıdır.
+
 ## Tartışma Notları
 
+- [2026-06-02] Debt cezası revize edildi. Eski `30 günde auto-trade durur, 60 günde en değerli Trading Post suspended olur` kararı kaldırıldı. Yeni modelde debt 30 gün sürerse reputation penalty ve debt fee artışı uygulanacak; Trading Post auto-trade durmayacak ve post suspended olmayacak. Debt 60 gün sürerse daha büyük reputation penalty uygulanacak, Caravan Master'lar unpaid status alacak ve route'lar pause olacak. Borç kapatılınca route'lar kaldığı yerden devam edecek. Numeric penalty değerleri balance aşamasında netleştirilecek.
 - [2026-06-02] Trade Routes mini map route gösterimi netleştirildi. Route çizgileri route kimliğine göre otomatik farklı renk alacak; mal bazlı renk kullanılmayacak. Seçili route kalın çizilecek, diğer route'lar soluklaşacak. Seçili route'un durak sırası küçük sıra numaralarıyla gösterilecek. Ok, animasyonlu çizgi veya hareket efekti şimdilik kullanılmayacak.
 - [2026-06-02] Trade Routes UI kararları alındı. Caravan Master / Trade Route yönetimi world map üzerinden açılan ayrı bir panelden yapılacak; TownUI/Post tab şehir içi Trading Post kuralları için kalacak. Panel ana görünümü route odaklı olacak. Panel içinde şehirleri, yolları, aktif route çizgilerini ve master konumlarını gösteren interaktif mini map bulunacak. Yeni route şehirleri mini map üzerinden tıklanarak oluşturulacak. Mini mapte tüm route'lar çizilecek, seçili route güçlü şekilde vurgulanacak.
 - [2026-06-02] Master-route atama kuralları netleştirildi. Bir Caravan Master aynı anda yalnızca bir aktif route yönetebilir. Route oluşturmak için boşta master seçmek zorunludur; mastersız veya taslak route sistemi olmayacak. Master başka route'a atanacaksa önce mevcut route iptal edilir, sonra yeni route kurulur. Boşta master yeni route'a bulunduğu şehirden başlar; ilk durak farklıysa master önce ilk durağa reposition seyahati yapar.
