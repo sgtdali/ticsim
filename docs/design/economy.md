@@ -80,6 +80,62 @@ sword:
 - NPC trader'lar fiyatı sadece gerçek stok işlemleriyle etkiler. NPC alımı stok azaltır, NPC satışı stok artırır.
 - Marginal pricing herkes için geçerlidir: manuel oyuncu işlemleri, Trading Post, Caravan Master ve NPC trader işlemleri.
 
+## Daily Tick ve Pazar Sırası (Karar verilmiş)
+
+- Daily tick'te önce şehir simülasyonu, sonra tüm ticaret aktörleri çalışır.
+- Ekonomik sıra:
+  1. Player upkeep/debt
+  2. Şehir üretim fazı
+  3. Şehir tüketim fazı
+  4. Nüfus/prosperity güncellemesi
+  5. Market fiyatlarının güncellenmesi
+  6. Trading Post auto-trade
+  7. Caravan Master route işlemleri
+  8. NPC trader işlemleri
+  9. Kontrat/rank/gün sonu diğer sistemler
+- Ticaret aktörü sırası MVP'de oyuncu otomasyonu öncelikli olacak: Trading Post → Caravan Master → NPC trader.
+- Her ticaret işlemi stok değiştirir ve ilgili fiyat/quote aynı gün anlık yeniden hesaplanır.
+- Günün üretim/tüketim hesabı gün başındaki nüfus ve prosperity ile yapılır.
+- Tüketim sonucu değişen prosperity/nüfus değerleri talep ve quote hesaplarına ertesi gün etki eder.
+- Şehir simülasyonunda üretim önce, tüketim sonra çalışır; bugün üretilen mal bugün tüketilebilir.
+
+## Üretim, Stok ve İşlem Sınırları (Karar verilmiş)
+
+- Recipe input eksikliği oransal üretimle çözülür. Input'un ne kadarı karşılanabiliyorsa output aynı oranda üretilir.
+- Input eksikliği doğrudan fiyat çarpanı yaratmaz; output azalır, stok zamanla düşer, fiyat dolaylı yükselir.
+- Stok kapasitesi doluyken üretim kapasiteye kadar stoğa eklenir, fazlası overflow/waste olarak kaybolur.
+- Market stok kapasitesi doluyken satış sadece boş kapasite kadar yapılır; cap üstü satış yoktur.
+- Market stoğu yetersizken alım sadece mevcut stok kadar yapılır; negatif stok yoktur.
+
+## Demand Satisfaction ve Şehir Etkileri (Karar verilmiş)
+
+- Tüketim fazında her mal için karşılanma oranı hesaplanır: `tüketilen_miktar / talep_edilen_miktar`.
+- MVP satisfaction eşikleri:
+  - `%80+` = iyi / normal
+  - `%40-80` = zayıf
+  - `%40 altı` = kötü / kritik
+- Fiyat için stok-gün eğrisi kullanılır; şehir sağlığı için günlük demand satisfaction kullanılır.
+- Survival satisfaction prosperity ve nüfus için ana şehir sağlığı göstergesidir:
+  - `%80+` → prosperity `+2`
+  - `%40-80` → prosperity `-1`
+  - `%40 altı` → prosperity `-4`
+- Survival kötü satisfaction (`%40 altı`) 3 gün birikirse nüfus `-%3` azalır.
+- Nüfus düşüşü her 3 kötü günde bir tetiklenir; düşüşten sonra sayaç sıfırlanır.
+- Kötü gün sayacı kademeli toparlanır: `%40 altı` sayaç `+1`, `%40-80` sayaç azaltır, `%80+` sayaç sıfırlar.
+- Luxury/Comfort satisfaction düşük/orta prosperity şehirleri cezalandırmaz; yüksek prosperity şehirlerde refah koruma baskısı yaratır.
+- Luxury/Comfort negatif baskısı sadece prosperity `70+` şehirlerde çalışır.
+- Luxury/Comfort etkisi hafiftir:
+  - `%80+` → prosperity artışına izin verir veya küçük `+1` destek sağlar.
+  - `%40-80` → luxury kaynaklı artış yok.
+  - `%40 altı` → sadece prosperity `70+` şehirlerde `-1` baskı.
+- Processed/Industry eksikliği production_plan / işlenmiş üretimlere hafif verim cezası verir ve prosperity büyümesini sınırlar:
+  - `%80+` → üretim cezası yok
+  - `%40-80` → production_plan üretimi `-%5`
+  - `%40 altı` → production_plan üretimi `-%10`
+- Processed/Industry üretim cezası doğal kaynak üretimini etkilemez.
+- Raw Material eksikliği input eksikliği dışında ek şehir etkisi yaratmaz; çifte ceza uygulanmaz.
+- Günlük otomatik prosperity değişimi kategori etkilerinin toplamı olacak ve günlük clamp ile sınırlandırılacak. Clamp değerleri henüz karara bağlanmadı.
+
 ## Quote, Spread ve Oyuncu Avantajları (Karar verilmiş)
 
 - Base spread MVP'de sabittir: alım quote'u market referans fiyatı `+%8`, satış quote'u `-%8`.
@@ -122,6 +178,9 @@ sword:
 **NPC trader ekonomiye etkisi**
 NPC'ler town_buy/town_sell üzerinden işlem yapıyor — yani marginal pricing etkisi var, stok değişiyor. Bu gerçek bir ekonomik baskı yaratıyor. Oyuncu buna karşı strateji kurabilmeli mi (mesela bir NPC'nin gittiği kasabayı önceliklendirmek)?
 
+**Günlük prosperity clamp değeri**
+Kategori etkileri toplanınca günlük otomatik prosperity değişiminin hangi min/max aralığa clamp edileceği henüz kararlaştırılmadı.
+
 ## Sonradan Değerlendirilecekler
 
 **Yerel normal fiyat referansı**
@@ -162,6 +221,9 @@ Event sistemi MVP kapsamından çıkarıldı. Temel ekonomi otururken gereksiz k
 
 ## Tartışma Notları
 
+- [2026-06-03] Daily tick sırası ekonomi tasarımına göre yeniden kararlaştırıldı. Önce şehir üretim/tüketim simülasyonu, sonra güncel market üzerinde Trading Post, Caravan Master ve NPC trader işlemleri çalışacak. Ticaret aktörü sırası MVP'de oyuncu otomasyonu öncelikli olacak.
+- [2026-06-03] Üretim ve stok sınırları netleştirildi. Recipe input eksikliği oransal üretim yapacak; stok cap doluyken üretim fazlası kaybolacak; alım/satım yalnızca mevcut stok ve boş kapasite kadar yapılacak.
+- [2026-06-03] Demand satisfaction sistemi tasarlandı. Survival, Luxury/Comfort, Processed/Industry ve Raw Material eksikliklerinin şehir etkileri ayrıştırıldı. Survival şehir sağlığının ana göstergesi olacak; luxury yüksek prosperity korumasına, industry ise işlenmiş üretim verimine hafif etki edecek. Günlük prosperity clamp değeri açık soru olarak bırakıldı.
 - [2026-06-03] Fiyat sistemi stok öncelikli hibrit model olarak netleştirildi. Fiyatın ana gövdesi stok/günlük talep oranından gelecek; üretim, mevsim ve NPC trader etkileri fiyatı doğrudan çarpmak yerine stok akışı veya talep üzerinden çalışacak.
 - [2026-06-03] Kategori bazlı fiyat eğrileri belirlendi: Survival `x3.0/x1.0/x0.50`, Raw Material `x2.2/x1.0/x0.45`, Processed `x2.6/x1.0/x0.50`, Luxury/Comfort `x1.8/x1.0/x0.45`. Global `x0.25` fiyat tabanı kaldırıldı.
 - [2026-06-03] Tüketim modeli netleştirildi. Her malın günlük talep zemini olacak; nüfus tüketimi lineer belirleyecek, prosperity Luxury/Comfort kişi başı tüketimini artıracak. Raw/Processed talebi üretim zinciri + demand tag bazlı şehir bakım talebinden oluşacak.
