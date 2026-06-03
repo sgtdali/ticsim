@@ -22,11 +22,19 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - [ ] **NPC relation ne işe yarıyor?** Şu an kontratla artıyor ama hiçbir sistem bunu okumuyor. Kapı açacak mı, indirim mi, özel kontrat mı? `factions.md`
 - [ ] **Kaç kasaba olacak?** Şu an 3 kasaba hardcode. 4-5'e çıkma planı var mı, yoksa 3 kasaba bitiş vizyonu mu? `world.md`
 - [ ] **Oyun bitiş ekranı var mı?** Patrician'a ulaşıldığında gerçek bir bitiş sahnesi/kutlama var mı? `progression.md`
+- [ ] **Şehir ekonomik kimlikleri nasıl tanımlanacak?** Her şehrin üretim karakteri, tüketim karakteri ve ticaret rolü netleşmeli mi? Örnek: maden, tarım, sanayi, refah/luxury tüketim şehri. `economy.md`
+- [ ] **Ekonomik fırsatlar oyuncuya nasıl gösterilecek?** Stok, mevsim, NPC hareketi ve prosperity değişimi fırsat üretecekse tooltip yeterli mi, yoksa trade hint/rumor/şehir uyarısı/rota tavsiyesi gibi katmanlar gerekli mi? `economy.md`
+- [ ] **Stok kapasitesi dolunca sistem nasıl davranacak?** Town stock cap dolduğunda üretim, oyuncu satışı, NPC satışı ve Trading Post auto-sell tamamen engellenecek mi, fiyat mı düşecek, yoksa başka hedef/uyarı sistemi mi çalışacak? `economy.md`
+- [ ] **Geç oyun para yakıcıları ne olacak?** Trading Post, Caravan Master ve prosperity yatırımları snowball yaratınca bunu dengeleyecek wage/upkeep/depot expansion/diminishing return/prestige maliyeti gibi mekanikler nasıl kurulacak? `economy.md`
+- [ ] **Demand tag MVP kalibrasyonu nasıl yapılacak?** Her item için `category`, `base_price`, `base_daily_demand_per_1000_pop` ve `demand_tags` yeterli mi; şehir bazlı özel katsayılar gerekecek mi? `economy.md`
+- [ ] **NPC trader oyuncunun stratejik olarak takip edebileceği bir aktör mü olacak?** NPC'ler sadece arka plan stok değiştirici mi kalacak, yoksa rotaları/etkileri oyuncu tarafından okunabilir olacak mı? `economy.md`
 
 ## Çelişkiler / Gerilimler
 
 - **Merchants Guild iki kasabada.** Rep artık rank kapısı olmadığı için eskisi kadar kritik değil; ama spread bonusu optimizasyonu açısından Merchants Guild hâlâ çok kolay kazanılıyor. `factions.md`
 - **Patrician upkeep sıfır.** Kazandıktan sonra baskı kalkmış — ama oyun zaten bitiyor. Bu tutarlı. `progression.md`
+- **3 kasaba ekonomisinin sınırları.** Sadece 3 kasabayla ticaret rotaları hızlı ezberlenebilir. 3 kasaba MVP'de kalacaksa NPC hareketi, mevsim ve prosperity değişimi rota ezberini kıracak kadar görünür olmalı. `economy.md`
+- **Bolluk spiraline karşı mekanizma.** Oyuncu para kazandıkça prosperity yatırımı yapıp daha çok kazanıyor. Geç oyun para yakıcıları ve automation upkeep kararlarıyla birlikte çözülmeli. `economy.md`
 
 ## Yapılacaklar / Implementation Senkronu
 
@@ -60,6 +68,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Son Tartışma Notları
 
+- [2026-06-03] Ekonomi geliştirme başlıkları açık soru/gerilim olarak kaydedildi. Şehir ekonomik kimlikleri, ekonomik fırsatların oyuncuya gösterilmesi, stok kapasitesi dolunca davranış, geç oyun para yakıcıları, demand tag MVP kalibrasyonu ve NPC trader'ın okunabilir aktör olup olmayacağı index'e eklendi.
 - [2026-06-03] Ekonomi fiyat omurgası netleştirildi. Model stok öncelikli hibrit olacak; kategori bazlı fiyat eğrileri, nüfus/prosperity/demand tag tüketimi, quote/spread sınırları ve herkes için marginal pricing kararları `economy.md` dosyasına işlendi.
 - [2026-06-03] Market fiyat bilgi UI'ı detaylandırıldı. Ürün satırında toplam fiyat yönü ikonu olacak; referans MVP'de base_price. Hover tooltip sadece %5 üzeri aktif fiyat etkilerini gösterecek, %15 üzeri etkiler çift okla belirtilecek ve etkiler güç sırasına dizilecek. Yerel normal fiyat referansı ileride değerlendirilecek.
 - [2026-06-03] Ekonomi bilgisi görünürlüğü kararlaştırıldı. Fiyat formülü oyuncuya gösterilmeyecek; market UI fiyat etkilerini kısa, okunabilir tooltip satırlarıyla açıklayacak. Mevsim etkisi de bu tooltip sistemiyle görünür olacak.
