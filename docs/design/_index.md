@@ -34,7 +34,17 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - **Merchants Guild iki kasabada.** Rep artık rank kapısı olmadığı için eskisi kadar kritik değil; ama spread bonusu optimizasyonu açısından Merchants Guild hâlâ çok kolay kazanılıyor. `factions.md`
 - **Patrician upkeep sıfır.** Kazandıktan sonra baskı kalkmış — ama oyun zaten bitiyor. Bu tutarlı. `progression.md`
 - **3 kasaba ekonomisinin sınırları.** Sadece 3 kasabayla ticaret rotaları hızlı ezberlenebilir. 3 kasaba MVP'de kalacaksa NPC hareketi, mevsim ve prosperity değişimi rota ezberini kıracak kadar görünür olmalı. `economy.md`
-- **Bolluk spiraline karşı mekanizma.** Oyuncu para kazandıkça prosperity yatırımı yapıp daha çok kazanıyor. Geç oyun para yakıcıları ve automation upkeep kararlarıyla birlikte çözülmeli. `economy.md`
+- **Bolluk spiraline karşı mekanizma.** Oyuncu para kazandıkça prosperity yatırımı yapıp daha çok kazanıyor. Kabul edilen çözüm yönü: prosperity ihtiyaç seviyesi artacak, eksik tedarik growth stop/düşüş etkisi yaratabilecek, prosperity yatırım maliyeti kademeli artacak, automation fixed cost anlamlı olacak, NPC trader ekonomi dalgalanması yaratacak. Detay mekanikler sonraki tasarım yapılacaklarında ele alınacak. `economy.md`
+
+## Tasarım Yapılacakları
+
+### Bolluk Spirali / Prosperity Ekonomisi
+- [ ] **Prosperity ihtiyaç bandı tasarlanacak.** Her prosperity aralığında hangi mal sınıfları ve demand tag'lerin güçleneceği belirlenecek. `economy.md`
+- [ ] **Tedarik eksikliği ve prosperity etkisi birlikte yeniden değerlendirilecek.** Mevcut daily demand, demand tag, prosperity growth/decline ve rank koşulu bölümleri beraber okunarak tek tutarlı model çıkarılacak. `economy.md`, `progression.md`
+- [ ] **Prosperity yatırım maliyeti formülü belirlenecek.** Düz maliyet yerine kademeli veya eğimli maliyet modeli seçilecek. `economy.md`
+- [ ] **Automation fixed cost modeli detaylandırılacak.** Trading Post upkeep, Caravan Master wage, depot expansion ve high-tier master maliyetleri birlikte ele alınacak. `economy.md`, `trading_post.md`
+- [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek. `economy.md`, `ux.md`
+- [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek. `economy.md`
 
 ## Yapılacaklar / Implementation Senkronu
 
@@ -68,6 +78,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Son Tartışma Notları
 
+- [2026-06-03] Bolluk spirali için kabul edilen çözüm yönleri index'e eklendi. Prosperity ihtiyaç bandı, tedarik eksikliğinin prosperity etkisi, kademeli yatırım maliyeti, automation fixed cost, NPC trader okunabilirliği ve bolluk spirali test senaryoları ayrı tasarım yapılacakları olarak kaydedildi.
 - [2026-06-03] Ekonomi geliştirme başlıkları açık soru/gerilim olarak kaydedildi. Şehir ekonomik kimlikleri, ekonomik fırsatların oyuncuya gösterilmesi, stok kapasitesi dolunca davranış, geç oyun para yakıcıları, demand tag MVP kalibrasyonu ve NPC trader'ın okunabilir aktör olup olmayacağı index'e eklendi.
 - [2026-06-03] Ekonomi fiyat omurgası netleştirildi. Model stok öncelikli hibrit olacak; kategori bazlı fiyat eğrileri, nüfus/prosperity/demand tag tüketimi, quote/spread sınırları ve herkes için marginal pricing kararları `economy.md` dosyasına işlendi.
 - [2026-06-03] Market fiyat bilgi UI'ı detaylandırıldı. Ürün satırında toplam fiyat yönü ikonu olacak; referans MVP'de base_price. Hover tooltip sadece %5 üzeri aktif fiyat etkilerini gösterecek, %15 üzeri etkiler çift okla belirtilecek ve etkiler güç sırasına dizilecek. Yerel normal fiyat referansı ileride değerlendirilecek.
