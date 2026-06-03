@@ -27,7 +27,6 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 - **Merchants Guild iki kasabada.** Rep artık rank kapısı olmadığı için eskisi kadar kritik değil; ama spread bonusu optimizasyonu açısından Merchants Guild hâlâ çok kolay kazanılıyor. `factions.md`
 - **Patrician upkeep sıfır.** Kazandıktan sonra baskı kalkmış — ama oyun zaten bitiyor. Bu tutarlı. `progression.md`
-- **Mevsim çarpanları var ama UI'da görünür değil.** Oyuncu mevsim etkisini fark edemiyor. `economy.md`
 
 ## Yapılacaklar / Implementation Senkronu
 
@@ -61,6 +60,9 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Son Tartışma Notları
 
+- [2026-06-03] Ekonomi fiyat omurgası netleştirildi. Model stok öncelikli hibrit olacak; kategori bazlı fiyat eğrileri, nüfus/prosperity/demand tag tüketimi, quote/spread sınırları ve herkes için marginal pricing kararları `economy.md` dosyasına işlendi.
+- [2026-06-03] Market fiyat bilgi UI'ı detaylandırıldı. Ürün satırında toplam fiyat yönü ikonu olacak; referans MVP'de base_price. Hover tooltip sadece %5 üzeri aktif fiyat etkilerini gösterecek, %15 üzeri etkiler çift okla belirtilecek ve etkiler güç sırasına dizilecek. Yerel normal fiyat referansı ileride değerlendirilecek.
+- [2026-06-03] Ekonomi bilgisi görünürlüğü kararlaştırıldı. Fiyat formülü oyuncuya gösterilmeyecek; market UI fiyat etkilerini kısa, okunabilir tooltip satırlarıyla açıklayacak. Mevsim etkisi de bu tooltip sistemiyle görünür olacak.
 - [2026-06-02] Caravan Master / Trading Post kod-tasarım farkları tespit edildi. Yapılacaklar listesine eklendi.
 - [2026-06-02] Event sistemi MVP'den çıkarıldı. Temel dinamizm stok/NPC/mevsimden geliyor; event'ler bu aşamada gereksiz karmaşıklık. Koddan temizlenmesi yapılacaklara eklendi. Tasarım referansı `economy.md`'de korunuyor.
 - [2026-06-02] Debt modeli yeniden tasarlandı. Eski "30 günde auto-trade durur, 60 günde suspended" ve "60 günde upkeep durur, master unpaid, route pause" kararlarının ikisi de iptal edildi. Yeni model üç bölgeli: 0-30 gün kurtarılabilir, 30-60 gün kritik ama çıkış var, 60. günde game over. Otomasyon hiçbir zaman sistem tarafından durdurulmaz. Bkz. `trading_post.md`.
