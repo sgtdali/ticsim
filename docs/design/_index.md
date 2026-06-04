@@ -16,6 +16,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 | [world.md](world.md) | Kasabalar, harita, seyahat, dünya büyümesi |
 | [contracts.md](contracts.md) | Kontrat tipleri, zorluk dengesi, ödül tasarımı |
 | [mvp_scope.md](mvp_scope.md) | MVP kapsamı, MVP dışı bırakılanlar ve karar günlüğü |
+| [mvp_balance.md](mvp_balance.md) | MVP pacing, ekonomi balans hedefleri ve playtest başlangıç değerleri |
 | [implementation_sync.md](implementation_sync.md) | Tasarım kararlarının kod, mekanik ve UI senkron borçları |
 | [trading_post.md](trading_post.md) | Trading Post + Caravan Master otomasyonu giriş kapısı |
 | [trading_post_debt.md](trading_post_debt.md) | Debt, upkeep ve game over modeli |
@@ -27,7 +28,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Açık Sorular (MVP İçin)
 
-- [ ] **Günlük prosperity clamp değeri ne olacak?** Temel demand satisfaction MVP'de uygulanacağı için otomatik prosperity değişiminin min/max günlük sınırı MVP implementasyonu sırasında netleşmeli. `economy_prosperity.md`
+- [ ] **Günlük prosperity clamp değeri ne olacak?** Temel demand satisfaction MVP'de uygulanacağı için otomatik prosperity değişiminin min/max günlük sınırı MVP implementasyonu sırasında netleşmeli. `economy_prosperity.md`, `mvp_balance.md`
 
 ## Açık Sorular (Tam Sürüm / MVP Sonrası)
 
@@ -40,18 +41,24 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 - **Merchants Guild iki kasabada.** Rep artık rank kapısı olmadığı için eskisi kadar kritik değil; ama spread bonusu optimizasyonu açısından Merchants Guild hâlâ çok kolay kazanılıyor. `factions.md`
 - **Patrician upkeep sıfır.** Kazandıktan sonra baskı kalkmış — ama oyun zaten bitiyor. Bu tutarlı. `progression.md`
-- **3 kasaba ekonomisinin sınırları.** Sadece 3 kasabayla ticaret rotaları hızlı ezberlenebilir. 3 kasaba MVP'de kalacaksa NPC hareketi, mevsim ve prosperity değişimi rota ezberini kıracak kadar görünür olmalı. `economy_market.md`
-- **Bolluk spiraline karşı mekanizma.** Oyuncu para kazandıkça prosperity yatırımı yapıp daha çok kazanıyor. Kabul edilen çözüm yönü: prosperity ihtiyaç seviyesi artacak, eksik tedarik growth stop/düşüş etkisi yaratabilecek, prosperity yatırım maliyeti kademeli artacak, automation fixed cost anlamlı olacak, NPC trader ekonomi dalgalanması yaratacak. Detay mekanikler sonraki tasarım yapılacaklarında ele alınacak. `economy_prosperity.md`
+- **3 kasaba ekonomisinin sınırları.** Sadece 3 kasabayla ticaret rotaları hızlı ezberlenebilir. 3 kasaba MVP'de kalacaksa NPC hareketi, mevsim ve prosperity değişimi rota ezberini kıracak kadar görünür olmalı. `economy_market.md`, `mvp_balance.md`
+- **Bolluk spiraline karşı mekanizma.** Oyuncu para kazandıkça prosperity yatırımı yapıp daha çok kazanıyor. Kabul edilen çözüm yönü: prosperity ihtiyaç seviyesi artacak, eksik tedarik growth stop/düşüş etkisi yaratabilecek, prosperity yatırım maliyeti kademeli artacak, automation fixed cost anlamlı olacak, NPC trader ekonomi dalgalanması yaratacak. Detay mekanikler sonraki tasarım yapılacaklarında ele alınacak. `economy_prosperity.md`, `mvp_balance.md`
 
 ## Tasarım Yapılacakları
+
+### MVP Balans
+- [ ] **MVP balance playtest senaryoları uygulanacak.** Manuel ticaret, kontrat ağırlıklı erken oyun, ilk Trading Post, ilk Caravan Master ve full MVP victory senaryoları 120-180 gün victory hedefine göre ölçülecek. `mvp_balance.md`
+- [ ] **Rank pacing kontrol edilecek.** Mevcut 500 / 1.500 / 4.000 / 10.000 gold eşiklerinin hedef günlük net kâr aralıklarıyla uyumu playtest edilecek. `progression.md`, `mvp_balance.md`
+- [ ] **Kontrat ödül bandı doğrulanacak.** Delivery kontrat ödüllerinin manuel ticaret kârını ezmeden 1.2x-1.5x güvenli gelir hissi verip vermediği test edilecek. `contracts.md`, `mvp_balance.md`
+- [ ] **Trading Post ve Caravan Master geri dönüş süreleri ölçülecek.** İlk Post için 15-30 gün, temel Master için 20-45 gün geri dönüş hedefi kontrol edilecek. `trading_post.md`, `caravan_master_hiring.md`, `mvp_balance.md`
 
 ### Bolluk Spirali / Prosperity Ekonomisi
 - [ ] **Prosperity ihtiyaç bandı tasarlanacak.** Her prosperity aralığında hangi mal sınıfları ve demand tag'lerin güçleneceği belirlenecek. `economy_prosperity.md`
 - [ ] **Tedarik eksikliği ve prosperity etkisi birlikte yeniden değerlendirilecek.** Mevcut daily demand, demand tag, prosperity growth/decline ve rank koşulu bölümleri beraber okunarak tek tutarlı model çıkarılacak. `economy_market.md`, `economy_prosperity.md`, `progression.md`
-- [ ] **Prosperity yatırım bandları ve sayıları belirlenecek.** Basamaklı band modeli seçildi; band aralıkları ve maliyet çarpanları balance edilecek. `economy_prosperity.md`
-- [ ] **Automation fixed cost sayıları detaylandırılacak.** Model seçildi; Trading Post upgrade upkeep'i, depot expansion upkeep'i, Caravan Master wage çarpanları ve high-tier master maliyetleri sayısallaştırılacak. `economy_prosperity.md`, `trading_post.md`, `caravan_master_hiring.md`
+- [ ] **Prosperity yatırım bandları ve sayıları belirlenecek.** Basamaklı band modeli seçildi; band aralıkları ve maliyet çarpanları balance edilecek. `economy_prosperity.md`, `mvp_balance.md`
+- [ ] **Automation fixed cost sayıları detaylandırılacak.** Model seçildi; Trading Post upgrade upkeep'i, depot expansion upkeep'i, Caravan Master wage çarpanları ve high-tier master maliyetleri sayısallaştırılacak. `economy_prosperity.md`, `trading_post.md`, `caravan_master_hiring.md`, `mvp_balance.md`
 - [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek. `economy_prosperity.md`, `ux.md`
-- [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek. `economy_prosperity.md`
+- [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek. `economy_prosperity.md`, `mvp_balance.md`
 
 ## Implementation Senkronu
 
@@ -60,6 +67,7 @@ Bu dosya MVP öncesi zorunlu, MVP için basitleştirilebilir ve MVP sonrası/ful
 
 ## Son Tartışma Notları
 
+- [2026-06-04] MVP balans için ayrı `mvp_balance.md` dosyası açıldı. Patrician victory hedefi 120-180 oyun günü olarak kabul edildi. Manuel ticaret, kontrat, Trading Post, Caravan Master, automation zinciri, prosperity, debt ve playtest senaryoları için başlangıç balans hedefleri kaydedildi. Sayısal öneriler playtest başlangıç değeri olarak tutuldu; yalnızca 120-180 gün victory hedefi kesinleşmiş karar olarak işlendi.
 - [2026-06-04] MVP açık kararları kapatıldı. Victory summary sonrası devam edilebilir; Delivery kontratları tek tier olacak; gross/upkeep/net margin UI MVP'ye alındı; Caravan Master hiring şehir bazlı 0-2 aday olacak; Delivery fail ödülden mahrum kalma + küçük faction rep cezası verecek. MVP için açık kalan tek kapsam kararı günlük prosperity clamp sayısıdır. Genel açık sorular MVP ve tam sürüm sonrası olarak ayrıldı.
 - [2026-06-04] Implementation senkron maddeleri `_index.md` içinden ayrılıp `implementation_sync.md` dosyasına taşındı. Kod/mekanik/UI borçları MVP öncesi zorunlu, MVP için basitleştirilebilir ve MVP sonrası/full scope olarak sınıflandırıldı.
 - [2026-06-04] Detay tasarım dosyalarına `MVP Kapsamı` blokları eklendi. `mvp_scope.md` ana karar haritası olarak kalacak; her konu dosyası kendi alanında MVP'de uygulanacak, sade tutulacak ve MVP dışı bırakılacak parçaları ayrıca gösterecek.
