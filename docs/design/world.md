@@ -3,6 +3,10 @@
 ## Mevcut Durum (Karar verilmiş)
 
 - 3 kasaba, hardcode: Ashford (kuzey-batı), Ironmere (doğu), Stonebridge (güney-orta).
+- MVP 3 kasabayla tamamlanacak.
+- İlk tam ekonomi hedefi en az 6 kasabadır.
+- Uzun vadeli ideal şehir/kasaba ağı 8-10 kasabadır.
+- Harita ve ekonomi mimarisi bu genişlemeye uygun korunmalıdır; 3 kasabalı MVP nihai dünya ölçeği değildir.
 - Harita 2688×1536 piksel.
 - Kasabalar arası mesafe sabit (Vector2 pozisyonlardan hesaplanıyor).
 - Seyahat hızı: 200 harita birimi/gün.
@@ -23,9 +27,6 @@
 
 ## Açık Sorular
 
-**Daha fazla kasaba planlanıyor mu?**
-Şu an 3 kasaba ekonomik çeşitliliği sınırlandırıyor: oyuncu rotayı hızlı ezberliyor, NPC trader'ların stratejisi kısıtlı. 4-5 kasabaya çıkmak oyun dinamiğini önemli ölçüde değiştirir. Bu bir yol haritası hedefi mi?
-
 **RoadData ne yapıyor?**
 `scripts/systems/RoadData.gd` ve `scripts/tools/RoadDataExporter.gd` mevcut. Rotalar belirli güzergahları mı zorluyor, yoksa şu an sadece görsel mi? Seyahat süresi doğrudan `distance / 200` formülüyle hesaplanıyor — road sistemi bunu override ediyor mu?
 
@@ -37,4 +38,4 @@ Harita 2688×1536 oldukça büyük. 3 kasabayla bu alan çok boş kalıyor. Daha
 
 ## Tartışma Notları
 
-*(Boş)*
+- [2026-06-04] Kasaba sayısı vizyonu netleştirildi. Patrician serilerindeki 20+ şehirli ağ referans alındı ama scope MVP için dar tutulacak: MVP 3 kasaba, ilk tam ekonomi hedefi en az 6 kasaba, uzun vadeli ideal 8-10 kasaba. 3 kasabalı MVP'de rota ezberini kırma yükü NPC trader, mevsim, prosperity ve stok dalgalanmasına kalacak; harita/ekonomi mimarisi ileride genişlemeye uygun korunacak.

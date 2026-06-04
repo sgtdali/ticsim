@@ -8,7 +8,7 @@
 - Her kasabada her zaman 2 adet available kontrat bulunuyor.
 - Kontrat kabul edildikten sonra deadline başlıyor (available haldeyken süre işlemiyor).
 - Deadline geçerse kontrat fail →faksiyon rep cezası (-1.0).
-- Ödüller: gold, faction rep, NPC relation.
+- Ödüller: gold, faction rep.
 - Guild Master bonusu: kontrat rep ödülü ×1.5.
 
 **Tier farkları:**
@@ -47,4 +47,4 @@ Kontrat yapmakfaksiyon rep kazandırıyor. Bu rep hem ticaret avantajına hem ra
 
 ## Tartışma Notları
 
-*(Boş)*
+- [2026-06-04] NPC relation kaldırma kararıyla kontrat ödüllerinden NPC relation çıkarıldı. Kontratların ilişki etkisi faction rep üzerinden kalacak.

@@ -125,8 +125,20 @@ sword:
 ## Stok Kapasitesi
 
 - Her kasabada mal başına stok sınırı var.
-- Kapasite doluysa üretim ve satış engellenebilir.
 - Slot ve production upgrade alımı hem üretim hem stok cap'i artırıyor.
+
+## Stok Kapasitesi Dolunca Davranış (Karar verilmiş)
+
+- Town stock cap sert fiziksel sınırdır; cap üstü stok tutulmaz.
+- Üretim sırasında market stok kapasitesi doluysa üretim sadece boş kapasite kadar stoğa eklenir; fazlası overflow/waste olarak kaybolur.
+- Oyuncu manuel satışı sadece boş kapasite kadar gerçekleşir.
+- Market cap tamamen doluysa manuel satış miktarı 0 olur; satış butonu disabled veya işlem uyarılı olmalıdır.
+- Trading Post auto-sell sadece boş kapasite kadar satış yapar.
+- Trading Post auto-sell için markette yer yoksa rule işlem yapmaz ve status `market_full` veya eşdeğer açık bir bekleme durumu olur.
+- NPC trader satışı sadece boş kapasite kadar gerçekleşir.
+- NPC trader satış hedefinde hiç yer yoksa işlem skip edilir. MVP'de başka hedef arama zorunlu değildir; route AI gelişirse ileride başka hedef seçimi değerlendirilebilir.
+- Cap doluluğu ekstra fiyat çarpanı yaratmaz. Fiyat zaten stok/günlük talep oranı üzerinden bolluk tabanına yaklaşır.
+- UI, satışın neden yapılamadığını açık göstermelidir: market satırında veya işlem panelinde `Market full` / `Storage full` benzeri kısa uyarı kullanılabilir.
 
 ## Ekonomi Bilgisi Görünürlüğü (Karar verilmiş)
 
@@ -152,9 +164,6 @@ Her şehir için üretim karakteri, tüketim karakteri ve ticaret rolü netleşm
 **Ekonomik fırsatların oyuncuya gösterilmesi**
 Stok, mevsim, NPC hareketi ve prosperity değişimi fırsat üretecekse oyuncu bunları nasıl fark edecek? Market tooltip yeterli mi, yoksa trade hint, rumor, şehir uyarısı veya rota tavsiyesi gibi ek okuma katmanları gerekli mi?
 
-**Stok kapasitesi dolunca davranış**
-Town stock cap dolduğunda üretim, oyuncu satışı, NPC satışı ve Trading Post auto-sell nasıl davranacak? Tamamen engelleme mi, sert fiyat düşüşü mü, NPC'nin başka hedefe yönelmesi mi, yoksa sistem uyarısı mı kullanılacak?
-
 **Demand tag MVP kalibrasyonu**
 Demand tag sistemi mevcut, fakat MVP için her malın sayısal tüketim zemini nasıl kalibre edilecek? Her item için `category`, `base_price`, `base_daily_demand_per_1000_pop` ve `demand_tags` yeterli mi, yoksa şehir bazlı özel tüketim katsayıları da gerekecek mi?
 
@@ -177,6 +186,7 @@ Sadece 3 kasabayla fiyat farkı az. Oyuncu hangi kasabadan alıp nereye satacağ
 ## Tartışma Notları
 
 - [2026-06-04] Ekonomi pazar/fiyat kararları ana `economy.md` dosyasından ayrıldı. Fiyat eğrileri, demand tag temeli, daily tick, üretim/stok sınırları, quote/spread ve market bilgi görünürlüğü bu dosyada toplandı.
+- [2026-06-04] Stok kapasitesi dolunca davranış netleştirildi. Town stock cap sert fiziksel sınır olacak; üretim fazlası waste olur, manuel satış/Trading Post/NPC satışı yalnızca boş kapasite kadar gerçekleşir, yer yoksa işlem skip/wait durumuna geçer. Cap doluluğu ekstra fiyat çarpanı yaratmaz; fiyat stok bolluğu üzerinden zaten düşer.
 - [2026-06-03] Daily tick sırası ekonomi tasarımına göre yeniden kararlaştırıldı. Önce şehir üretim/tüketim simülasyonu, sonra güncel market üzerinde Trading Post, Caravan Master ve NPC trader işlemleri çalışacak. Ticaret aktörü sırası MVP'de oyuncu otomasyonu öncelikli olacak.
 - [2026-06-03] Üretim ve stok sınırları netleştirildi. Recipe input eksikliği oransal üretim yapacak; stok cap doluyken üretim fazlası kaybolacak; alım/satım yalnızca mevcut stok ve boş kapasite kadar yapılacak.
 - [2026-06-03] Fiyat sistemi stok öncelikli hibrit model olarak netleşti. Üretim, mevsim ve NPC trader etkileri fiyatı doğrudan çarpmak yerine stok akışı veya talep üzerinden çalışacak.

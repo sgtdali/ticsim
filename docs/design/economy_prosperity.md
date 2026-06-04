@@ -159,7 +159,7 @@ Sonradan birlikte değerlendirilecek mekanik kararlar:
 - NPC etkisi hangi eşikten sonra oyuncuya bilgi olarak gösterilecek?
 - NPC trader oyuncunun kârlı rotalarını ne kadar bozmalı?
 - NPC'ler belirli ekonomik kimliklere göre mi hareket edecek, yoksa fırsat bazlı mı karar verecek?
-- NPC sisteminin factions veya NPC relation ile bağlantısı olacak mı?
+- NPC trader sisteminin faction rep ile bağlantısı olacak mı, yoksa tamamen ekonomik aktör olarak mı kalacak?
 
 ## Bolluk Spirali - Sonraki Tasarım Yapılacakları
 
