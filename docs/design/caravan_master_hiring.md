@@ -29,6 +29,7 @@ World Map → City → TownUI → Tavern → Caravan Master Candidates
 - Bazı şehirlerde hiç aday çıkmayabilir.
 - Oyuncu iyi master bulmak için şehirleri gezmek zorunda kalabilir.
 - Bu durum erken/mid-game’de oyuncunun manuel ticarete devam etmesini ve dünyayı gezmesini teşvik eder.
+- Eski genel "aynı anda 3 aday" fikri, şehir bazlı Tavern kararıyla daraltılmıştır: dünya genelinde birden fazla aday bulunabilir, ancak tek bir global işe alma havuzu yoktur.
 
 Örnek:
 
@@ -60,6 +61,7 @@ Kingsport Tavern
 - Adaylar periyodik olarak yenilenir.
 - Mevcut genel refresh kararı 30 gün olarak korunabilir; ancak artık şehir bazlı aday havuzlarına uygulanmalıdır.
 - Adaylar yenilenirken her şehir kendi aday durumunu yeniden roll eder.
+- Eski tek sabit aday yaklaşımı (120g hire + 4g/gün) geçerli değildir; adayların stat dağılımı, hire cost ve daily upkeep değerleri farklı olacaktır.
 
 ## Aday Kalitesi
 
@@ -69,6 +71,7 @@ Aday kalitesi oyuncu rank’ına göre değişmelidir.
 - Rank yükseldikçe daha iyi stat kombinasyonlarına sahip adayların çıkma ihtimali artar.
 - Daha iyi adaylar daha yüksek hire cost ve daha yüksek daily upkeep ister.
 - Oyuncu iyi adayı gördüğünde parası yetmeyebilir; bu bilinçli bir karar gerilimi oluşturur.
+- Aday sistemi oyuncuya gerçek tercih sunmalıdır: ucuz ama zayıf apprentice almak, hızlı ama riskli runner almak, pahalı ama güvenli guarded master almak veya bekleyip daha iyi aday aramak.
 
 Örnek yön:
 
@@ -87,6 +90,17 @@ Late-game:
 - Veteran
 - yüksek toplam statli pahalı adaylar
 ```
+
+## Master Archetype Yönleri
+
+Bu archetype'lar kesin numeric balance değildir; sadece tasarım yönünü tarif eder. Sayısal değerler mechanics/balance aşamasında netleştirilebilir.
+
+- **Apprentice:** Ucuz, düşük stat, erken otomasyon için uygun.
+- **Runner:** Hızlı, düşük kapasite ve düşük cesaret.
+- **Hauler:** Yüksek kapasite, düşük hız.
+- **Guarded Master:** Yüksek cesaret, yüksek upkeep.
+- **Broker:** Yüksek pazarlık, orta kapasite.
+- **Veteran:** Pahalı, yüksek toplam stat, late-game için uygun.
 
 ## Tasarım Amacı
 
@@ -161,5 +175,7 @@ Adayların her zaman çıkmaması iyi bir oyun gerilimi üretir; ancak oyuncu ç
 Tavern ileride sadece Caravan Master için değil, NPC söylentileri, özel kontratlar veya bilgi satın alma gibi sistemler için de kullanılabilir. Ancak ilk karar kapsamında Tavern’in ana işlevlerinden biri Caravan Master adaylarını şehir bazlı göstermek olacaktır.
 
 ## Tartışma Notları
+
+- [2026-06-04] Ana `trading_post.md` dosyasındaki Caravan Master aday sistemi ve archetype yönleri bu dosyaya taşındı. Şehir bazlı Tavern kararı korunarak eski global 3 aday fikri, şehir başına 0-2 aday ve dünya genelinde değişken aday havuzu şeklinde yorumlandı.
 
 - [2026-06-02] Caravan Master işe alma sistemi şehir bazlı Tavern / Inn sistemi olarak netleştirildi. Adaylar global Trade Routes panelinden tek tıkla işe alınmayacak. Her şehirde aday çıkması garanti olmayacak; aday kalitesi oyuncu rank'ına göre değişecek. Tavern, TownUI üzerinden MarketUI gibi ayrı bir panel olarak açılacak.

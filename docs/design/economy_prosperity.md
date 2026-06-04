@@ -1,0 +1,196 @@
+# Economy Prosperity & Demand Satisfaction Design
+
+Bu dosya şehir refahı, demand satisfaction, bolluk spirali, prosperity yatırımı, automation fixed cost ve NPC trader okunabilirliği kararlarını tutar.
+
+## Demand Satisfaction ve Şehir Etkileri (Karar verilmiş)
+
+- Tüketim fazında her mal için karşılanma oranı hesaplanır: `tüketilen_miktar / talep_edilen_miktar`.
+- MVP satisfaction eşikleri:
+  - `%80+` = iyi / normal
+  - `%40-80` = zayıf
+  - `%40 altı` = kötü / kritik
+- Fiyat için stok-gün eğrisi kullanılır; şehir sağlığı için günlük demand satisfaction kullanılır.
+- Survival satisfaction prosperity ve nüfus için ana şehir sağlığı göstergesidir:
+  - `%80+` -> prosperity `+2`
+  - `%40-80` -> prosperity `-1`
+  - `%40 altı` -> prosperity `-4`
+- Survival kötü satisfaction (`%40 altı`) 3 gün birikirse nüfus `-%3` azalır.
+- Nüfus düşüşü her 3 kötü günde bir tetiklenir; düşüşten sonra sayaç sıfırlanır.
+- Kötü gün sayacı kademeli toparlanır: `%40 altı` sayaç `+1`, `%40-80` sayaç azaltır, `%80+` sayaç sıfırlar.
+- Luxury/Comfort satisfaction düşük/orta prosperity şehirleri cezalandırmaz; yüksek prosperity şehirlerde refah koruma baskısı yaratır.
+- Luxury/Comfort negatif baskısı sadece prosperity `70+` şehirlerde çalışır.
+- Luxury/Comfort etkisi hafiftir:
+  - `%80+` -> prosperity artışına izin verir veya küçük `+1` destek sağlar.
+  - `%40-80` -> luxury kaynaklı artış yok.
+  - `%40 altı` -> sadece prosperity `70+` şehirlerde `-1` baskı.
+- Processed/Industry eksikliği production_plan / işlenmiş üretimlere hafif verim cezası verir ve prosperity büyümesini sınırlar:
+  - `%80+` -> üretim cezası yok
+  - `%40-80` -> production_plan üretimi `-%5`
+  - `%40 altı` -> production_plan üretimi `-%10`
+- Processed/Industry üretim cezası doğal kaynak üretimini etkilemez.
+- Raw Material eksikliği input eksikliği dışında ek şehir etkisi yaratmaz; çifte ceza uygulanmaz.
+- Günlük otomatik prosperity değişimi kategori etkilerinin toplamı olacak ve günlük clamp ile sınırlandırılacak. Clamp değerleri henüz karara bağlanmadı.
+
+## Bolluk Spirali - Kabul Edilen Çözüm Yönleri
+
+Bu bölüm nihai sayısal mekanik kararı değildir. Kabul edilenler, bolluk spirali problemini çözmek için tasarım yönü olarak kaydedilmiştir. Her maddenin Ironmere'ye entegrasyonu, hangi sistemleri etkileyeceği ve sayısal/mekanik kararları sonraki oturumlarda ayrıca alınacaktır.
+
+### 1. Prosperity yükseldikçe ihtiyaç seviyesi artacak
+
+Kabul edilen ana yön: Prosperity yalnızca satış bonusu veren pasif bir seviye olmayacak. Şehir refahı yükseldikçe şehrin ihtiyaç seviyesi de artacak.
+
+Tasarım niyeti:
+
+- Düşük prosperity şehirler temel ihtiyaçlarla idare edebilir.
+- Growing seviyedeki şehirler daha düzenli food + basic processed/utility malları ister.
+- Prosperous seviyedeki şehirler sadece temel gıda değil, comfort/luxury ve şehir işleyişini destekleyen malları da daha güçlü şekilde talep eder.
+- Oyuncu zenginleştirdiği şehri sürekli beslemek zorunda kalır; prosperity kalıcı, risksiz satış bonusu terminaline dönüşmez.
+- Bu yaklaşım Patrician çizgisindeki "şehir büyürse tüketim ve yönetim yükü de büyür" hissini Ironmere'ye taşır.
+
+Sonradan alınacak mekanik kararlar:
+
+- Prosperity aralıkları ihtiyaç seviyelerine nasıl bağlanacak? Örnek: `0-29`, `30-64`, `65+`.
+- Her prosperity bandında hangi demand tag'ler aktifleşecek veya güçlenecek?
+- Survival, comfort, luxury, construction, industry ve military tag'leri prosperity seviyesine göre nasıl ağırlık kazanacak?
+- Prosperous şehirlerde lüks/comfort tüketimi ne kadar artacak?
+- Bu ihtiyaç artışı doğrudan tüketim katsayısı mı olacak, yoksa stok güvenliği/günlük talep hedefi olarak mı çalışacak?
+- Market UI ve city info UI bu artan ihtiyaç seviyesini oyuncuya nasıl gösterecek?
+
+### 2. Eksik tedarik prosperity artışını durdurabilecek veya düşürebilecek
+
+Kabul edilen yön: Tedarik eksikliği prosperity üzerinde etkili olacak. Ancak bu konu dokümanlarda zaten kısmen mevcut olduğu için ilgili bölümler birlikte tekrar değerlendirilecek.
+
+Mevcut bağlantılı bölümler:
+
+- Günlük talep ve tüketim: prosperity'nin özellikle Luxury/Comfort kişi başı tüketimi artıracağı kararı.
+- Demand tag sistemi: food, comfort, luxury, construction, industry, military kaynakları.
+- Rank/progression tarafı: rank koşullarında Growing/Prosperous city eşikleri.
+- Ekonomi bilgi görünürlüğü: oyuncuya formül değil, okunabilir neden/uyarı gösterme yaklaşımı.
+
+Tasarım niyeti:
+
+- Oyuncu bir şehri büyüttüyse, bu büyümenin korunması tedarik ağına bağlı olmalı.
+- Eksik mallar prosperity'yi anında cezalandırmamalı; önce uyarı ve growth stop etkisi vermeli.
+- Uzun süren veya kritik eksiklikler prosperity düşüşüne yol açabilmeli.
+- Düşüş yavaş, geri çevrilebilir ve oyuncuya önceden bildirilen bir süreç olmalı.
+
+Sonradan birlikte değerlendirilecek mekanik kararlar:
+
+- Hangi malların eksikliği growth stop yaratır?
+- Hangi malların eksikliği prosperity düşüşü yaratır?
+- Eksiklik kaç gün sürerse uyarı, growth stop ve düşüş tetiklenecek?
+- Prosperity düşüşü lineer mi, eşik bazlı mı, stok günü bazlı mı olacak?
+- Tedarik eksikliği rank koşullarını bozabilecek mi? Örneğin şehir 65 altına düşerse Patrician koşulu kaybedilir mi?
+- UI'da "şehir refahı düşme riski" nasıl gösterilecek?
+- Bu sistem oyuncuyu haksız cezalandırmadan nasıl geri çevrilebilir tutulacak?
+
+### 3. Prosperity yatırım maliyeti kademeli artacak
+
+Kabul edilen yön: Prosperity yatırım maliyeti düz olmayacak. Refah yükseldikçe bir sonraki seviyeye çıkmak daha pahalı hale gelecek.
+
+Tasarım niyeti:
+
+- Erken seviyelerde şehir toparlamak ve büyütmek ulaşılabilir olacak.
+- Orta seviyede yatırım hâlâ anlamlı ama daha bilinçli karar gerektirecek.
+- Prosperous seviyeye ulaşmak ciddi sermaye, düzenli tedarik ve planlama isteyecek.
+- Oyuncu sadece birikmiş parayı prosperity'ye basarak risksiz snowball yaratamayacak.
+- Bu sistem para yakıcı gibi çalışacak ama çıplak vergi hissi vermeyecek.
+
+Sonradan alınacak mekanik kararlar:
+
+- Prosperity yatırım maliyeti hangi formülle artacak?
+- Maliyet bandı prosperity seviyesine göre mi, şehir seviyesine göre mi, nüfusa göre mi belirlenecek?
+- 0-30, 30-65 ve 65+ aralıkları kullanılacak mı?
+- Yatırım doğrudan prosperity puanı mı verir, yoksa growth modifier / civic project etkisi mi verir?
+- Tek seferlik yatırım mı, proje bazlı yatırım mı, günlük/haftalık bakım etkisi mi olacak?
+- Rank ilerlemesi için gerekli prosperity değerlerine ulaşmak ne kadar zaman ve para istemeli?
+
+### 4. Automation büyüdükçe fixed cost anlamlı hale gelecek
+
+Kabul edilen yön: Trading Post, Caravan Master, depot expansion ve yüksek seviye master kullanımı geç oyunda anlamlı fixed cost yaratacak. Detaylar sonradan ayrıca tasarlanacak.
+
+Mevcut bağlantılı bölümler:
+
+- Trading Post mevcut upkeep kararı.
+- Caravan Master aday sistemi: hire cost ve daily upkeep değerlerinin farklı olması.
+- Master archetype yönleri: Apprentice, Runner, Hauler, Guarded Master, Broker, Veteran.
+- Debt modeli: otomasyon debt sırasında da çalışır; sistem 60. günde game over'a gider.
+
+Tasarım niyeti:
+
+- Otomasyon oyuncuya rahatlık ve büyüme sağlamalı ama bedava para basma makinesine dönüşmemeli.
+- İlk otomasyon ulaşılabilir olmalı; oyuncu sistemi denemekten korkmamalı.
+- İleri otomasyon ağı büyüdükçe sabit giderler oyuncunun kâr hesabında görünür hale gelmeli.
+- Daha iyi master daha yüksek verim sağlayacak ama daha yüksek wage/upkeep isteyecek.
+- Büyük depot kapasitesi stratejik avantaj sağlayacak ama bakım maliyeti veya yatırım maliyetiyle dengelenecek.
+
+Sonradan alınacak mekanik kararlar:
+
+- Trading Post upkeep sabit mi kalacak, şehir/prosperity/post seviyesiyle artacak mı?
+- Depot expansion sadece tek seferlik maliyet mi, ayrıca upkeep de yaratacak mı?
+- Caravan Master wage hangi parametrelere göre belirlenecek? Rank, level, archetype, stat toplamı, capacity?
+- Broker/Veteran gibi yüksek verimli master'lar ne kadar pahalı olmalı?
+- Otomasyonun beklenen kârı UI'da upkeep sonrası net margin olarak gösterilecek mi?
+- Automation fixed cost, debt modelini çok sertleştirmeden nasıl dengelenecek?
+- Bu konu [trading_post.md](trading_post.md), [trading_post_debt.md](trading_post_debt.md) ve [caravan_master_hiring.md](caravan_master_hiring.md) ile birlikte detaylandırılmalı.
+
+### 5. NPC trader ekonomi dalgalanması yaratacak ve okunabilir olacak
+
+Kabul edilen yön: NPC trader stokları ve fiyatları gerçek işlemlerle etkilemeye devam edecek; oyuncu bu etkinin en azından bir kısmını okuyabilmeli.
+
+Mevcut bağlantılı bölümler:
+
+- Fiyatı dolaylı etkileyen sistemler: NPC trader gerçek stok işlemleriyle fiyatı etkiler.
+- Açık soru: NPC trader ekonomiye etkisi ve oyuncunun buna strateji kurup kuramayacağı.
+- Ekonomik fırsatların oyuncuya gösterilmesi açık sorusu.
+- 3 kasaba ekonomisinin sınırları gerilimi: NPC hareketi rota ezberini kırabilir.
+
+Tasarım niyeti:
+
+- NPC sadece gizli stok azaltan/artıran arka plan sistemi olmamalı.
+- Oyuncu sabit, ezberlenmiş rotalara güvenememeli; NPC hareketi piyasa fırsatlarını değiştirmeli.
+- NPC etkisi tamamen şeffaf formül gibi gösterilmemeli; rumor, market hint, city info veya route activity gibi okunabilir ama sınırlı bilgi olarak sunulmalı.
+- NPC hareketleri 3 kasabalı MVP ekonomisinde dinamizmi artıran temel araçlardan biri olabilir.
+
+Sonradan birlikte değerlendirilecek mekanik kararlar:
+
+- NPC rotaları oyuncuya önceden görünecek mi, yoksa sadece sonuçları mı görünecek?
+- NPC activity market tooltip'e mi, city info'ya mı, event log'a mı, trade rumor sistemine mi girecek?
+- NPC etkisi hangi eşikten sonra oyuncuya bilgi olarak gösterilecek?
+- NPC trader oyuncunun kârlı rotalarını ne kadar bozmalı?
+- NPC'ler belirli ekonomik kimliklere göre mi hareket edecek, yoksa fırsat bazlı mı karar verecek?
+- NPC sisteminin factions veya NPC relation ile bağlantısı olacak mı?
+
+## Bolluk Spirali - Sonraki Tasarım Yapılacakları
+
+Bu yapılacaklar kod implementation görevi değildir. Her biri sonraki tasarım oturumlarında derinlemesine mekanik karara dönüştürülecek başlıklardır.
+
+- [ ] **Prosperity ihtiyaç bandı tasarlanacak.** Her prosperity aralığında hangi mal sınıfları ve demand tag'lerin güçleneceği belirlenecek.
+- [ ] **Tedarik eksikliği ve prosperity etkisi birlikte yeniden değerlendirilecek.** Mevcut daily demand, demand tag, prosperity growth/decline ve rank koşulu bölümleri beraber okunarak tek tutarlı model çıkarılacak.
+- [ ] **Prosperity yatırım maliyeti formülü belirlenecek.** Düz maliyet yerine kademeli veya eğimli maliyet modeli seçilecek.
+- [ ] **Automation fixed cost modeli detaylandırılacak.** Trading Post upkeep, Caravan Master wage, depot expansion ve high-tier master maliyetleri `trading_post.md` ve `caravan_master_hiring.md` ile birlikte ele alınacak.
+- [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek.
+- [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek.
+
+## Açık Sorular
+
+**Geç oyun ekonomi baskısı ve para yakıcılar**
+Oyuncu Trading Post, Caravan Master ve prosperity yatırımlarıyla çok para kazandığında ekonomiyi dengeleyen kalıcı maliyetler ne olacak? Caravan Master wage, Trading Post upkeep, depot expansion, diminishing return veya prestige/rank maliyeti gibi para yakıcılar hangi ölçüde kullanılacak?
+
+**NPC trader ekonomiye etkisi**
+NPC'ler town_buy/town_sell üzerinden işlem yapıyor; yani marginal pricing etkisi var, stok değişiyor. Oyuncu buna karşı strateji kurabilmeli mi? NPC'ler sadece arka plan stok değiştirici olarak mı kalacak, yoksa oyuncunun takip edebileceği rakip/aktör gibi mi davranacak? Kabul edilen yön: NPC etkisi oyuncuya en azından sınırlı/okunabilir şekilde gösterilecek; detay mekanik sonra alınacak.
+
+**Günlük prosperity clamp değeri**
+Kategori etkileri toplanınca günlük otomatik prosperity değişiminin hangi min/max aralığa clamp edileceği henüz kararlaştırılmadı.
+
+## Gerilimler
+
+**Bolluk spiraline karşı mekanizma**
+Oyuncu çok para kazanınca prosperity'ye yatırım yapıyor -> satış bonusu artıyor -> daha çok kazanıyor. Çözüm yönü kabul edildi: prosperity yükseldikçe ihtiyaç seviyesi artacak, eksik tedarik growth stop/düşüş etkisi yaratabilecek, prosperity yatırım maliyeti kademeli artacak, automation fixed cost anlamlı hale gelecek ve NPC trader ekonomi dalgalanması yaratacak. Detay mekanikler henüz kesinleşmedi; yukarıdaki yapılacaklar üzerinden ayrıca tasarlanacak.
+
+## Tartışma Notları
+
+- [2026-06-04] Prosperity, demand satisfaction ve bolluk spirali kararları ana `economy.md` dosyasından ayrıldı. Günlük prosperity clamp, automation fixed cost, NPC okunabilirliği ve snowball testleri bu dosyada takip edilecek.
+- [2026-06-03] Demand satisfaction sistemi tasarlandı. Survival, Luxury/Comfort, Processed/Industry ve Raw Material eksikliklerinin şehir etkileri ayrıştırıldı. Survival şehir sağlığının ana göstergesi olacak; luxury yüksek prosperity korumasına, industry ise işlenmiş üretim verimine hafif etki edecek. Günlük prosperity clamp değeri açık soru olarak bırakıldı.
+- [2026-06-03] Bolluk spirali için kabul edilen çözüm yönleri kaydedildi. Prosperity yükseldikçe ihtiyaç seviyesi artacak; eksik tedarikin growth stop/düşüş etkisi mevcut doküman bölümleriyle birlikte tekrar değerlendirilecek; prosperity yatırım maliyeti kademeli artacak; automation büyüdükçe fixed cost anlamlı olacak; NPC trader ekonomi dalgalanması yaratacak ve okunabilir olacak.
+- [2026-06-03] Ekonomi geliştirme başlıkları karar verilmemiş konu olarak kaydedildi. Geç oyun para yakıcıları, mevcut NPC trader, 3 kasaba sınırı ve bolluk spirali notları detaylandırıldı.

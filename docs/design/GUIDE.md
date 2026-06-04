@@ -87,12 +87,18 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 | Dosya | Ne zaman okunur |
 |-------|-----------------|
 | `_index.md` | Her tasarım oturumu başında — açık sorulara ve çelişkilere bak |
-| `economy.md` | Fiyat, üretim, tüketim, piyasa dengesi, mevsimler |
+| `economy.md` | Ekonomi tasarımı giriş kapısı; doğru alt dosyaya yönlenmek için okunur |
+| `economy_market.md` | Fiyat, üretim, tüketim, piyasa dengesi, mevsimler, market bilgi görünürlüğü |
+| `economy_prosperity.md` | Demand satisfaction, şehir refahı, bolluk spirali, prosperity yatırımı |
+| `economy_events.md` | MVP dışına alınmış event sistemi referansı |
 | `progression.md` | Rank gereksinimleri, unlock kapıları, oyun ritmi |
 | `factions.md` | Faksiyon sistemi, NPC ilişkileri, reputasyon mekaniği |
 | `world.md` | Kasabalar, harita, seyahat, dünya büyümesi |
 | `contracts.md` | Kontrat tipleri, tier dengesi, ödül tasarımı |
-| `trading_post.md` | Trading Post otomasyonu, Caravan Master sistemi |
+| `trading_post.md` | Trading Post otomasyonu giriş kapısı, Post/Master rol ayrımı |
+| `trading_post_debt.md` | Debt, upkeep ve game over modeli |
+| `caravan_master_routes.md` | Caravan Master route, durak, temporary unload ve route UI kararları |
+| `caravan_master_hiring.md` | Tavern üzerinden Caravan Master işe alma, aday havuzu ve archetype kararları |
 | `ux.md` | Oyuncu akışı, bilgi sunumu, UI kararları |
 
 ---
