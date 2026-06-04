@@ -17,6 +17,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 | [contracts.md](contracts.md) | Kontrat tipleri, zorluk dengesi, ödül tasarımı |
 | [mvp_scope.md](mvp_scope.md) | MVP kapsamı, MVP dışı bırakılanlar ve karar günlüğü |
 | [mvp_balance.md](mvp_balance.md) | MVP pacing, ekonomi balans hedefleri ve playtest başlangıç değerleri |
+| [balance_workflow.md](balance_workflow.md) | Sayısal balans verilerinin Excel/CSV + Python simülasyon + Godot akışıyla yönetimi |
 | [implementation_sync.md](implementation_sync.md) | Tasarım kararlarının kod, mekanik ve UI senkron borçları |
 | [trading_post.md](trading_post.md) | Trading Post + Caravan Master otomasyonu giriş kapısı |
 | [trading_post_debt.md](trading_post_debt.md) | Debt, upkeep ve game over modeli |
@@ -29,6 +30,8 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 ## Açık Sorular (MVP İçin)
 
 - [ ] **Günlük prosperity clamp değeri ne olacak?** Temel demand satisfaction MVP'de uygulanacağı için otomatik prosperity değişiminin min/max günlük sınırı MVP implementasyonu sırasında netleşmeli. `economy_prosperity.md`, `mvp_balance.md`
+- [ ] **Balance data ana düzenleme formatı ne olacak?** İlk aşamada `balance_data.xlsx` mi ana kaynak olacak, yoksa doğrudan CSV dosyaları mı düzenlenecek? `balance_workflow.md`
+- [ ] **Python simülasyon modeli ne kadar birebir olacak?** Godot ekonomi kodunun birebir yansıması mı kurulacak, yoksa daha sade bağımsız test modeli mi kullanılacak? `balance_workflow.md`
 
 ## Açık Sorular (Tam Sürüm / MVP Sonrası)
 
@@ -47,7 +50,8 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 ## Tasarım Yapılacakları
 
 ### MVP Balans
-- [ ] **MVP balance playtest senaryoları uygulanacak.** Manuel ticaret, kontrat ağırlıklı erken oyun, ilk Trading Post, ilk Caravan Master ve full MVP victory senaryoları 120-180 gün victory hedefine göre ölçülecek. `mvp_balance.md`
+- [ ] **Balance data tablo şeması kesinleştirilecek.** Items, Towns, Town Stocks, Production, Recipes, Routes, Price Curves, Contracts, Ranks, Automation ve Season Modifiers tablolarının kolonları netleştirilecek. `balance_workflow.md`
+- [ ] **MVP balance playtest senaryoları uygulanacak.** Manuel ticaret, kontrat ağırlıklı erken oyun, ilk Trading Post, ilk Caravan Master ve full MVP victory senaryoları 120-180 gün victory hedefine göre ölçülecek. `mvp_balance.md`, `balance_workflow.md`
 - [ ] **Rank pacing kontrol edilecek.** Mevcut 500 / 1.500 / 4.000 / 10.000 gold eşiklerinin hedef günlük net kâr aralıklarıyla uyumu playtest edilecek. `progression.md`, `mvp_balance.md`
 - [ ] **Kontrat ödül bandı doğrulanacak.** Delivery kontrat ödüllerinin manuel ticaret kârını ezmeden 1.2x-1.5x güvenli gelir hissi verip vermediği test edilecek. `contracts.md`, `mvp_balance.md`
 - [ ] **Trading Post ve Caravan Master geri dönüş süreleri ölçülecek.** İlk Post için 15-30 gün, temel Master için 20-45 gün geri dönüş hedefi kontrol edilecek. `trading_post.md`, `caravan_master_hiring.md`, `mvp_balance.md`
@@ -67,6 +71,7 @@ Bu dosya MVP öncesi zorunlu, MVP için basitleştirilebilir ve MVP sonrası/ful
 
 ## Son Tartışma Notları
 
+- [2026-06-04] Sayısal balans workflow'u ayrı `balance_workflow.md` dosyasına kaydedildi. Değerlerin tek tek elle seçilmemesi; Excel/CSV'nin düzenleme, Python simülasyonun 120-180 günlük ekonomi testi, Godot'un ise onaylanmış veriyi kullanma katmanı olması gerektiği kararlaştırılan tasarım yönü olarak yazıldı. Balance data tablo şemaları, Python araç rolleri, scenario runner, parametre taraması ve rapor formatı detaylandırıldı.
 - [2026-06-04] MVP balans için ayrı `mvp_balance.md` dosyası açıldı. Patrician victory hedefi 120-180 oyun günü olarak kabul edildi. Manuel ticaret, kontrat, Trading Post, Caravan Master, automation zinciri, prosperity, debt ve playtest senaryoları için başlangıç balans hedefleri kaydedildi. Sayısal öneriler playtest başlangıç değeri olarak tutuldu; yalnızca 120-180 gün victory hedefi kesinleşmiş karar olarak işlendi.
 - [2026-06-04] MVP açık kararları kapatıldı. Victory summary sonrası devam edilebilir; Delivery kontratları tek tier olacak; gross/upkeep/net margin UI MVP'ye alındı; Caravan Master hiring şehir bazlı 0-2 aday olacak; Delivery fail ödülden mahrum kalma + küçük faction rep cezası verecek. MVP için açık kalan tek kapsam kararı günlük prosperity clamp sayısıdır. Genel açık sorular MVP ve tam sürüm sonrası olarak ayrıldı.
 - [2026-06-04] Implementation senkron maddeleri `_index.md` içinden ayrılıp `implementation_sync.md` dosyasına taşındı. Kod/mekanik/UI borçları MVP öncesi zorunlu, MVP için basitleştirilebilir ve MVP sonrası/full scope olarak sınıflandırıldı.
