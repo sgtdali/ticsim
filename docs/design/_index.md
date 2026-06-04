@@ -16,6 +16,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 | [world.md](world.md) | Kasabalar, harita, seyahat, dünya büyümesi |
 | [contracts.md](contracts.md) | Kontrat tipleri, zorluk dengesi, ödül tasarımı |
 | [mvp_scope.md](mvp_scope.md) | MVP kapsamı, MVP dışı bırakılanlar ve karar günlüğü |
+| [implementation_sync.md](implementation_sync.md) | Tasarım kararlarının kod, mekanik ve UI senkron borçları |
 | [trading_post.md](trading_post.md) | Trading Post + Caravan Master otomasyonu giriş kapısı |
 | [trading_post_debt.md](trading_post_debt.md) | Debt, upkeep ve game over modeli |
 | [caravan_master_routes.md](caravan_master_routes.md) | Caravan Master route, durak ve temporary unload sistemi |
@@ -52,46 +53,15 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek. `economy_prosperity.md`, `ux.md`
 - [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek. `economy_prosperity.md`
 
-## Yapılacaklar / Implementation Senkronu
+## Implementation Senkronu
 
-### Debt & Game Over
-- [ ] **PlayerData.gd: Debt sabitleri ve davranışları güncellenecek.** `DEBT_REP_PENALTY_DAYS=14` → 30 olacak. `DEBT_POST_TRADE_STOP_DAYS` ve `should_stop_trading_post_auto_trade()` kaldırılacak (auto-trade artık durmuyor). `_apply_debt_duration_penalties()` içindeki `suspend_most_valuable_post()` çağrısı kaldırılacak; 60. günde game over tetiklenecek.
-- [ ] **TradingPostManager.gd: suspended mekanik kaldırılacak.** `suspended` field, `suspend_most_valuable_post()`, `has_post()` içindeki suspended kontrolü ve `process_day()` içindeki `debt_stops_all_trade` kontrolü kaldırılacak.
-- [ ] **Game over ekranı eklenecek.** `debt_days >= 60` olunca oyunu sonlandıran bir game over ekranı/akışı oluşturulacak. Şu an hiç yok.
-
-### Rank Sistemi
-- [ ] **RankManager.gd: Faksiyon koşulları kaldırılacak.** `get_rank_requirements()` içindeki `friendly_factions` ve `allied_factions` alanları kaldırılacak. `get_progress_data()` içindeki faction sayım kodu kaldırılacak. Koşullar gold + şehir prosperity bazlı yeniden yazılacak. Bkz. `progression.md`.
-- [ ] **Thieves Brotherhood koddan kaldırılacak.** `FactionManager.gd` içindeki `FACTIONS` dict'inden `"Thieves Brotherhood"` girdisi ve diğer faksiyonların `relations` alanındaki Thieves referansları silinecek.
-
-### NPC Relation
-- [ ] **NPC relation koddan kaldırılacak.** Kontrat tamamlanınca NPC relation artıran veri/field/metotlar ve UI gösterimleri temizlenecek. Aldric, Mira ve Torben şehir/faksiyon temsilcisi olarak kalacak; mekanik ilişki faction rep üzerinden çalışacak. Bkz. `factions.md`.
-
-### Event Sistemi
-- [ ] **Event sistemi koddan kaldırılacak.** `EventManager.gd` ve event tetikleme/uygulama kodları kaldırılacak. Event UI bildirimleri de temizlenecek. Tasarım referansı `economy_events.md`'de korunuyor.
-
-### Economy Market
-- [ ] **Town stock cap davranışı kodla senkronlanacak.** Cap üstü stok tutulmayacak; üretim fazlası waste olacak; manuel satış, Trading Post auto-sell ve NPC trader satışı sadece boş kapasite kadar gerçekleşecek. Yer yoksa Trading Post rule status `market_full` veya eşdeğer açık bekleme durumuna geçecek; cap doluluğu ekstra fiyat çarpanı yaratmayacak. Bkz. `economy_market.md`.
-- [ ] **Geç oyun para yakıcıları kodla senkronlanacak.** Trading Post upkeep yalnızca post/depot upgrade'leriyle artacak; depot expansion tek seferlik maliyet + küçük upkeep yaratacak; Caravan Master wage archetype + level/stat bazlı olacak; high-tier master'lar yüksek hire cost + yüksek wage taşıyacak; automation UI gross + upkeep + net margin gösterecek. Bkz. `economy_prosperity.md`, `trading_post.md`, `caravan_master_hiring.md`.
-
-### Caravan Master — Route Kuralları
-- [ ] **CaravanMasterManager.gd: Rule type "buy"/"sell" → "load"/"unload" olacak.** Route kurallarındaki `type` field değerleri ve buna bağlı tüm `_process_stop()` mantığı Load/Unload terminolojisine taşınacak. Bkz. `caravan_master_routes.md`.
-- [ ] **CaravanMasterManager.gd: Route kurallarından price_limit kaldırılacak.** Caravan Master kuralında fiyat limiti yok; fiyat kararları Trading Post'a ait. Route rule dict'inden `price_limit` alanı ve bunu kullanan `_process_stop()` kontrolü kaldırılacak.
-- [ ] **CaravanMasterManager.gd: Load davranış modları eklenecek.** Load Available / Wait Until Full / Wait Until Amount / Take Exact Amount. Şu an sadece "depoda ne varsa al" mantığı var; bekleme/koşul modları hiç yok.
-- [ ] **CaravanMasterManager.gd: Durak çalışma sırası zorlanacak.** `_process_stop()` şu an kuralları array sırasına göre işliyor. Tasarıma göre önce tüm Unload kuralları, sonra tüm Load kuralları çalışmalı; oyuncunun ekleme sırasından bağımsız.
-
-### Caravan Master — Route Yaşam Döngüsü
-- [ ] **CaravanMasterManager.gd: Cargo uyumluluk kontrolü eklenecek.** `set_route()` ve `start_route()` sırasında master üzerinde cargo varsa yeni rotada Unload karşılığı aranacak. Yoksa kritik uyarı gösterilecek, `Proceed Anyway` olmadan rota aktifleşmeyecek. Aynı kontrol canlı düzenlemeyi de kapsayacak.
-- [ ] **CaravanMasterManager.gd: Canlı rota düzenleme davranışı düzeltilecek.** `set_route()` şu an `current_stop_index=0` yapıyor — bu master'ı ışınlar. Tasarıma göre değişiklikler master'ın bir sonraki şehre varışıyla uygulanmalı; mevcut seyahat bozulmamalı.
-- [ ] **CaravanMasterManager.gd: Reposition seyahati eklenecek.** `start_route()` sırasında ilk durak master'ın bulunduğu şehirden farklıysa master önce ilk durağa boş seyahat yapacak, sonra rota kuralları işlemeye başlayacak. Şu an yok.
-- [ ] **CaravanMasterManager.gd: Temporary Unload sistemi eklenecek.** Cargo uyumsuzluğu durumunda geçici Unload durağı/kuralı mekanizması; cargo boşalınca otomatik kaldırma; partial unload desteği. Tamamen eksik.
-
-### Caravan Master — Aday & Seviye Sistemi
-- [ ] **CaravanMasterManager.gd + CaravanMaster.gd: Aday havuzu sistemi eklenecek.** Şu an `hire_master()` tek bir master nesnesi alıyor. Tasarıma göre şehir bazlı Tavern aday havuzları, 30 günde yenilenme ve archetype bazlı farklı stat/maliyet/wage dağılımı olacak. Bkz. `caravan_master_hiring.md`.
-- [ ] **CaravanMaster.gd: Seviye atlayınca özellik puanı sistemi eklenecek.** `add_xp()` şu an sadece `level` artırıyor. Tasarıma göre her seviye atlamada oyuncunun harcayabileceği bir özellik puanı kazanılacak (speed/capacity/bargaining/courage'a dağıtılacak).
+Tasarım kararlarının kod, mekanik ve UI tarafına yansıma borçları artık [implementation_sync.md](implementation_sync.md) içinde takip edilir.
+Bu dosya MVP öncesi zorunlu, MVP için basitleştirilebilir ve MVP sonrası/full scope olarak ayrılmıştır.
 
 ## Son Tartışma Notları
 
 - [2026-06-04] MVP açık kararları kapatıldı. Victory summary sonrası devam edilebilir; Delivery kontratları tek tier olacak; gross/upkeep/net margin UI MVP'ye alındı; Caravan Master hiring şehir bazlı 0-2 aday olacak; Delivery fail ödülden mahrum kalma + küçük faction rep cezası verecek. MVP için açık kalan tek kapsam kararı günlük prosperity clamp sayısıdır. Genel açık sorular MVP ve tam sürüm sonrası olarak ayrıldı.
+- [2026-06-04] Implementation senkron maddeleri `_index.md` içinden ayrılıp `implementation_sync.md` dosyasına taşındı. Kod/mekanik/UI borçları MVP öncesi zorunlu, MVP için basitleştirilebilir ve MVP sonrası/full scope olarak sınıflandırıldı.
 - [2026-06-04] Detay tasarım dosyalarına `MVP Kapsamı` blokları eklendi. `mvp_scope.md` ana karar haritası olarak kalacak; her konu dosyası kendi alanında MVP'de uygulanacak, sade tutulacak ve MVP dışı bırakılacak parçaları ayrıca gösterecek.
 - [2026-06-04] MVP kapsamı ayrı doküman olarak çıkarıldı. MVP hedefi otomasyonlu ekonomi MVP'si olacak; detaylar `mvp_scope.md` içinde takip edilecek.
 - [2026-06-04] Geç oyun para yakıcıları kapatıldı. Model prosperity investment, automation upkeep ve depot expansion arasında dengeli dağıtılacak; prestige/rank maliyeti MVP'de kullanılmayacak; automation UI gross + upkeep + net margin gösterecek. Sayısal balance maddeleri yapılacaklarda bırakıldı.
