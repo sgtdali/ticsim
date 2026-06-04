@@ -22,12 +22,30 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - [ ] **NPC relation ne işe yarıyor?** Şu an kontratla artıyor ama hiçbir sistem bunu okumuyor. Kapı açacak mı, indirim mi, özel kontrat mı? `factions.md`
 - [ ] **Kaç kasaba olacak?** Şu an 3 kasaba hardcode. 4-5'e çıkma planı var mı, yoksa 3 kasaba bitiş vizyonu mu? `world.md`
 - [ ] **Oyun bitiş ekranı var mı?** Patrician'a ulaşıldığında gerçek bir bitiş sahnesi/kutlama var mı? `progression.md`
+- [ ] **Şehir ekonomik kimlikleri nasıl tanımlanacak?** Her şehrin üretim karakteri, tüketim karakteri ve ticaret rolü netleşmeli mi? Örnek: maden, tarım, sanayi, refah/luxury tüketim şehri. `economy.md`
+- [ ] **Ekonomik fırsatlar oyuncuya nasıl gösterilecek?** Stok, mevsim, NPC hareketi ve prosperity değişimi fırsat üretecekse tooltip yeterli mi, yoksa trade hint/rumor/şehir uyarısı/rota tavsiyesi gibi katmanlar gerekli mi? `economy.md`
+- [ ] **Stok kapasitesi dolunca sistem nasıl davranacak?** Town stock cap dolduğunda üretim, oyuncu satışı, NPC satışı ve Trading Post auto-sell tamamen engellenecek mi, fiyat mı düşecek, yoksa başka hedef/uyarı sistemi mi çalışacak? `economy.md`
+- [ ] **Geç oyun para yakıcıları ne olacak?** Trading Post, Caravan Master ve prosperity yatırımları snowball yaratınca bunu dengeleyecek wage/upkeep/depot expansion/diminishing return/prestige maliyeti gibi mekanikler nasıl kurulacak? `economy.md`
+- [ ] **Demand tag MVP kalibrasyonu nasıl yapılacak?** Her item için `category`, `base_price`, `base_daily_demand_per_1000_pop` ve `demand_tags` yeterli mi; şehir bazlı özel katsayılar gerekecek mi? `economy.md`
+- [ ] **NPC trader oyuncunun stratejik olarak takip edebileceği bir aktör mü olacak?** NPC'ler sadece arka plan stok değiştirici mi kalacak, yoksa rotaları/etkileri oyuncu tarafından okunabilir olacak mı? `economy.md`
 - [ ] **Günlük prosperity clamp değeri ne olacak?** Yeni demand satisfaction modelinde kategori etkileri toplanacak; otomatik prosperity değişiminin min/max günlük sınırı hâlâ kararsız. `economy.md`
 
 ## Çelişkiler / Gerilimler
 
 - **Merchants Guild iki kasabada.** Rep artık rank kapısı olmadığı için eskisi kadar kritik değil; ama spread bonusu optimizasyonu açısından Merchants Guild hâlâ çok kolay kazanılıyor. `factions.md`
 - **Patrician upkeep sıfır.** Kazandıktan sonra baskı kalkmış — ama oyun zaten bitiyor. Bu tutarlı. `progression.md`
+- **3 kasaba ekonomisinin sınırları.** Sadece 3 kasabayla ticaret rotaları hızlı ezberlenebilir. 3 kasaba MVP'de kalacaksa NPC hareketi, mevsim ve prosperity değişimi rota ezberini kıracak kadar görünür olmalı. `economy.md`
+- **Bolluk spiraline karşı mekanizma.** Oyuncu para kazandıkça prosperity yatırımı yapıp daha çok kazanıyor. Kabul edilen çözüm yönü: prosperity ihtiyaç seviyesi artacak, eksik tedarik growth stop/düşüş etkisi yaratabilecek, prosperity yatırım maliyeti kademeli artacak, automation fixed cost anlamlı olacak, NPC trader ekonomi dalgalanması yaratacak. Detay mekanikler sonraki tasarım yapılacaklarında ele alınacak. `economy.md`
+
+## Tasarım Yapılacakları
+
+### Bolluk Spirali / Prosperity Ekonomisi
+- [ ] **Prosperity ihtiyaç bandı tasarlanacak.** Her prosperity aralığında hangi mal sınıfları ve demand tag'lerin güçleneceği belirlenecek. `economy.md`
+- [ ] **Tedarik eksikliği ve prosperity etkisi birlikte yeniden değerlendirilecek.** Mevcut daily demand, demand tag, prosperity growth/decline ve rank koşulu bölümleri beraber okunarak tek tutarlı model çıkarılacak. `economy.md`, `progression.md`
+- [ ] **Prosperity yatırım maliyeti formülü belirlenecek.** Düz maliyet yerine kademeli veya eğimli maliyet modeli seçilecek. `economy.md`
+- [ ] **Automation fixed cost modeli detaylandırılacak.** Trading Post upkeep, Caravan Master wage, depot expansion ve high-tier master maliyetleri birlikte ele alınacak. `economy.md`, `trading_post.md`
+- [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek. `economy.md`, `ux.md`
+- [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek. `economy.md`
 
 ## Yapılacaklar / Implementation Senkronu
 
@@ -62,6 +80,8 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 ## Son Tartışma Notları
 
 - [2026-06-03] Ekonomi daily tick ve demand satisfaction kararları eklendi. Şehir simülasyonu ticaretten önce çalışacak; oyuncu otomasyonu NPC'lerden önce işlem yapacak; survival/luxury/industry/raw eksikliklerinin şehir etkileri ayrıştırıldı. Günlük prosperity clamp değeri açık soru olarak bırakıldı.
+- [2026-06-03] Bolluk spirali için kabul edilen çözüm yönleri index'e eklendi. Prosperity ihtiyaç bandı, tedarik eksikliğinin prosperity etkisi, kademeli yatırım maliyeti, automation fixed cost, NPC trader okunabilirliği ve bolluk spirali test senaryoları ayrı tasarım yapılacakları olarak kaydedildi.
+- [2026-06-03] Ekonomi geliştirme başlıkları açık soru/gerilim olarak kaydedildi. Şehir ekonomik kimlikleri, ekonomik fırsatların oyuncuya gösterilmesi, stok kapasitesi dolunca davranış, geç oyun para yakıcıları, demand tag MVP kalibrasyonu ve NPC trader'ın okunabilir aktör olup olmayacağı index'e eklendi.
 - [2026-06-03] Ekonomi fiyat omurgası netleştirildi. Model stok öncelikli hibrit olacak; kategori bazlı fiyat eğrileri, nüfus/prosperity/demand tag tüketimi, quote/spread sınırları ve herkes için marginal pricing kararları `economy.md` dosyasına işlendi.
 - [2026-06-03] Market fiyat bilgi UI'ı detaylandırıldı. Ürün satırında toplam fiyat yönü ikonu olacak; referans MVP'de base_price. Hover tooltip sadece %5 üzeri aktif fiyat etkilerini gösterecek, %15 üzeri etkiler çift okla belirtilecek ve etkiler güç sırasına dizilecek. Yerel normal fiyat referansı ileride değerlendirilecek.
 - [2026-06-03] Ekonomi bilgisi görünürlüğü kararlaştırıldı. Fiyat formülü oyuncuya gösterilmeyecek; market UI fiyat etkilerini kısa, okunabilir tooltip satırlarıyla açıklayacak. Mevsim etkisi de bu tooltip sistemiyle görünür olacak.
