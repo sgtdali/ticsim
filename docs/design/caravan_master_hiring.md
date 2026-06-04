@@ -1,5 +1,29 @@
 # Caravan Master Hiring & Tavern Design
 
+## MVP Kapsamı
+
+MVP'de temel master hiring olacak:
+
+- Oyuncu Caravan Master işe alabilir.
+- Adaylar şehir bazlı 0-2 aday modeliyle sunulur.
+- Hire cost ve daily upkeep görünür olur.
+- Speed, Capacity, Bargain ve Courage statları görünür olur.
+- İşe alınan master route sisteminde kullanılabilir.
+
+MVP'de sade tutulacak:
+
+- Archetype'lar isim/başlangıç stat yönü olarak kullanılabilir; tam numeric balance MVP dışıdır.
+- Aday refresh süresi ve olasılıkları basit tutulabilir.
+
+MVP dışı:
+
+- Derin aday havuzu balance'ı.
+- Veteran/Broker gibi high-tier adayların tam ekonomisi.
+- Tavern'in rumor, özel kontrat veya bilgi satın alma işlevleri.
+- Level-up özellik puanı sistemi.
+
+Tam Tavern/adaya dayalı tasarım aşağıda korunur; MVP implementasyonu için önce bu kapsam esas alınmalıdır.
+
 ## Temel Karar
 
 Caravan Master işe alma sistemi global ve tek tuşluk bir aksiyon olmayacaktır. Caravan Master adayları şehir bazlı olarak Tavern / Inn üzerinden bulunur ve işe alınır.
@@ -72,6 +96,11 @@ Aday kalitesi oyuncu rank’ına göre değişmelidir.
 - Daha iyi adaylar daha yüksek hire cost ve daha yüksek daily upkeep ister.
 - Oyuncu iyi adayı gördüğünde parası yetmeyebilir; bu bilinçli bir karar gerilimi oluşturur.
 - Aday sistemi oyuncuya gerçek tercih sunmalıdır: ucuz ama zayıf apprentice almak, hızlı ama riskli runner almak, pahalı ama güvenli guarded master almak veya bekleyip daha iyi aday aramak.
+- Caravan Master wage archetype + level/stat bazlı olacak.
+- Archetype temel wage aralığını belirleyecek.
+- Level/stat arttıkça wage hafifçe yükselecek; artış oyuncuya master geliştirmeyi cezalandırılmış gibi hissettirmeyecek.
+- High-tier master'lar hem yüksek hire cost hem yüksek wage taşıyacak.
+- Broker/Veteran gibi güçlü master'lar late-game lüks/optimizasyon seçimi olacak; yüksek verim sağlar ama net kâr hesabında belirgin işletme yükü yaratır.
 
 Örnek yön:
 
@@ -175,6 +204,9 @@ Adayların her zaman çıkmaması iyi bir oyun gerilimi üretir; ancak oyuncu ç
 Tavern ileride sadece Caravan Master için değil, NPC söylentileri, özel kontratlar veya bilgi satın alma gibi sistemler için de kullanılabilir. Ancak ilk karar kapsamında Tavern’in ana işlevlerinden biri Caravan Master adaylarını şehir bazlı göstermek olacaktır.
 
 ## Tartışma Notları
+
+- [2026-06-04] Geç oyun para yakıcıları kapsamında Caravan Master wage modeli netleşti. Wage archetype + level/stat bazlı olacak; gelişimden gelen artış hafif tutulacak; high-tier master'lar hem yüksek hire cost hem yüksek wage ile late-game optimizasyon aracı olacak.
+- [2026-06-04] MVP için basit Caravan Master hiring modeli netleşti: şehir bazlı 0-2 aday gösterilecek. Aday refresh/balance ve archetype numeric detayları sade tutulacak.
 
 - [2026-06-04] Ana `trading_post.md` dosyasındaki Caravan Master aday sistemi ve archetype yönleri bu dosyaya taşındı. Şehir bazlı Tavern kararı korunarak eski global 3 aday fikri, şehir başına 0-2 aday ve dünya genelinde değişken aday havuzu şeklinde yorumlandı.
 

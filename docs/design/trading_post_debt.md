@@ -2,6 +2,33 @@
 
 Bu dosya borç, upkeep ve game over kararlarını tutar.
 
+## MVP Kapsamı
+
+MVP'de basitleştirilmiş debt/game over uygulanacak:
+
+- Gold negatife düşebilir.
+- Negatif gold süresi sayılır.
+- Uyarı gösterilir.
+- 60 gün negatif kalırsa game over screen tetiklenir.
+- Otomasyon debt yüzünden durmaz.
+- Borç kapatılırsa sayaç sıfırlanır.
+
+MVP'de sade/opsiyonel:
+
+- 0-30 / 30-60 bölge ayrımı.
+- Debt fee.
+- Reputation penalty.
+- Kritik debt UI katmanları.
+
+MVP dışı:
+
+- Post suspend.
+- Master unpaid.
+- Route pause.
+- Debt'in otomasyon bozması.
+
+Aşağıdaki tam debt modeli korunur; MVP implementasyonu için önce bu basitleştirilmiş kapsam esas alınmalıdır.
+
 ## Debt ve Game Over Modeli (Karar verilmiş)
 
 Eski karar olan `Debt 30 günde auto-trade durur, 60 günde en değerli post suspended olur` kaldırılmıştır.

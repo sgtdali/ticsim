@@ -2,6 +2,35 @@
 
 Bu dosya Trading Post ve Caravan Master otomasyon tasarımının giriş kapısıdır. Ayrıntılı kararlar artık konu dosyalarına ayrılmıştır.
 
+## MVP Kapsamı
+
+MVP'de Trading Post orta seviye otomasyon olarak uygulanacak:
+
+- Şehirde Trading Post açma.
+- Depot capacity.
+- Auto-buy / auto-sell kuralları.
+- Fiyat limiti.
+- Depot limit.
+- Günlük rule status.
+- Temel upkeep.
+- Basit depot expansion veya en azından expansion altyapısı.
+- Basit "neden işlem yapmadı?" bilgisi.
+- Gross/upkeep/net margin UI.
+
+MVP'de sade/opsiyonel:
+
+- Gelişmiş automation chain görünürlüğü.
+- Depot expansion'ın tam late-game balance'ı.
+- Çok detaylı rule uyarıları.
+
+MVP dışı:
+
+- Gelişmiş kârlılık simülasyonu.
+- Çok katmanlı automation dashboard.
+- Tam polish edilmiş route-chain analizi.
+
+Tam Trading Post/Caravan Master vizyonu aşağıdaki dosya haritasında korunur; MVP implementasyonu için bu kapsam önceliklidir.
+
 ## Dosya Haritası
 
 | Dosya | Kapsam |
@@ -57,6 +86,11 @@ Ironmere Post buys Bread under 22g -> Master loads Bread from Ironmere -> Master
 - Bu zincir görünürlüğü, Post ve Master sistemlerinin ayrı UI'lardan yönetilmesinin yaratacağı zihinsel yükü azaltmak için ana çözüm yönüdür.
 - Debt uyarıları global finance/debt uyarısı olarak gösterilmeli; Post/Route UI'ını bozacak şekilde değil.
 - Route ekranında beklenen kârlılık gösterilecekse, bu bilgi Trading Post buy/sell fiyat kurallarından türetilmelidir.
+- Automation kârlılığı sadece gross margin olarak gösterilmeyecek; gross margin, upkeep ve net margin birlikte gösterilecek.
+- Trading Post temel upkeep'i `8g/gün` kalacak.
+- Trading Post upkeep şehir prosperity'sine göre otomatik artmayacak.
+- Trading Post upkeep yalnızca oyuncunun aldığı post/depot upgrade'leriyle artacak.
+- Depot expansion hem tek seferlik upgrade maliyeti hem küçük günlük upkeep artışı yaratacak.
 
 ## Açık Sorular
 
@@ -74,4 +108,6 @@ Oyuncu bir kasabada ucuz malı bulmak isterken post buy rule'u o malı zaten alm
 ## Tartışma Notları
 
 - [2026-06-04] Uzayan Trading Post & Caravan Master dokümanı parçalandı. Ana dosya Trading Post temel rolü ve otomasyon zinciri görünürlüğü için bırakıldı; debt modeli `trading_post_debt.md`, rota sistemi `caravan_master_routes.md`, aday/archetype kararları `caravan_master_hiring.md` dosyasına taşındı.
+- [2026-06-04] Geç oyun para yakıcıları kapsamında Trading Post kararları netleşti. Temel upkeep 8g/gün kalacak; şehir prosperity'si upkeep'i otomatik artırmayacak; post/depot upgrade'leri upkeep'i artırabilecek; depot expansion tek seferlik maliyet + küçük günlük upkeep yaratacak; automation UI gross, upkeep ve net margin'i birlikte gösterecek.
+- [2026-06-04] MVP kapsamında gross/upkeep/net margin UI zorunlu kapsama alındı. Gelişmiş automation chain görünürlüğü ve tam dashboard polish MVP dışı kalacak.
 - [2026-05-31] Caravan Master sistemi Patrician trade route yaklaşımından ilhamla netleştirildi. Master doğrudan markete girmeyecek; otomasyon rol ayrımı Trading Post ve Caravan Master arasında korunacak.

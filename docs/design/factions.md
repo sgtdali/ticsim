@@ -1,5 +1,30 @@
 # Factions & NPC Design
 
+## MVP Kapsamı
+
+MVP'de faction rep basit spread bonusu olarak kalacak:
+
+- Kontrat ve/veya ticaretle artar.
+- Rank koşulu değildir.
+- Alış/satış quote'unu hafif iyileştirir.
+- NPC relation yok; tek ilişki metriği faction rep.
+- Aldric, Mira ve Torben şehir/faksiyon temsilcisi olarak kalır.
+
+MVP'de sade tutulacak:
+
+- Rival faction penalty uygulanmayabilir veya çok basit tutulabilir.
+- Tax rate ayrı fiyat mekanizması olarak kullanılmayacak.
+
+MVP dışı:
+
+- Diplomasi.
+- Faction eventleri.
+- Faction-specific unlock.
+- NPC kişisel relation.
+- Gelişmiş faction rivalry sistemi.
+
+Tam faction kararları aşağıda korunur; MVP implementasyonu için bu kapsam önceliklidir.
+
 ## Mevcut Durum (Karar verilmiş)
 
 2 faksiyon, 3 kasaba, 3 NPC:

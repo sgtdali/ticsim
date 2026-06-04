@@ -95,6 +95,7 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 | `factions.md` | Faksiyon sistemi, NPC ilişkileri, reputasyon mekaniği |
 | `world.md` | Kasabalar, harita, seyahat, dünya büyümesi |
 | `contracts.md` | Kontrat tipleri, tier dengesi, ödül tasarımı |
+| `mvp_scope.md` | MVP kapsamı, MVP dışı bırakılanlar, MVP karar günlüğü |
 | `trading_post.md` | Trading Post otomasyonu giriş kapısı, Post/Master rol ayrımı |
 | `trading_post_debt.md` | Debt, upkeep ve game over modeli |
 | `caravan_master_routes.md` | Caravan Master route, durak, temporary unload ve route UI kararları |

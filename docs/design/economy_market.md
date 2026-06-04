@@ -2,6 +2,38 @@
 
 Bu dosya fiyat sistemi, talep/tüketim zemini, üretim/stok sınırları, quote/spread ve market bilgi görünürlüğü kararlarını tutar.
 
+## MVP Kapsamı
+
+MVP'de uygulanacak:
+
+- Stok bazlı fiyat sistemi.
+- Kategori bazlı fiyat eğrileri.
+- Günlük talep/tüketim zemini.
+- Item bazlı `category`, `base_price`, `base_daily_demand_per_1000_pop`, `demand_tags`.
+- Marginal pricing.
+- Quote/spread sistemi.
+- Market stok kapasitesi ve cap davranışı.
+- Mevsimsel üretim etkilerinin stok üzerinden fiyatı dolaylı etkilemesi.
+- Market satırında fiyat yönü ikonu ve anlamlı fiyat nedeni tooltip'i.
+- Basit şehir uyarılarıyla ekonomik fırsat görünürlüğü.
+
+MVP'de sade tutulacak:
+
+- Şehir ekonomik kimlikleri mevcut 3 şehir üretim kimliğiyle sınırlı kalacak.
+- Demand tag kaynakları item bazlı basit modelle kalacak.
+- Ekonomik fırsat gösterimi tooltip + basit şehir uyarılarıyla sınırlı olacak.
+
+MVP dışı:
+
+- Şehir bazlı özel tüketim katsayıları.
+- Tam şehir demand profilleri.
+- Yerel normal fiyat referansı.
+- Kategoriye göre farklı referans stok günü.
+- Trade rumor veya rota tavsiyesi sistemi.
+- Gelişmiş ekonomik rapor ekranı.
+
+Bu dosyadaki tam ekonomi notları korunur; implementasyon sırasında önce bu MVP kapsamı esas alınmalıdır.
+
 ## Temel Yaklaşım (Karar verilmiş)
 
 - Fiyatlar sabit değil; arz-talep dinamiği var.

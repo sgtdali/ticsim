@@ -15,6 +15,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 | [factions.md](factions.md) | Faksiyon, NPC ilişkileri, reputasyon mekaniğinin genişlemesi |
 | [world.md](world.md) | Kasabalar, harita, seyahat, dünya büyümesi |
 | [contracts.md](contracts.md) | Kontrat tipleri, zorluk dengesi, ödül tasarımı |
+| [mvp_scope.md](mvp_scope.md) | MVP kapsamı, MVP dışı bırakılanlar ve karar günlüğü |
 | [trading_post.md](trading_post.md) | Trading Post + Caravan Master otomasyonu giriş kapısı |
 | [trading_post_debt.md](trading_post_debt.md) | Debt, upkeep ve game over modeli |
 | [caravan_master_routes.md](caravan_master_routes.md) | Caravan Master route, durak ve temporary unload sistemi |
@@ -23,15 +24,16 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ---
 
-## Açık Sorular (Yanıtsız)
+## Açık Sorular (MVP İçin)
 
-- [ ] **Oyun bitiş ekranı var mı?** Patrician'a ulaşıldığında gerçek bir bitiş sahnesi/kutlama var mı? `progression.md`
-- [ ] **Şehir ekonomik kimlikleri nasıl tanımlanacak?** Her şehrin üretim karakteri, tüketim karakteri ve ticaret rolü netleşmeli mi? Örnek: maden, tarım, sanayi, refah/luxury tüketim şehri. `economy_market.md`
-- [ ] **Ekonomik fırsatlar oyuncuya nasıl gösterilecek?** Stok, mevsim, NPC hareketi ve prosperity değişimi fırsat üretecekse tooltip yeterli mi, yoksa trade hint/rumor/şehir uyarısı/rota tavsiyesi gibi katmanlar gerekli mi? `economy_market.md`, `economy_prosperity.md`
-- [ ] **Geç oyun para yakıcıları ne olacak?** Trading Post, Caravan Master ve prosperity yatırımları snowball yaratınca bunu dengeleyecek wage/upkeep/depot expansion/diminishing return/prestige maliyeti gibi mekanikler nasıl kurulacak? `economy_prosperity.md`, `trading_post.md`
-- [ ] **Demand tag MVP kalibrasyonu nasıl yapılacak?** Her item için `category`, `base_price`, `base_daily_demand_per_1000_pop` ve `demand_tags` yeterli mi; şehir bazlı özel katsayılar gerekecek mi? `economy_market.md`
-- [ ] **NPC trader oyuncunun stratejik olarak takip edebileceği bir aktör mü olacak?** NPC'ler sadece arka plan stok değiştirici mi kalacak, yoksa rotaları/etkileri oyuncu tarafından okunabilir olacak mı? `economy_prosperity.md`
-- [ ] **Günlük prosperity clamp değeri ne olacak?** Yeni demand satisfaction modelinde kategori etkileri toplanacak; otomatik prosperity değişiminin min/max günlük sınırı hâlâ kararsız. `economy_prosperity.md`
+- [ ] **Günlük prosperity clamp değeri ne olacak?** Temel demand satisfaction MVP'de uygulanacağı için otomatik prosperity değişiminin min/max günlük sınırı MVP implementasyonu sırasında netleşmeli. `economy_prosperity.md`
+
+## Açık Sorular (Tam Sürüm / MVP Sonrası)
+
+- [ ] **Şehir ekonomik kimlikleri nasıl derinleşecek?** MVP'de mevcut 3 üretim kimliği yeterli. Tam sürümde her şehrin üretim karakteri, tüketim karakteri ve ticaret rolü ayrıca netleştirilebilir. `economy_market.md`
+- [ ] **Ekonomik fırsatlar MVP sonrası nasıl genişletilecek?** MVP'de market tooltip + basit şehir uyarıları yeterli. Tam sürümde trade hint, rumor, şehir uyarısı, rota tavsiyesi veya ekonomik rapor katmanları değerlendirilebilir. `economy_market.md`, `economy_prosperity.md`, `ux.md`
+- [ ] **NPC trader stratejik aktöre dönüşecek mi?** MVP'de NPC trader arka plan stok dalgalandırıcı. Tam sürümde rotaları/etkileri oyuncu tarafından okunabilir rakip/aktör haline gelip gelmeyeceği ayrıca tasarlanacak. `economy_prosperity.md`
+- [ ] **Demand tag sistemi MVP sonrası şehir bazlı genişleyecek mi?** MVP'de item bazlı `category`, `base_price`, `base_daily_demand_per_1000_pop`, `demand_tags` yeterli. Tam sürümde şehir bazlı özel katsayılar veya tam demand profilleri değerlendirilebilir. `economy_market.md`
 
 ## Çelişkiler / Gerilimler
 
@@ -45,8 +47,8 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 ### Bolluk Spirali / Prosperity Ekonomisi
 - [ ] **Prosperity ihtiyaç bandı tasarlanacak.** Her prosperity aralığında hangi mal sınıfları ve demand tag'lerin güçleneceği belirlenecek. `economy_prosperity.md`
 - [ ] **Tedarik eksikliği ve prosperity etkisi birlikte yeniden değerlendirilecek.** Mevcut daily demand, demand tag, prosperity growth/decline ve rank koşulu bölümleri beraber okunarak tek tutarlı model çıkarılacak. `economy_market.md`, `economy_prosperity.md`, `progression.md`
-- [ ] **Prosperity yatırım maliyeti formülü belirlenecek.** Düz maliyet yerine kademeli veya eğimli maliyet modeli seçilecek. `economy_prosperity.md`
-- [ ] **Automation fixed cost modeli detaylandırılacak.** Trading Post upkeep, Caravan Master wage, depot expansion ve high-tier master maliyetleri birlikte ele alınacak. `economy_prosperity.md`, `trading_post.md`, `caravan_master_hiring.md`
+- [ ] **Prosperity yatırım bandları ve sayıları belirlenecek.** Basamaklı band modeli seçildi; band aralıkları ve maliyet çarpanları balance edilecek. `economy_prosperity.md`
+- [ ] **Automation fixed cost sayıları detaylandırılacak.** Model seçildi; Trading Post upgrade upkeep'i, depot expansion upkeep'i, Caravan Master wage çarpanları ve high-tier master maliyetleri sayısallaştırılacak. `economy_prosperity.md`, `trading_post.md`, `caravan_master_hiring.md`
 - [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek. `economy_prosperity.md`, `ux.md`
 - [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek. `economy_prosperity.md`
 
@@ -69,6 +71,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ### Economy Market
 - [ ] **Town stock cap davranışı kodla senkronlanacak.** Cap üstü stok tutulmayacak; üretim fazlası waste olacak; manuel satış, Trading Post auto-sell ve NPC trader satışı sadece boş kapasite kadar gerçekleşecek. Yer yoksa Trading Post rule status `market_full` veya eşdeğer açık bekleme durumuna geçecek; cap doluluğu ekstra fiyat çarpanı yaratmayacak. Bkz. `economy_market.md`.
+- [ ] **Geç oyun para yakıcıları kodla senkronlanacak.** Trading Post upkeep yalnızca post/depot upgrade'leriyle artacak; depot expansion tek seferlik maliyet + küçük upkeep yaratacak; Caravan Master wage archetype + level/stat bazlı olacak; high-tier master'lar yüksek hire cost + yüksek wage taşıyacak; automation UI gross + upkeep + net margin gösterecek. Bkz. `economy_prosperity.md`, `trading_post.md`, `caravan_master_hiring.md`.
 
 ### Caravan Master — Route Kuralları
 - [ ] **CaravanMasterManager.gd: Rule type "buy"/"sell" → "load"/"unload" olacak.** Route kurallarındaki `type` field değerleri ve buna bağlı tüm `_process_stop()` mantığı Load/Unload terminolojisine taşınacak. Bkz. `caravan_master_routes.md`.
@@ -88,6 +91,10 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Son Tartışma Notları
 
+- [2026-06-04] MVP açık kararları kapatıldı. Victory summary sonrası devam edilebilir; Delivery kontratları tek tier olacak; gross/upkeep/net margin UI MVP'ye alındı; Caravan Master hiring şehir bazlı 0-2 aday olacak; Delivery fail ödülden mahrum kalma + küçük faction rep cezası verecek. MVP için açık kalan tek kapsam kararı günlük prosperity clamp sayısıdır. Genel açık sorular MVP ve tam sürüm sonrası olarak ayrıldı.
+- [2026-06-04] Detay tasarım dosyalarına `MVP Kapsamı` blokları eklendi. `mvp_scope.md` ana karar haritası olarak kalacak; her konu dosyası kendi alanında MVP'de uygulanacak, sade tutulacak ve MVP dışı bırakılacak parçaları ayrıca gösterecek.
+- [2026-06-04] MVP kapsamı ayrı doküman olarak çıkarıldı. MVP hedefi otomasyonlu ekonomi MVP'si olacak; detaylar `mvp_scope.md` içinde takip edilecek.
+- [2026-06-04] Geç oyun para yakıcıları kapatıldı. Model prosperity investment, automation upkeep ve depot expansion arasında dengeli dağıtılacak; prestige/rank maliyeti MVP'de kullanılmayacak; automation UI gross + upkeep + net margin gösterecek. Sayısal balance maddeleri yapılacaklarda bırakıldı.
 - [2026-06-04] Stok kapasitesi dolunca davranış kapatıldı. Town stock cap sert fiziksel sınır olacak; cap üstü stok tutulmayacak, üretim fazlası waste olacak, satış işlemleri yalnızca boş kapasite kadar çalışacak ve cap doluluğu ekstra fiyat çarpanı yaratmayacak. Kod senkronuna eklendi.
 - [2026-06-04] Kasaba sayısı vizyonu kapatıldı. MVP 3 kasabayla tamamlanacak; ilk tam ekonomi hedefi en az 6 kasaba, uzun vadeli ideal 8-10 kasaba olacak. Harita ve ekonomi mimarisi bu genişlemeye uygun korunacak. Bkz. `world.md`.
 - [2026-06-04] NPC relation kaldırma kararı alındı. NPC'ler rakip tüccar değil, şehir/faksiyon temsilcisi olduğu için ayrı NPC relation metriği faction rep ile örtüşüyordu. MVP'de tek mekanik ilişki sistemi faction rep olacak; kod senkronuna NPC relation temizliği eklendi.

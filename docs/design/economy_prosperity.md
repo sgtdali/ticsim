@@ -2,6 +2,38 @@
 
 Bu dosya şehir refahı, demand satisfaction, bolluk spirali, prosperity yatırımı, automation fixed cost ve NPC trader okunabilirliği kararlarını tutar.
 
+## MVP Kapsamı
+
+MVP'de temel demand satisfaction uygulanacak:
+
+- Şehir günlük tüketim/talep hesabı.
+- Survival satisfaction refahın ana belirleyicisi.
+- Luxury/Comfort yüksek prosperity şehirlerde hafif baskı.
+- Processed/Industry üretime hafif verim etkisi.
+- Raw Material için çifte ceza yok.
+- Günlük prosperity clamp.
+- Basit prosperity yatırım bandları.
+- Rank koşullarıyla uyumlu Growing / Prosperous eşikleri.
+- NPC trader arka plan stok dalgalandırıcı olarak çalışacak.
+
+MVP'de sade tutulacak:
+
+- Prosperity ihtiyaç bandları sayısal olarak basit kalacak.
+- Eksik tedarik growth stop/düşüş detayları minimal uygulanacak veya sonraya bırakılacak.
+- Automation fixed cost modeli karar olarak korunacak; sayısal balance MVP'de basit tutulacak.
+- NPC trader görünürlüğü market tooltip / şehir uyarısı gibi sınırlı izlerle kalacak.
+
+MVP dışı:
+
+- Tam civic project sistemi.
+- Çok ayrıntılı prosperity ihtiyaç profilleri.
+- Derin şehir bakım ekonomisi.
+- Stratejik rakip NPC trader sistemi.
+- Trade rumor / NPC rota tahmini.
+- Kapsamlı snowball test ve late-game balance.
+
+Bu dosyadaki bolluk spirali ve geç oyun kararları tam vizyonu korur; MVP implementasyonu için önce bu kapsam esas alınmalıdır.
+
 ## Demand Satisfaction ve Şehir Etkileri (Karar verilmiş)
 
 - Tüketim fazında her mal için karşılanma oranı hesaplanır: `tüketilen_miktar / talep_edilen_miktar`.
@@ -88,6 +120,8 @@ Sonradan birlikte değerlendirilecek mekanik kararlar:
 
 Kabul edilen yön: Prosperity yatırım maliyeti düz olmayacak. Refah yükseldikçe bir sonraki seviyeye çıkmak daha pahalı hale gelecek.
 
+Prosperity yatırım maliyeti basamaklı band modeliyle artacak. Düşük prosperity bandında yatırım ucuz, orta bandda belirgin pahalı, yüksek prosperity bandında ciddi pahalı olacak. Kesin band aralıkları ve sayısal çarpanlar balance aşamasında netleşecek.
+
 Tasarım niyeti:
 
 - Erken seviyelerde şehir toparlamak ve büyütmek ulaşılabilir olacak.
@@ -98,7 +132,7 @@ Tasarım niyeti:
 
 Sonradan alınacak mekanik kararlar:
 
-- Prosperity yatırım maliyeti hangi formülle artacak?
+- Prosperity yatırım bandları ve çarpanları hangi sayılarla kurulacak?
 - Maliyet bandı prosperity seviyesine göre mi, şehir seviyesine göre mi, nüfusa göre mi belirlenecek?
 - 0-30, 30-65 ve 65+ aralıkları kullanılacak mı?
 - Yatırım doğrudan prosperity puanı mı verir, yoksa growth modifier / civic project etkisi mi verir?
@@ -108,6 +142,14 @@ Sonradan alınacak mekanik kararlar:
 ### 4. Automation büyüdükçe fixed cost anlamlı hale gelecek
 
 Kabul edilen yön: Trading Post, Caravan Master, depot expansion ve yüksek seviye master kullanımı geç oyunda anlamlı fixed cost yaratacak. Detaylar sonradan ayrıca tasarlanacak.
+
+Geç oyun para yakıcıları dengeli dağıtılacak:
+
+- Prosperity yatırımı büyük ama daha seyrek/stratejik para yakıcı olacak.
+- Automation upkeep sürekli ama kontrollü işletme gideri yaratacak.
+- Depot expansion kapasite avantajı verdiği için hem tek seferlik maliyet hem küçük günlük upkeep artışı taşıyacak.
+- Prestige/rank maliyeti MVP'de para yakıcı olarak kullanılmayacak.
+- Diminishing return doğrudan kârı kıran ayrı bir sistem olarak değil, prosperity yatırım eğrisi ve automation işletme maliyetiyle dolaylı kurulacak.
 
 Mevcut bağlantılı bölümler:
 
@@ -126,11 +168,10 @@ Tasarım niyeti:
 
 Sonradan alınacak mekanik kararlar:
 
-- Trading Post upkeep sabit mi kalacak, şehir/prosperity/post seviyesiyle artacak mı?
-- Depot expansion sadece tek seferlik maliyet mi, ayrıca upkeep de yaratacak mı?
-- Caravan Master wage hangi parametrelere göre belirlenecek? Rank, level, archetype, stat toplamı, capacity?
-- Broker/Veteran gibi yüksek verimli master'lar ne kadar pahalı olmalı?
-- Otomasyonun beklenen kârı UI'da upkeep sonrası net margin olarak gösterilecek mi?
+- Trading Post upgrade/depot expansion upkeep artışı sayısal olarak ne kadar olacak?
+- Caravan Master archetype, level/stat ve capacity wage çarpanları hangi sayılarla kurulacak?
+- Broker/Veteran gibi yüksek verimli master'ların hire cost ve wage değerleri ne kadar pahalı olmalı?
+- Automation UI'da gross margin, upkeep ve net margin hangi panel/satır düzeniyle gösterilecek?
 - Automation fixed cost, debt modelini çok sertleştirmeden nasıl dengelenecek?
 - Bu konu [trading_post.md](trading_post.md), [trading_post_debt.md](trading_post_debt.md) ve [caravan_master_hiring.md](caravan_master_hiring.md) ile birlikte detaylandırılmalı.
 
@@ -167,15 +208,12 @@ Bu yapılacaklar kod implementation görevi değildir. Her biri sonraki tasarım
 
 - [ ] **Prosperity ihtiyaç bandı tasarlanacak.** Her prosperity aralığında hangi mal sınıfları ve demand tag'lerin güçleneceği belirlenecek.
 - [ ] **Tedarik eksikliği ve prosperity etkisi birlikte yeniden değerlendirilecek.** Mevcut daily demand, demand tag, prosperity growth/decline ve rank koşulu bölümleri beraber okunarak tek tutarlı model çıkarılacak.
-- [ ] **Prosperity yatırım maliyeti formülü belirlenecek.** Düz maliyet yerine kademeli veya eğimli maliyet modeli seçilecek.
-- [ ] **Automation fixed cost modeli detaylandırılacak.** Trading Post upkeep, Caravan Master wage, depot expansion ve high-tier master maliyetleri `trading_post.md` ve `caravan_master_hiring.md` ile birlikte ele alınacak.
+- [ ] **Prosperity yatırım bandları ve sayıları belirlenecek.** Basamaklı band modeli seçildi; band aralıkları ve maliyet çarpanları balance edilecek.
+- [ ] **Automation fixed cost sayıları detaylandırılacak.** Model seçildi; Trading Post upgrade upkeep'i, depot expansion upkeep'i, Caravan Master wage çarpanları ve high-tier master maliyetleri sayısallaştırılacak.
 - [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek.
 - [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek.
 
 ## Açık Sorular
-
-**Geç oyun ekonomi baskısı ve para yakıcılar**
-Oyuncu Trading Post, Caravan Master ve prosperity yatırımlarıyla çok para kazandığında ekonomiyi dengeleyen kalıcı maliyetler ne olacak? Caravan Master wage, Trading Post upkeep, depot expansion, diminishing return veya prestige/rank maliyeti gibi para yakıcılar hangi ölçüde kullanılacak?
 
 **NPC trader ekonomiye etkisi**
 NPC'ler town_buy/town_sell üzerinden işlem yapıyor; yani marginal pricing etkisi var, stok değişiyor. Oyuncu buna karşı strateji kurabilmeli mi? NPC'ler sadece arka plan stok değiştirici olarak mı kalacak, yoksa oyuncunun takip edebileceği rakip/aktör gibi mi davranacak? Kabul edilen yön: NPC etkisi oyuncuya en azından sınırlı/okunabilir şekilde gösterilecek; detay mekanik sonra alınacak.
@@ -191,6 +229,7 @@ Oyuncu çok para kazanınca prosperity'ye yatırım yapıyor -> satış bonusu a
 ## Tartışma Notları
 
 - [2026-06-04] Prosperity, demand satisfaction ve bolluk spirali kararları ana `economy.md` dosyasından ayrıldı. Günlük prosperity clamp, automation fixed cost, NPC okunabilirliği ve snowball testleri bu dosyada takip edilecek.
+- [2026-06-04] Geç oyun para yakıcıları için model netleştirildi. Para yakıcılar prosperity investment, automation upkeep ve depot expansion arasında dengeli dağıtılacak; Trading Post upkeep şehir prosperity'sine göre otomatik artmayacak; depot expansion tek seferlik maliyet + küçük upkeep yaratacak; Caravan Master wage archetype + level/stat bazlı olacak; high-tier master'lar hem yüksek hire cost hem yüksek wage taşıyacak; prosperity yatırımı basamaklı band modeliyle pahalılaşacak; prestige/rank maliyeti MVP'de kullanılmayacak; automation UI gross + upkeep + net margin gösterecek.
 - [2026-06-03] Demand satisfaction sistemi tasarlandı. Survival, Luxury/Comfort, Processed/Industry ve Raw Material eksikliklerinin şehir etkileri ayrıştırıldı. Survival şehir sağlığının ana göstergesi olacak; luxury yüksek prosperity korumasına, industry ise işlenmiş üretim verimine hafif etki edecek. Günlük prosperity clamp değeri açık soru olarak bırakıldı.
 - [2026-06-03] Bolluk spirali için kabul edilen çözüm yönleri kaydedildi. Prosperity yükseldikçe ihtiyaç seviyesi artacak; eksik tedarikin growth stop/düşüş etkisi mevcut doküman bölümleriyle birlikte tekrar değerlendirilecek; prosperity yatırım maliyeti kademeli artacak; automation büyüdükçe fixed cost anlamlı olacak; NPC trader ekonomi dalgalanması yaratacak ve okunabilir olacak.
 - [2026-06-03] Ekonomi geliştirme başlıkları karar verilmemiş konu olarak kaydedildi. Geç oyun para yakıcıları, mevcut NPC trader, 3 kasaba sınırı ve bolluk spirali notları detaylandırıldı.

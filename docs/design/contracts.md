@@ -1,5 +1,33 @@
 # Contracts Design
 
+## MVP Kapsamı
+
+MVP'de kontrat sistemi minimal olacak:
+
+- Sadece Delivery kontrat tipi.
+- Tek kontrat tier'ı.
+- A kasabasından B kasabasına belirli mal taşıma.
+- Basit deadline.
+- Ödül: gold + faction rep.
+- Her şehirde 1-2 available kontrat.
+- Fail davranışı: oyuncu ödülden mahrum kalır ve küçük faction rep cezası alır.
+
+MVP'de sade/opsiyonel:
+
+- Fail cezasının kesin sayısı balance aşamasında belirlenebilir.
+- Fail olunca küçük rep cezası veya sadece ödülden mahrum kalma kullanılabilir.
+
+MVP dışı:
+
+- Procurement kontratları.
+- Urgent kontratlar.
+- Tier çeşitliliğinin tam balance'ı.
+- Özel şehir yardım kontratları.
+- Rival faction kontratları.
+- Production chain / özel sipariş kontratları.
+
+Aşağıdaki mevcut durum tam sistem notlarını içerir; MVP implementasyonu için bu kapsam önceliklidir.
+
 ## Mevcut Durum (Karar verilmiş)
 
 - 2 tip: Delivery (A kasabasından B'ye taşı) ve Procurement (B'ye getir, nereden bulursan bul).
@@ -48,3 +76,4 @@ Kontrat yapmakfaksiyon rep kazandırıyor. Bu rep hem ticaret avantajına hem ra
 ## Tartışma Notları
 
 - [2026-06-04] NPC relation kaldırma kararıyla kontrat ödüllerinden NPC relation çıkarıldı. Kontratların ilişki etkisi faction rep üzerinden kalacak.
+- [2026-06-04] MVP kontrat kapsamı netleşti. MVP'de yalnızca tek tier Delivery kontratları olacak; Procurement/Urgent ve tier balance MVP dışı kalacak. Kontrat fail davranışı ödülden mahrum kalma + küçük faction rep cezası olacak.

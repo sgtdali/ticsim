@@ -2,6 +2,38 @@
 
 Bu dosya Caravan Master temel rolünü, route atama kurallarını, rota yaşam döngüsünü, durak kural sistemini, temporary unload davranışını ve Trade Routes panel UI kararlarını tutar.
 
+## MVP Kapsamı
+
+MVP'de uygulanacak:
+
+- Load/Unload terminolojisi.
+- Trading Post depoları arasında taşıma.
+- En az 2 duraklı rota.
+- Çok duraklı rota listesi.
+- Basit cargo/capacity taşıma.
+- Basit cargo uyumluluk uyarısı.
+- Route status okunabilirliği.
+- Durakta önce Unload, sonra Load çalışma sırası.
+- Varsayılan Load Available davranışı.
+
+MVP'de sade tutulacak:
+
+- Cargo uyumluluk uyarısı kritik bilgi verir; Temporary Unload çözüm akışı MVP dışıdır.
+- Route oluşturma UI'ı çalışır ve okunur olmalı; tam interaktif mini-map polish MVP dışıdır.
+- Master route üzerindeyken gelişmiş live edit edge-case'leri MVP dışıdır. MVP'de route edit iptal/yeniden kurma veya basit güvenli güncelleme ile sınırlandırılabilir.
+- Reposition seyahati gerekiyorsa basit uygulanabilir; karmaşık cargo cleanup davranışı MVP dışıdır.
+
+MVP dışı:
+
+- Temporary Unload Stop / Rule sistemi.
+- Wait Until Full, Wait Until Amount, Take Exact Amount load modları.
+- Canlı rota düzenlemenin tüm gelişmiş edge-case'leri.
+- Tam interaktif Trade Routes mini-map polish.
+- Level-up özellik puanı sistemi.
+- Derin master stat/balance tuning.
+
+Tam tasarım kararları aşağıda korunur; ancak implementasyon sırasında önce bu MVP kapsamı esas alınmalıdır.
+
 ## Caravan Master Temel Rolü (Karar verilmiş)
 
 - Caravan Master, Patrician serisindeki trade route/convoy otomasyonundan ilham alır; fakat birebir kopyalamaz.
