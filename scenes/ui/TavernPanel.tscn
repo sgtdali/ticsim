@@ -1,0 +1,256 @@
+[gd_scene format=3 uid="uid://bpf60236yg0vc"]
+
+[ext_resource type="StyleBox" uid="uid://q5nr6avfav84" path="res://assets/ui/market/marketpanel_bg_style.tres" id="1_panel_bg"]
+[ext_resource type="StyleBox" path="res://assets/ui/market/market_top_bg_style.tres" id="2_top_bg"]
+[ext_resource type="StyleBox" path="res://assets/ui/market/market_closed_row_bg_style.tres" id="3_closed_row_bg"]
+[ext_resource type="StyleBox" uid="uid://bdaf3t6y7aid7" path="res://assets/ui/trade_area_bg_style.tres" id="4_trade_area_bg"]
+[ext_resource type="Texture2D" uid="uid://dl7b1x1uyppxh" path="res://assets/ui/market/exit_button_unpressed.png" id="5_ndeoq"]
+[ext_resource type="Texture2D" uid="uid://bpvmcbj74ygi8" path="res://assets/ui/market/exit_button_pressed.png" id="6_vkle4"]
+[ext_resource type="Texture2D" uid="uid://bie6mi7tp5vib" path="res://assets/ui/market/info_unpressed.png" id="7_h7b6n"]
+[ext_resource type="Texture2D" uid="uid://de1lkq2ot6ixw" path="res://assets/ui/market/info_pressed.png" id="8_vyadj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ev5ct"]
+
+[node name="TavernPanel" type="Control" unique_id=1150783999]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1672.0
+offset_bottom = 941.0
+
+[node name="TavernFrame" type="PanelContainer" parent="." unique_id=1520396413]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_panel_bg")
+
+[node name="TavernRoot" type="VBoxContainer" parent="TavernFrame" unique_id=492693292]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TavernHeader" type="PanelContainer" parent="TavernFrame/TavernRoot" unique_id=701042187]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ev5ct")
+
+[node name="HeaderRow" type="HBoxContainer" parent="TavernFrame/TavernRoot/TavernHeader" unique_id=496245985]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="LeftSpacer" type="Control" parent="TavernFrame/TavernRoot/TavernHeader/HeaderRow" unique_id=1376299629]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="TavernFrame/TavernRoot/TavernHeader/HeaderRow" unique_id=413179064]
+custom_minimum_size = Vector2(420, 58)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "Tavern"
+horizontal_alignment = 1
+
+[node name="RightSpacer" type="Control" parent="TavernFrame/TavernRoot/TavernHeader/HeaderRow" unique_id=198800451]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TabRow" type="HBoxContainer" parent="TavernFrame/TavernRoot" unique_id=291372774]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="HiringTabBtn" type="Button" parent="TavernFrame/TavernRoot/TabRow" unique_id=1494791048]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "Hiring"
+
+[node name="RosterTabBtn" type="Button" parent="TavernFrame/TavernRoot/TabRow" unique_id=1360833778]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+toggle_mode = true
+text = "Roster"
+
+[node name="RumorsTabBtn" type="Button" parent="TavernFrame/TavernRoot/TabRow" unique_id=829986016]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+toggle_mode = true
+text = "Rumors"
+
+[node name="TownBanner" type="PanelContainer" parent="TavernFrame/TavernRoot" unique_id=586837563]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_top_bg")
+
+[node name="BannerHBox" type="HBoxContainer" parent="TavernFrame/TavernRoot/TownBanner" unique_id=1169277086]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="LeftInfo" type="VBoxContainer" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox" unique_id=1299848319]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="TownNameLabel" type="Label" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/LeftInfo" unique_id=1653662777]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Town"
+
+[node name="MetaHBox" type="HBoxContainer" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/LeftInfo" unique_id=2117797208]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PopLabel" type="Label" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/LeftInfo/MetaHBox" unique_id=953610630]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.65, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "👥 0"
+
+[node name="RepLabel" type="Label" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/LeftInfo/MetaHBox" unique_id=159673417]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.65, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "🛡️ Neutral"
+
+[node name="CenterLogo" type="VBoxContainer" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox" unique_id=1272242005]
+layout_mode = 2
+alignment = 1
+
+[node name="LogoPanel" type="PanelContainer" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/CenterLogo" unique_id=1126473113]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+
+[node name="LogoLabel" type="Label" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/CenterLogo/LogoPanel" unique_id=13418104]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "🍻"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightInfo" type="VBoxContainer" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox" unique_id=1588071985]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="AvailLabel" type="Label" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/RightInfo" unique_id=1786313332]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.75, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = "Available Masters: 0"
+horizontal_alignment = 2
+
+[node name="SlotsLabel" type="Label" parent="TavernFrame/TavernRoot/TownBanner/BannerHBox/RightInfo" unique_id=128369700]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Master Slots: 0 / 0"
+horizontal_alignment = 2
+
+[node name="ColumnsHBox" type="HBoxContainer" parent="TavernFrame/TavernRoot" unique_id=400074502]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+
+[node name="LeftColumn" type="VBoxContainer" parent="TavernFrame/TavernRoot/ColumnsHBox" unique_id=1100571366]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.4
+theme_override_constants/separation = 10
+
+[node name="TableHeader" type="PanelContainer" parent="TavernFrame/TavernRoot/ColumnsHBox/LeftColumn" unique_id=1085970067]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("3_closed_row_bg")
+
+[node name="HeaderCells" type="HBoxContainer" parent="TavernFrame/TavernRoot/ColumnsHBox/LeftColumn/TableHeader" unique_id=545621436]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Scroll" type="ScrollContainer" parent="TavernFrame/TavernRoot/ColumnsHBox/LeftColumn" unique_id=559907123]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ContentList" type="VBoxContainer" parent="TavernFrame/TavernRoot/ColumnsHBox/LeftColumn/Scroll" unique_id=1702608099]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="RightColumn" type="PanelContainer" parent="TavernFrame/TavernRoot/ColumnsHBox" unique_id=200085031]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = ExtResource("4_trade_area_bg")
+
+[node name="SidebarMargin" type="MarginContainer" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn" unique_id=213281478]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 16
+
+[node name="SidebarVBox" type="VBoxContainer" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin" unique_id=203278561]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin/SidebarVBox" unique_id=103620231]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.36, 1)
+theme_override_font_sizes/font_size = 14
+text = "Current Caravan Network"
+horizontal_alignment = 1
+
+[node name="Separator1" type="HSeparator" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin/SidebarVBox" unique_id=1169997691]
+layout_mode = 2
+
+[node name="Grid" type="VBoxContainer" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin/SidebarVBox" unique_id=479001786]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Separator2" type="HSeparator" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin/SidebarVBox" unique_id=1066748615]
+layout_mode = 2
+
+[node name="InfoLabel" type="Label" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin/SidebarVBox" unique_id=679887550]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.55, 0.48, 1)
+theme_override_font_sizes/font_size = 11
+text = "New candidates appear by town. Some towns may have none today."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin/SidebarVBox" unique_id=720235959]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ManageBtn" type="Button" parent="TavernFrame/TavernRoot/ColumnsHBox/RightColumn/SidebarMargin/SidebarVBox" unique_id=2028394870]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+text = "⚙️ Manage Routes"
+
+[node name="CloseButton" type="TextureButton" parent="." unique_id=1471632912]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -88.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 84.0
+grow_horizontal = 0
+texture_normal = ExtResource("5_ndeoq")
+texture_pressed = ExtResource("6_vkle4")
+texture_hover = ExtResource("5_ndeoq")
+
+[node name="InfoButton" type="TextureButton" parent="." unique_id=1883939505]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 20.0
+offset_right = 92.0
+offset_bottom = 84.0
+texture_normal = ExtResource("7_h7b6n")
+texture_pressed = ExtResource("8_vyadj")
+texture_hover = ExtResource("7_h7b6n")

@@ -181,10 +181,13 @@ Oyuncu caravan master kiralayarak otomatik ticaret rotaları kurabilir.
 Master'lar Trading Post depoları arasında mal taşır.
 
 **İşe alım:**
-- Tek seferlik işe alım ücreti + günlük maaş (upkeep'e eklenir)
-- Sag paneldeki Hire Master aksiyonu mevcut varsayilan master adayini ise alir: 120 gold tek seferlik ucret ve 4 gold gunluk maas.
-- Debt varken işe alım yapılamaz
-- Kiralanan master sayısı rank'a göre sınırlıdır
+- Tek seferlik işe alım ücreti + günlük maaş (upkeep'e eklenir).
+- İşe alımlar şehirlerdeki **Tavern** ekranından gerçekleştirilir.
+- Her şehir tavernası kendi bağımsız aday havuzuna (şehir başına 0-2 aday) sahiptir ve adaylar her 30 günde bir yenilenir.
+- Adayların nitelikleri, işe alım maliyeti (hire cost) ve günlük maaşları (daily wage) seçilen template/archetype'a ve oyuncunun mevcut rütbesine göre değişiklik gösterir.
+- Sağ paneldeki "Hire Master" butonu artık doğrudan kiralama yapmaz; bunun yerine oyuncuyu şehir tavernalarına yönlendirir.
+- Debt (borç) varken yeni işe alım yapılamaz.
+- Kiralanan master sayısı rütbeye göre sınırlıdır.
 
 **Master özellikleri (1-5 arası, seviye atladıkça artar):**
 - **Hız:** Seyahat süresini kısaltır. Her puan %10 azaltır (max %40).

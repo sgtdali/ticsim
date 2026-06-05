@@ -90,7 +90,7 @@ func _update_operations_tab() -> void:
 			var count: int = int(_masters.get_active_master_count())
 			var cap: int = int(_masters.get_master_cap())
 			hire_btn.text = "Hire Master (%d/%d)" % [count, cap]
-			hire_btn.disabled = not bool(_masters.can_hire_master()) or not bool(_masters.can_afford_any_unlocked_master(_player_data.gold))
+			hire_btn.disabled = false
 
 	if route_btn:
 		route_btn.disabled = false
@@ -339,32 +339,8 @@ func _on_establish_post_pressed() -> void:
 		_wm._refresh_buttons()
 
 func _on_hire_master_pressed() -> void:
-	if _masters == null or not _masters.can_hire_master():
-		return
-	var unlocked: Array = _masters.get_unlocked_templates()
-	if unlocked.is_empty():
-		return
-	var affordable = unlocked.filter(func(t): return _player_data.gold >= float(t["hire_cost"]))
-	if affordable.is_empty():
-		return
-	
-	var template: Dictionary = affordable[randi() % affordable.size()]
-	var master := CaravanMaster.new()
-	var idx: int = int(_masters.get_active_master_count()) + 1
-	master.id = "master_%d" % idx
-	var pretty_type: String = str(template["type"]).replace("_master", "").capitalize()
-	master.display_name = "%s (%s)" % [pretty_type, "Master %d" % idx]
-	master.speed = int(template["speed"])
-	master.capacity = int(round((float(template["capacity"]) - 10.0) / 5.0))
-	master.bargaining = int(template["bargaining"])
-	master.courage = int(template["courage"])
-	master.hire_cost = int(template["hire_cost"])
-	master.daily_wage = float(template["daily_wage"])
-	
-	if _masters.hire_master(master):
-		_selected_master_id = master.id
-		_expanded_masters[master.id] = true
-		_wm._update_ui()
+	if _wm.top_bar and _wm.top_bar.has_method("show_notification"):
+		_wm.top_bar.call("show_notification", "Visit a Town's Tavern to hire Caravan Masters!", Color(0.95, 0.65, 0.25))
 
 func _select_master_for_route(master_id: String) -> void:
 	_selected_master_id = master_id

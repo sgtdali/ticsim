@@ -41,6 +41,13 @@ var _risk: Node
 var _rank: Node
 
 var master_templates: Dictionary = {}
+var town_candidates: Dictionary = {}
+
+const FIRST_NAMES := ["Garrick", "Rowan", "Alistair", "Robert", "Harold", "Mira", "Aldric", "Torben", "Lyra", "Kaelen", "Elena", "Branson", "Daria", "Cedric", "Kira", "Valerius", "Bram", "Orla", "Talon", "Sienna"]
+const EPITHETS_APPRENTICE := ["the Learner", "the Novice", "the Eager", "the Apprentice"]
+const EPITHETS_RUNNER := ["the Runner", "the Swift", "the Fleet", "the Wind"]
+const EPITHETS_HAULER := ["the Hauler", "the Strong", "the Carrier", "the Titan"]
+const EPITHETS_VETERAN := ["the Veteran", "the Sage", "the Bold", "the Master"]
 
 func _ready() -> void:
 	_economy = get_node("/root/EconomyManager")
@@ -49,6 +56,7 @@ func _ready() -> void:
 	_rank = get_node("/root/RankManager")
 	
 	_load_automation_templates()
+	call_deferred("refresh_all_candidates")
 
 func _load_automation_templates() -> void:
 	master_templates.clear()
@@ -88,6 +96,62 @@ func can_afford_any_unlocked_master(player_gold: float) -> bool:
 			return true
 	return false
 
+# --- Candidate Generation ---
+
+func _generate_candidate_name(type: String) -> String:
+	var first = FIRST_NAMES[randi() % FIRST_NAMES.size()]
+	var epithet = ""
+	match type:
+		"apprentice_master":
+			epithet = EPITHETS_APPRENTICE[randi() % EPITHETS_APPRENTICE.size()]
+		"runner_master":
+			epithet = EPITHETS_RUNNER[randi() % EPITHETS_RUNNER.size()]
+		"hauler_master":
+			epithet = EPITHETS_HAULER[randi() % EPITHETS_HAULER.size()]
+		"veteran_master":
+			epithet = EPITHETS_VETERAN[randi() % EPITHETS_VETERAN.size()]
+		_:
+			epithet = "the Master"
+	return "%s %s" % [first, epithet]
+
+func refresh_all_candidates() -> void:
+	town_candidates.clear()
+	if _economy == null:
+		_economy = get_node("/root/EconomyManager")
+	for town_name in _economy.towns.keys():
+		_generate_candidates_for_town(town_name)
+
+func _generate_candidates_for_town(town_name: String) -> void:
+	var list: Array[CaravanMaster] = []
+	var roll = randf()
+	var num_candidates = 0
+	if roll < 0.30:
+		num_candidates = 0
+	elif roll < 0.70:
+		num_candidates = 1
+	else:
+		num_candidates = 2
+
+	var unlocked = get_unlocked_templates()
+	if unlocked.is_empty():
+		town_candidates[town_name] = list
+		return
+
+	for i in range(num_candidates):
+		var template = unlocked[randi() % unlocked.size()]
+		var master = CaravanMaster.new()
+		master.id = "candidate_%s_%d_%d" % [town_name.to_lower().replace(" ", "_"), _economy.current_day, randi() % 1000]
+		master.display_name = _generate_candidate_name(template["type"])
+		master.speed = int(template["speed"])
+		master.capacity = int(round((float(template["capacity"]) - 10.0) / 5.0))
+		master.bargaining = int(template["bargaining"])
+		master.courage = int(template["courage"])
+		master.hire_cost = int(template["hire_cost"])
+		master.daily_wage = float(template["daily_wage"])
+		list.append(master)
+
+	town_candidates[town_name] = list
+
 # --- Cap ---
 
 func get_master_cap() -> int:
@@ -121,6 +185,23 @@ func hire_master(master: CaravanMaster) -> bool:
 	}
 	emit_signal("master_updated", master.id)
 	return true
+
+func hire_candidate(town_name: String, candidate_id: String) -> bool:
+	if not town_candidates.has(town_name):
+		return false
+	var candidates: Array = town_candidates[town_name]
+	var found_idx := -1
+	for i in range(candidates.size()):
+		if candidates[i].id == candidate_id:
+			found_idx = i
+			break
+	if found_idx == -1:
+		return false
+	var candidate: CaravanMaster = candidates[found_idx]
+	if hire_master(candidate):
+		candidates.remove_at(found_idx)
+		return true
+	return false
 
 func fire_master(master_id: String) -> bool:
 	if not masters.has(master_id):
@@ -169,6 +250,10 @@ func stop_route(master_id: String) -> void:
 func process_day() -> void:
 	for master_id in masters.keys():
 		_tick_master(master_id)
+
+	if _economy != null:
+		if _economy.current_day > 1 and (_economy.current_day - 1) % 30 == 0:
+			refresh_all_candidates()
 
 func _tick_master(master_id: String) -> void:
 	var route = routes[master_id]

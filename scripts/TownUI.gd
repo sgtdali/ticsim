@@ -12,6 +12,7 @@ signal closed
 
 var _active_tab: String = "market"
 var _post_btn: Button
+var _tavern_btn: Button
 
 var _primary_button_style: StyleBoxTexture
 var _secondary_button_style: StyleBoxTexture
@@ -51,6 +52,30 @@ func _ready() -> void:
 	
 	tabs["post"] = preload("res://scripts/ui/town_ui/PostTab.gd").new(self, post_panel)
 
+	var tavern_btn := Button.new()
+	_tavern_btn = tavern_btn
+	tavern_btn.name = "TavernBtn"
+	tavern_btn.text = "Tavern"
+	$TabBar.add_child(tavern_btn)
+	var tavern_scene = preload("res://scenes/ui/TavernPanel.tscn")
+	var tavern_panel = tavern_scene.instantiate() as Control
+	tavern_panel.name = "TavernPanel"
+	tavern_panel.visible = false
+	add_child(tavern_panel)
+	
+	# Match MarketPanel's exact positioning and scaling inside TownUI (applied after add_child to override scene presets)
+	tavern_panel.anchor_left = 0.0
+	tavern_panel.anchor_top = 0.0
+	tavern_panel.anchor_right = 0.0
+	tavern_panel.anchor_bottom = 0.0
+	tavern_panel.offset_left = 375.0
+	tavern_panel.offset_top = 211.0
+	tavern_panel.offset_right = 2047.0
+	tavern_panel.offset_bottom = 1152.0
+	tavern_panel.scale = Vector2(0.7, 0.7)
+	
+	tabs["tavern"] = preload("res://scripts/ui/town_ui/TavernTab.gd").new(self, tavern_panel)
+
 	var _contracts: Node = get_node("/root/ContractManager")
 	if _contracts.has_signal("contracts_changed"):
 		_contracts.connect("contracts_changed", _on_contracts_changed)
@@ -62,6 +87,7 @@ func _ready() -> void:
 	$TabBar/InvestBtn.pressed.connect(_show_tab.bind("invest"))
 	$TabBar/UpgradeBtn.pressed.connect(_show_tab.bind("upgrade"))
 	post_btn.pressed.connect(_show_tab.bind("post"))
+	tavern_btn.pressed.connect(_show_tab.bind("tavern"))
 	$CloseBtn.pressed.connect(_on_close)
 
 	apply_secondary_button_style($CloseBtn)
@@ -91,6 +117,8 @@ func _update_tab_button_styles() -> void:
 	_apply_tab_button_style($TabBar/UpgradeBtn, _active_tab == "upgrade")
 	if _post_btn:
 		_apply_tab_button_style(_post_btn, _active_tab == "post")
+	if _tavern_btn:
+		_apply_tab_button_style(_tavern_btn, _active_tab == "tavern")
 
 func _apply_tab_button_style(button: Button, active: bool) -> void:
 	if button == null:
@@ -111,6 +139,7 @@ func _apply_visible_tabs() -> void:
 	_set_tab_button_visible($TabBar/InvestBtn, "invest")
 	_set_tab_button_visible($TabBar/UpgradeBtn, "upgrade")
 	_set_tab_button_visible(_post_btn, "post")
+	_set_tab_button_visible(_tavern_btn, "tavern")
 
 func _set_tab_button_visible(button: Button, tab: String) -> void:
 	if button:

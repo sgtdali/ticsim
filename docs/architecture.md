@@ -111,6 +111,7 @@ scripts/
       NPCTab.gd
       PostTab.gd
       UpgradeTab.gd
+      TavernTab.gd
   controllers/      — WorldMap sub-controllers (split from WorldMap.gd)
     SidePanelController.gd
     FinancePanelController.gd

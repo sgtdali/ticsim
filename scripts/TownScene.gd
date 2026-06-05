@@ -79,6 +79,7 @@ func _build_layout() -> void:
 
 	_add_building_button(city_area, "Market Hall", "Trade goods and inspect the 14-day goods outlook.", Vector2(80, 90), Vector2(260, 136), _open_market_hall)
 	_add_building_button(city_area, "Town Hall", "Contracts, town info, investments, upgrades and trading posts.", Vector2(390, 70), Vector2(300, 158), _open_town_hall)
+	_add_building_button(city_area, "Tavern", "Hire caravan masters and listen to rumors.", Vector2(460, 290), Vector2(240, 120), _open_tavern)
 	_add_building_button(city_area, "Harbor", "Coming later.", Vector2(760, 220), Vector2(220, 120), Callable())
 	_add_building_button(city_area, "Warehouse", "Coming later.", Vector2(160, 290), Vector2(250, 118), Callable())
 
@@ -105,6 +106,10 @@ func _open_market_hall() -> void:
 func _open_town_hall() -> void:
 	var tabs: Array[String] = ["info", "contracts", "invest", "upgrade", "post", "npc"]
 	_open_town_ui("info", tabs)
+
+func _open_tavern() -> void:
+	var tabs: Array[String] = ["tavern"]
+	_open_town_ui("tavern", tabs)
 
 func _open_town_ui(initial_tab: String, visible_tabs: Array[String]) -> void:
 	if _active_town_ui != null and is_instance_valid(_active_town_ui):
