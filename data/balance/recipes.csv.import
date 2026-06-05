@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://shnki8h7eend"
+
+[deps]
+
+files=["res://data/balance/recipes.input.translation", "res://data/balance/recipes.input.translation", "res://data/balance/recipes.output.translation"]
+
+source_file="res://data/balance/recipes.csv"
+dest_files=["res://data/balance/recipes.input.translation", "res://data/balance/recipes.input.translation", "res://data/balance/recipes.output.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bov1iv7riqq2c"
+
+[deps]
+
+files=["res://data/balance/season_modifiers.item.translation", "res://data/balance/season_modifiers.production.translation", "res://data/balance/season_modifiers.demand.translation"]
+
+source_file="res://data/balance/season_modifiers.csv"
+dest_files=["res://data/balance/season_modifiers.item.translation", "res://data/balance/season_modifiers.production.translation", "res://data/balance/season_modifiers.demand.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c1xwk2w0f4jbu"
+
+[deps]
+
+files=["res://data/balance/caravan_upgrades.name.translation", "res://data/balance/caravan_upgrades.cost.translation", "res://data/balance/caravan_upgrades.capacity.translation", "res://data/balance/caravan_upgrades.daily.translation", "res://data/balance/caravan_upgrades.unlock.translation"]
+
+source_file="res://data/balance/caravan_upgrades.csv"
+dest_files=["res://data/balance/caravan_upgrades.name.translation", "res://data/balance/caravan_upgrades.cost.translation", "res://data/balance/caravan_upgrades.capacity.translation", "res://data/balance/caravan_upgrades.daily.translation", "res://data/balance/caravan_upgrades.unlock.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

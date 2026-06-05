@@ -168,11 +168,8 @@ func _update_rule_status(town_name: String, rule: Dictionary) -> void:
 
 func process_day() -> void:
 	var trades_happened := false
-	var debt_stops_all_trade: bool = _player.should_stop_trading_post_auto_trade()
 	for town_name in posts.keys():
 		if not has_post(town_name):
-			continue
-		if debt_stops_all_trade:
 			continue
 		
 		var rules: Array = posts[town_name]["rules"]

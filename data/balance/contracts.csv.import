@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bkaloxn0h4abq"
+
+[deps]
+
+files=["res://data/balance/contracts.min.translation", "res://data/balance/contracts.max.translation", "res://data/balance/contracts.reward.translation", "res://data/balance/contracts.rep.translation", "res://data/balance/contracts.deadline.translation", "res://data/balance/contracts.fail.translation"]
+
+source_file="res://data/balance/contracts.csv"
+dest_files=["res://data/balance/contracts.min.translation", "res://data/balance/contracts.max.translation", "res://data/balance/contracts.reward.translation", "res://data/balance/contracts.rep.translation", "res://data/balance/contracts.deadline.translation", "res://data/balance/contracts.fail.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

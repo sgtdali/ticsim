@@ -47,10 +47,6 @@ var current_town: String = ""
 # { "faction_name": value (-100 to +100) }
 var faction_reputation: Dictionary = {}
 
-# --- NPC relations ---
-# { "npc_id": value (-100 to +100) }
-var npc_relations: Dictionary = {}
-
 # --- Owned shops ---
 # [ { "town": "...", "type": "...", "level": 1, "workers": [] } ]
 var owned_shops: Array = []
@@ -135,13 +131,6 @@ func change_faction_rep(faction: String, amount: float) -> void:
 func get_faction_rep(faction: String) -> float:
 	return faction_reputation.get(faction, 0.0)
 
-func change_npc_relation(npc_id: String, amount: float) -> void:
-	var current = npc_relations.get(npc_id, 0.0)
-	npc_relations[npc_id] = clamp(current + amount, -100.0, 100.0)
-
-func get_npc_relation(npc_id: String) -> float:
-	return npc_relations.get(npc_id, 0.0)
-
 func advance_day() -> void:
 	finance_yesterday = finance_today.duplicate()
 	finance_today = _make_empty_finance_bucket()
@@ -182,9 +171,6 @@ func get_finance_summary() -> Dictionary:
 		"active_posts": _get_active_post_count(),
 		"master_wages": master_wages,
 	}
-
-func should_stop_trading_post_auto_trade() -> bool:
-	return false
 
 func _pay_daily_upkeep() -> void:
 	var upkeep: float = get_daily_upkeep()

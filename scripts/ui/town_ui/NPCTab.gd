@@ -14,9 +14,6 @@ func build() -> void:
 
 	for entry in npcs:
 		var data = entry["data"]
-		var npc_id = entry["id"]
-		var relation = _player.get_npc_relation(npc_id)
-		var rel_desc = _faction.get_relation_description(relation)
 
 		var card = VBoxContainer.new()
 		card.add_theme_constant_override("separation", 2)
@@ -29,10 +26,6 @@ func build() -> void:
 		desc_lbl.text = data["description"]
 		desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		card.add_child(desc_lbl)
-
-		var rel_lbl = Label.new()
-		rel_lbl.text = "Relation: %s (%.0f)" % [rel_desc, relation]
-		card.add_child(rel_lbl)
 
 		var sep = HSeparator.new()
 		container.add_child(card)

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cd0pe1f53pqd"
+
+[deps]
+
+files=["res://data/balance/towns.display.translation", "res://data/balance/towns.start.translation", "res://data/balance/towns.start.translation", "res://data/balance/towns.faction.translation", "res://data/balance/towns.identity.translation", "res://data/balance/towns.position.translation", "res://data/balance/towns.position.translation", "res://data/balance/towns.farm.translation", "res://data/balance/towns.mine.translation", "res://data/balance/towns.farm.translation", "res://data/balance/towns.farm.translation", "res://data/balance/towns.mine.translation"]
+
+source_file="res://data/balance/towns.csv"
+dest_files=["res://data/balance/towns.display.translation", "res://data/balance/towns.start.translation", "res://data/balance/towns.start.translation", "res://data/balance/towns.faction.translation", "res://data/balance/towns.identity.translation", "res://data/balance/towns.position.translation", "res://data/balance/towns.position.translation", "res://data/balance/towns.farm.translation", "res://data/balance/towns.mine.translation", "res://data/balance/towns.farm.translation", "res://data/balance/towns.farm.translation", "res://data/balance/towns.mine.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

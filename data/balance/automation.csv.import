@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cp62kjvsk7kqk"
+
+[deps]
+
+files=["res://data/balance/automation.unlock.translation", "res://data/balance/automation.hire.translation", "res://data/balance/automation.daily.translation", "res://data/balance/automation.capacity.translation", "res://data/balance/automation.speed.translation", "res://data/balance/automation.bargaining.translation", "res://data/balance/automation.courage.translation"]
+
+source_file="res://data/balance/automation.csv"
+dest_files=["res://data/balance/automation.unlock.translation", "res://data/balance/automation.hire.translation", "res://data/balance/automation.daily.translation", "res://data/balance/automation.capacity.translation", "res://data/balance/automation.speed.translation", "res://data/balance/automation.bargaining.translation", "res://data/balance/automation.courage.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

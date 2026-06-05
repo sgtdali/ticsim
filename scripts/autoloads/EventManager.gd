@@ -88,6 +88,7 @@ const EVENT_MODIFIERS: Dictionary = {
 # Bir şehirde olay çıkma şansı (gün başına).
 const EVENT_CHANCE_PER_DAY := 0.04
 const MIN_DAYS_BETWEEN_EVENTS := 8
+const MVP_EVENTS_ENABLED := false
 
 # Aktif olaylar: { town_name: {type, started_day, ends_day, payload} }
 # payload bazı olaylar için ekstra veri tutar (ör. demand_surge → hangi mal).
@@ -125,6 +126,8 @@ func get_event_data(event_type: String) -> Dictionary:
 # - Aktif olayları bitir (süresi dolmuşsa)
 # - Yeni olay tetikle (rastgele şehirde, şartları sağlıyorsa)
 func process_day() -> void:
+	if not MVP_EVENTS_ENABLED:
+		return
 	var current_day: int = int(_economy.current_day)
 	_expire_events(current_day)
 	_try_trigger_new_events(current_day)

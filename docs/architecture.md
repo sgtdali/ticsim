@@ -14,12 +14,12 @@ Autoloads are registered in `project.godot` in this exact order. Order matters: 
 
 | # | Autoload | Script | Role |
 |---|----------|--------|------|
-| 1 | `PlayerData` | `scripts/autoloads/PlayerData.gd` | Gold, inventory, caravan, faction/NPC relations, daily upkeep |
+| 1 | `PlayerData` | `scripts/autoloads/PlayerData.gd` | Gold, inventory, caravan, faction reputation, daily upkeep |
 | 2 | `EconomyManager` | `scripts/autoloads/EconomyManager.gd` | Town data, prices, daily tick orchestrator; facade over sub-systems |
 | 3 | `FactionManager` | `scripts/autoloads/FactionManager.gd` | Faction definitions, NPCs, tax rates, reputation effects |
 | 4 | `ContractManager` | `scripts/autoloads/ContractManager.gd` | Contract generation, acceptance, completion, expiry |
 | 5 | `TravelRiskManager` | `scripts/autoloads/TravelRiskManager.gd` | Attack chance calculation (cargo + faction rep) |
-| 6 | `EventManager` | `scripts/autoloads/EventManager.gd` | Random town events (festival, famine, etc.) and their economic multipliers |
+| 6 | `EventManager` | `scripts/autoloads/EventManager.gd` | Event system shell; MVP keeps random events disabled/no-op while season modifiers remain active |
 | 7 | `TraderManager` | `scripts/autoloads/TraderManager.gd` | Autonomous NPC traders (aldric/mira/torben) that move and trade independently |
 | 8 | `EventBus` | `scripts/autoloads/EventBus.gd` | Thin signal bus for UI ↔ logic decoupling |
 | 9 | `TradingPostManager` | `scripts/autoloads/TradingPostManager.gd` | Player-owned depots with auto-buy/sell rules |
@@ -63,7 +63,7 @@ All three are constructed in `EconomyManager._ready()`. `EconomyManager` exposes
 8. `TraderManager.process_day()` — NPC traders move and trade
 9. `CaravanMasterManager.process_day()` — hired masters travel their routes
 10. `ContractManager.process_day()` — expire old contracts, generate new ones
-11. `EventManager.process_day()` — expire old events, possibly trigger new ones
+11. `EventManager.process_day()` — MVP no-op; event references are retained for later full-scope cleanup
 12. `RankManager.check_rank_up()` — evaluate rank promotion conditions
 
 ---
@@ -174,7 +174,7 @@ scripts/
 Fields: `id: String`, `display_name: String`, `category: String` (survival/comfort/production_input), `base_price: float`, `stock_cap: int`, `base_daily_demand_per_1000_pop: float`, `is_natural_resource: bool`, `slot_type: String`, `recipe_inputs: Dictionary { item_id: qty }`
 
 ### Contract (runtime Dictionary inside `ContractManager.contracts`)
-Key fields: `id`, `type` (delivery/procurement), `source_town`, `target_town`, `required_item`, `required_quantity`, `deadline_duration`, `deadline_day`, `reward_gold`, `issuing_faction`, `difficulty_tier` (basic/standard/urgent), `status`
+Key fields: `id`, `type` (`delivery` in MVP), `source_town`, `target_town`, `required_item`, `required_quantity`, `deadline_duration`, `deadline_day`, `reward_gold`, `issuing_faction`, `difficulty_tier` (`basic` in MVP), `status`
 
 ### CaravanMaster (Resource, `scripts/data_models/CaravanMaster.gd`)
 Fields: `id`, `level`, `xp`, `hire_cost`, `daily_wage`, plus computed: `get_capacity()`, `get_bargaining_discount()`, `get_travel_multiplier()`, `get_courage_risk_reduction()`
@@ -191,7 +191,7 @@ Three factions, three towns (loaded from `towns.csv` in `EconomyManager._init_to
 | Ironmere | Merchants Guild | Iron ore, iron bar, swords, tools | (2200, 440) |
 | Stonebridge | Merchants Guild | Grapes, wine, must | (1380, 1080) |
 
-Faction relations affect trade tax rates and reputation gain/loss side-effects. Trading with a faction's rival incurs a 30% reputation penalty with that rival.
+Faction reputation affects trade spread bonuses. NPC relation is not a separate MVP mechanic; town NPCs are faction/city representatives only.
 
 ---
 
@@ -204,7 +204,7 @@ Five ranks. Ranks and daily upkeeps are loaded dynamically from `ranks.csv`. Pro
 | Peddler | 0 | — | Starting rank | 0 gold/day |
 | Trader | 1 | Caravan upgrades, up to 1 master | 500g | 3 gold/day |
 | Merchant | 2 | Trading Posts, up to 2 masters | 1500g, 1 growing city | 8 gold/day |
-| Guild Master | 3 | Urgent contracts, up to 4 masters | 4000g, 2 posts, 2 growing cities, 1 prosperous city | 20 gold/day |
+| Guild Master | 3 | Up to 4 masters; urgent contract gate is retained for full scope but MVP contracts stay basic delivery | 4000g, 2 posts, 2 growing cities, 1 prosperous city | 20 gold/day |
 | Patrician | 4 | Up to 6 masters (Victory) | 10000g, 3 prosperous cities | 0 gold/day |
 
 Growing city = prosperity ≥ 30. Prosperous city = prosperity ≥ 65.

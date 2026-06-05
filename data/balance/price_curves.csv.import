@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cosdb3dka182f"
+
+[deps]
+
+files=["res://data/balance/price_curves.zero.translation", "res://data/balance/price_curves.base.translation", "res://data/balance/price_curves.max.translation"]
+
+source_file="res://data/balance/price_curves.csv"
+dest_files=["res://data/balance/price_curves.zero.translation", "res://data/balance/price_curves.base.translation", "res://data/balance/price_curves.max.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

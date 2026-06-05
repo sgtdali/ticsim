@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c3gp6f75vn07r"
+
+[deps]
+
+files=["res://data/balance/production.item.translation", "res://data/balance/production.base.translation", "res://data/balance/production.season.translation"]
+
+source_file="res://data/balance/production.csv"
+dest_files=["res://data/balance/production.item.translation", "res://data/balance/production.base.translation", "res://data/balance/production.season.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

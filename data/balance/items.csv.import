@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dxy50hw0pj0pf"
+
+[deps]
+
+files=["res://data/balance/items.display.translation", "res://data/balance/items.category.translation", "res://data/balance/items.base.translation", "res://data/balance/items.base.translation", "res://data/balance/items.demand.translation", "res://data/balance/items.stock.translation"]
+
+source_file="res://data/balance/items.csv"
+dest_files=["res://data/balance/items.display.translation", "res://data/balance/items.category.translation", "res://data/balance/items.base.translation", "res://data/balance/items.base.translation", "res://data/balance/items.demand.translation", "res://data/balance/items.stock.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -4,17 +4,12 @@ const FACTIONS: Dictionary = {
 	"Northern Kingdom": {
 		"color": Color(0.2, 0.4, 0.8),
 		"description": "The ruling monarchy. Controls northern trade routes.",
-		"relations": { "Merchants Guild": 20, "Thieves Brotherhood": -60 },
+		"relations": { "Merchants Guild": 20 },
 	},
 	"Merchants Guild": {
 		"color": Color(0.8, 0.6, 0.1),
 		"description": "Powerful trade organization. Controls southern markets.",
-		"relations": { "Northern Kingdom": 20, "Thieves Brotherhood": -30 },
-	},
-	"Thieves Brotherhood": {
-		"color": Color(0.5, 0.1, 0.5),
-		"description": "Underground network. Offers black market access.",
-		"relations": { "Northern Kingdom": -60, "Merchants Guild": -30 },
+		"relations": { "Northern Kingdom": 20 },
 	},
 }
 

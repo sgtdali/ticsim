@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bhfua28xj57v4"
+
+[deps]
+
+files=["res://data/balance/ranks.rank.translation", "res://data/balance/ranks.gold.translation", "res://data/balance/ranks.growing.translation", "res://data/balance/ranks.prosperous.translation", "res://data/balance/ranks.posts.translation", "res://data/balance/ranks.daily.translation"]
+
+source_file="res://data/balance/ranks.csv"
+dest_files=["res://data/balance/ranks.rank.translation", "res://data/balance/ranks.gold.translation", "res://data/balance/ranks.growing.translation", "res://data/balance/ranks.prosperous.translation", "res://data/balance/ranks.posts.translation", "res://data/balance/ranks.daily.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

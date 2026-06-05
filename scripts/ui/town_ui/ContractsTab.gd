@@ -46,7 +46,7 @@ func _add_contract_card(container: VBoxContainer, contract: Dictionary, mode: St
 	card.add_theme_constant_override("separation", 4)
 
 	var title = Label.new()
-	title.text = "%s  [%s]" % [contract.get("title", "Contract"), str(contract.get("difficulty_tier", "basic")).capitalize()]
+	title.text = str(contract.get("title", "Contract"))
 	title.add_theme_color_override("font_color", Color(0.94, 0.78, 0.45))
 	card.add_child(title)
 

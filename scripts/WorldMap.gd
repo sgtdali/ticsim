@@ -33,6 +33,7 @@ var _contracts_panel_open := true
 var _town_view_host: Control
 var _active_town_scene: Control
 var _trade_route_panel: Control
+var _victory_summary_shown := false
 
 var game_speed: int = 1
 const DAY_INTERVAL: float = 8.0
@@ -825,21 +826,87 @@ func _on_trade_route_panel_closed() -> void:
 # -----------------------------------------------
 
 func _check_win_condition() -> void:
+	if _victory_summary_shown:
+		return
 	if get_node("/root/RankManager").get_current_rank() == "Patrician":
 		_show_win_screen()
 
 func _show_win_screen() -> void:
+	_victory_summary_shown = true
 	_day_timer.paused = true
-	var win := Label.new()
-	win.text = "YOU WIN!\nYou have reached the Patrician rank.\nDay %d" % _player_data.current_day
-	win.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	win.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	win.add_theme_font_size_override("font_size", 36)
-	win.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
-	win.anchors_preset = 15
-	win.anchor_right = 1.0
-	win.anchor_bottom = 1.0
-	get_node("UI").add_child(win)
+
+	var overlay := PanelContainer.new()
+	overlay.name = "VictorySummary"
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.02, 0.018, 0.014, 0.88)
+	overlay.add_theme_stylebox_override("panel", style)
+	get_node("UI").add_child(overlay)
+
+	var center := CenterContainer.new()
+	overlay.add_child(center)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(520, 420)
+	panel.add_theme_stylebox_override("panel", load("res://assets/ui/topbar/topbar_bg_style.tres"))
+	center.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 12)
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = "Victory: Patrician"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+	content.add_child(title)
+
+	var summary := Label.new()
+	summary.text = _build_victory_summary()
+	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	summary.add_theme_font_size_override("font_size", 18)
+	content.add_child(summary)
+
+	var continue_btn := Button.new()
+	continue_btn.text = "Continue"
+	continue_btn.custom_minimum_size = Vector2(180, 44)
+	continue_btn.pressed.connect(_on_victory_continue.bind(overlay))
+	content.add_child(continue_btn)
+
+func _build_victory_summary() -> String:
+	var active_posts := 0
+	if _posts != null and _posts.has_method("get_active_post_count"):
+		active_posts = int(_posts.call("get_active_post_count"))
+	var master_count := 0
+	if _masters != null and _masters.has_method("get_active_master_count"):
+		master_count = int(_masters.call("get_active_master_count"))
+
+	var lines: Array[String] = [
+		"Day: %d" % int(_player_data.current_day),
+		"Final gold: %.1f" % float(_player_data.gold),
+		"Debt: %.1f" % float(_player_data.debt),
+		"Rank: Patrician",
+		"Trading Posts: %d" % active_posts,
+		"Caravan Masters: %d" % master_count,
+		"",
+		"City prosperity:"
+	]
+	for town_name in _economy.towns.keys():
+		lines.append("- %s: %d (%s)" % [
+			town_name,
+			int(_economy.get_prosperity(town_name)),
+			str(_economy.get_prosperity_label(town_name))
+		])
+	return "\n".join(lines)
+
+func _on_victory_continue(overlay: Control) -> void:
+	if overlay != null and is_instance_valid(overlay):
+		overlay.queue_free()
+	if game_speed > 0:
+		_day_timer.paused = false
 
 # -----------------------------------------------
 # LEGACY — contract tracker (unused, kept for compatibility)

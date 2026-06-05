@@ -8,11 +8,11 @@ Oyuncunun ana hedefi rutbe atlayarak **Patrician** seviyesine ulasmak ve oyunu k
 
 | Rutbe | Sartlar | Acilan Ozellikler |
 | :--- | :--- | :--- |
-| **Peddler** | Baslangic | Temel al-sat, basic/standard kontratlar; Caravan Master: 0 |
+| **Peddler** | Baslangic | Temel al-sat, basic Delivery kontratlar; Caravan Master: 0 |
 | **Trader** | 500 gold | **Caravan Upgrades:** Horse Cart ve Small Caravan; Caravan Master: max 1 |
 | **Merchant** | 1500 gold + 1 Growing city | **Trading Posts:** Sehirlerde depo ve otomatik ticaret kurallari; Caravan Master: max 2 |
-| **Guild Master** | 4000 gold + 2 Trading Posts + 2 Growing + 1 Prosperous city | **Urgent Contracts:** Yuksek odullu kontratlar; kontrat reputation odullerine +%50 bonus; Caravan Master: max 4 |
-| **Patrician** | 10000 gold + 3 Prosperous cities | **Win condition:** Oyun biter; Caravan Master: max 6 |
+| **Guild Master** | 4000 gold + 2 Trading Posts + 2 Growing + 1 Prosperous city | Kontrat reputation odullerine +%50 bonus; Caravan Master: max 4 |
+| **Patrician** | 10000 gold + 3 Prosperous cities | **Win condition:** Victory summary gosterilir; oyuncu devam edebilir; Caravan Master: max 6 |
 
 Not: Faksiyon itibar (reputation) gereksinimleri MVP kapsamında rank ilerlemesinden kaldırılmıştır. Trading Post, Merchant rutbesinde acildigi icin Merchant sartlari Trading Post isteyemez. Trading Post sayisi ilk kez Guild Master sartinda kullanilir.
 
@@ -61,8 +61,9 @@ Sehirler gunluk uretim ve tuketim tick'i ile yasar. Dunya oyuncu bir sey yapmasa
 
 ## 4. Olaylar
 
-Olaylar sehirlerin arz-talep dengesini gecici olarak bozar ve kâr firsatlari yaratir. Olaylar rastgele tetiklenir, sureleri vardir ve sehir bazlidir.
-Olay baslangic ve bitis bildirimleri harita ekraninin alt event panelinde gosterilir.
+MVP'de event sistemi pasiftir. `EventManager` autoload olarak durur ama `process_day()` no-op calisir; fiyat, uretim ve tuketim carpani yaratmaz. Dinamizm stok, NPC trader ve mevsimsel uretim etkilerinden gelir.
+
+Asagidaki olaylar tam surum referansi olarak korunur; MVP'de rastgele tetiklenmez ve event UI'i aktif ekonomi sinyali olarak kullanilmaz.
 
 | Olay | Etki Alani | Fiyat | Uretim | Tuketim | Tasarim Amaci |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -122,27 +123,27 @@ Trading Post, Merchant rutbesinde acilir ve oyuncunun sehirde fiziksel olarak bu
 
 ## 7. Kontratlar
 
-Kontratlar gold, faction reputation ve NPC relation kazanmanin ana yoludur.
+Kontratlar gold ve faction reputation kazanmanin ana yollarindan biridir.
 
-- **Turler:** Delivery ve procurement.
-- **Tier:** Basic, standard, urgent.
-- **Urgent unlock:** Guild Master rutbesi.
+- **Turler:** MVP'de yalnizca Delivery.
+- **Tier:** MVP'de tek tier: Basic.
+- **Urgent unlock:** Full scope icin saklidir; MVP kontrat uretimi urgent kontrat olusturmaz.
 - **Deadline:** Kontrat kabul edilince deadline baslar. Sure gecerse kontrat fail olur.
 - **Failure penalty:** Basarisiz kontrat ilgili faction reputation degerini dusurur.
-- **Oduller:** Gold, faction reputation ve issuer NPC relation.
+- **Oduller:** Gold ve faction reputation.
 - **Guild Master bonusu:** Kontrat reputation odulu +%50 artar.
 
 ## 8. Faction, Reputation ve NPC Iliskileri
 
-Faction reputation hem progression hem de ticaret kosullarini etkiler.
+Faction reputation progression kosulu degildir; ticaret kosullarini etkileyen spread bonusu olarak kalir.
 
 - **Neutral (0-29):** Standart iliski seviyesi.
-- **Friendly (30-59):** Trader, Merchant ve Guild Master progression sartlarinda kullanilir.
-- **Allied (>= 60):** Patrician progression sartinda kullanilir.
+- **Friendly (30-59):** Ticaret spread bonusunu iyilestiren iliski seviyesi.
+- **Allied (>= 60):** Ticaret spread bonusunu daha da iyilestiren iliski seviyesi.
 - **Trade reputation:** Al-sat yapmak ilgili faction reputation degerini artirir.
 - **Rival penalty:** Negatif iliskili rakip faction'lar, ticaretten kazanilan reputation nedeniyle az miktarda dusus alabilir.
-- **NPC relation:** Kontrat veren NPC ile iliski kontrat tamamlandikca artar.
-- **Travel tax UI:** Faction reputation'a bagli tax rate bilgisi gosterilir; su an ana para akisini etkilemeyen bilgi/altyapi seviyesindedir.
+- **NPC relation:** MVP'de yoktur. NPC'ler sehir/faction temsilcisi ve flavour roluyle kalir.
+- **Travel tax UI:** Faction reputation'a bagli tax rate bilgisi gosterilebilir; ana para akisini etkilemeyen bilgi/altyapi seviyesindedir.
 
 ## 9. Seyahat, Risk ve Saldirilar
 
@@ -261,16 +262,16 @@ Gun ilerlemesi `EconomyManager.advance_day()` tarafindan merkezi olarak yonetili
 8. NPC trader'lar hareket/ticaret yapar.
 8b. Caravan Master'lar hareket eder ve durak işlemlerini yapar.
 9. Kontratlar expire/check edilir ve eksik sehir kontratlari yenilenir.
-10. Event'ler expire/spawn edilir.
+10. Event sistemi MVP'de no-op calisir.
 11. Rank check yapilir.
 12. WorldMap/UI refresh edilir.
 
 ## 15. Core Loop
 
-1. **Al-sat ve kontrat yap** -> gold, faction reputation ve NPC relation kazan.
+1. **Al-sat ve kontrat yap** -> gold ve faction reputation kazan.
 2. **Pazar firsatlarini oku** -> stok, fiyat, event, nufus trendi ve risk bilgilerini kullan.
 3. **Gold yatir** -> sehir prosperity degerini artir.
 4. **Rutbe atla** -> caravan upgrade, Trading Post ve urgent contract gibi yeni araclar ac.
 5. **Trading Post kur** -> otomatik ticaretle pasif stok/gold akisi yarat.
 6. **Yasayan dunyaya mudahale et** -> kriz yasayan sehirleri besle, firsat olan sehirlere mal gotur.
-7. **Hedef:** 3 allied faction ve 3 prosperous city ile **Patrician** rutbesine ulas.
+7. **Hedef:** 3 prosperous city ve yeterli gold ile **Patrician** rutbesine ulas.

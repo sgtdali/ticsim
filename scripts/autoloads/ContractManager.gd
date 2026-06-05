@@ -10,15 +10,12 @@ const STATUS_COMPLETED := "completed"
 const STATUS_FAILED := "failed"
 
 const TYPE_DELIVERY := "delivery"
-const TYPE_PROCUREMENT := "procurement"
 
 const CONTRACTS_PER_TOWN := 2
 const FAILURE_REP_PENALTY := 1.0
 
 const TIER_DATA := {
 	"basic": {"minimum_deadline": 10, "travel_buffer": 5, "gold_multiplier": 1.0, "rep": 1.0},
-	"standard": {"minimum_deadline": 8, "travel_buffer": 4, "gold_multiplier": 1.35, "rep": 1.5},
-	"urgent": {"minimum_deadline": 6, "travel_buffer": 2, "gold_multiplier": 1.8, "rep": 2.0},
 }
 
 const TRAVEL_DISTANCE_PER_DAY := 200.0
@@ -81,7 +78,11 @@ func can_complete_contract(contract_id: String) -> bool:
 		return false
 	if _get_current_day() > int(contract.get("deadline_day", 0)):
 		return false
-	return _player.get_item_count(str(contract.get("required_item", ""))) >= int(contract.get("required_quantity", 0))
+	var item := str(contract.get("required_item", ""))
+	var quantity := int(contract.get("required_quantity", 0))
+	if int(_economy.get_town_free_stock(str(contract.get("target_town", "")), item)) < quantity:
+		return false
+	return _player.get_item_count(item) >= quantity
 
 func complete_contract(contract_id: String) -> bool:
 	if not can_complete_contract(contract_id):
@@ -92,7 +93,7 @@ func complete_contract(contract_id: String) -> bool:
 	var quantity := int(contract.get("required_quantity", 0))
 	if not _player.remove_item(item, quantity):
 		return false
-	_economy.add_town_stock(str(contract.get("target_town", "")), item, quantity, false)
+	_economy.add_town_stock(str(contract.get("target_town", "")), item, quantity, true)
 
 	_player.add_gold(float(contract.get("reward_gold", 0.0)))
 	var faction := String(contract.get("issuing_faction", ""))
@@ -101,9 +102,6 @@ func complete_contract(contract_id: String) -> bool:
 		if get_node("/root/RankManager").current_rank_index >= 3: # Guild Master
 			rep_bonus *= 1.5
 		_player.change_faction_rep(faction, rep_bonus)
-	var npc_id := String(contract.get("issuing_npc_id", ""))
-	if npc_id != "":
-		_player.change_npc_relation(npc_id, float(contract.get("reward_npc_relation", 0.0)))
 
 	contract["status"] = STATUS_COMPLETED
 	contract["completed_day"] = _get_current_day()
@@ -172,17 +170,12 @@ func _make_contract(source_town: String) -> Dictionary:
 	if town_names.is_empty() or not _economy.towns.has(source_town):
 		return {}
 
-	var contract_type := TYPE_PROCUREMENT if (_next_id % 2 == 0) else TYPE_DELIVERY
-	var target_town := source_town
-	if contract_type == TYPE_DELIVERY and town_names.size() > 1:
-		target_town = _pick_other_town(source_town, town_names)
-	if contract_type == TYPE_DELIVERY and _get_delivery_item_candidates(source_town).is_empty():
-		contract_type = TYPE_PROCUREMENT
-		target_town = source_town
+	var contract_type := TYPE_DELIVERY
+	var target_town := _pick_other_town(source_town, town_names) if town_names.size() > 1 else source_town
 
 	var source_data: Dictionary = _economy.get_town(source_town)
 	var item := _pick_contract_item(source_town, target_town, contract_type)
-	var tier := _pick_tier()
+	var tier := "basic"
 	var quantity := _pick_quantity(item, tier)
 	var created_day := _get_current_day()
 	var travel_days: int = _estimate_contract_travel_days(source_town, target_town, item, contract_type)
@@ -216,7 +209,6 @@ func _make_contract(source_town: String) -> Dictionary:
 		"deadline_day": 0,
 		"reward_gold": reward_gold,
 		"reward_faction_rep": reward_rep,
-		"reward_npc_relation": reward_rep,
 		"status": STATUS_AVAILABLE,
 		"difficulty_tier": tier,
 	}
@@ -230,10 +222,10 @@ func _pick_other_town(source_town: String, town_names: Array) -> String:
 		return source_town
 	return candidates[_next_id % candidates.size()]
 
-func _pick_contract_item(source_town: String, target_town: String, contract_type: String) -> String:
+func _pick_contract_item(source_town: String, _target_town: String, contract_type: String) -> String:
 	if contract_type == TYPE_DELIVERY:
 		return _pick_from_candidates(_get_delivery_item_candidates(source_town))
-	return _pick_from_candidates(_get_procurement_item_candidates(target_town))
+	return _pick_from_candidates(_get_delivery_item_candidates(source_town))
 
 func _get_delivery_item_candidates(source_town: String) -> Array:
 	var source_data: Dictionary = _economy.get_town(source_town)
@@ -242,21 +234,6 @@ func _get_delivery_item_candidates(source_town: String) -> Array:
 	for item in source_data.get("inventory", {}).keys():
 		if _economy.BASE_PRICES.has(item) and int(source_data.get("inventory", {}).get(item, 0)) > 0:
 			candidates.append(item)
-
-	return candidates
-
-func _get_procurement_item_candidates(target_town: String) -> Array:
-	var target_data: Dictionary = _economy.get_town(target_town)
-	var candidates: Array = []
-
-	for item in target_data.get("consumption_rules", {}).keys():
-		if _economy.BASE_PRICES.has(item) and _is_item_obtainable(item, target_town):
-			candidates.append(item)
-	for item in target_data.get("production_plan", {}).keys():
-		if _economy.items_data.has(item) and not _economy.items_data[item].recipe_inputs.is_empty():
-			for input_item in _economy.items_data[item].recipe_inputs.keys():
-				if _economy.BASE_PRICES.has(input_item) and _is_item_obtainable(input_item, target_town):
-					candidates.append(input_item)
 
 	return candidates
 
@@ -293,18 +270,7 @@ func _get_globally_obtainable_items() -> Array:
 		candidates = _economy.BASE_PRICES.keys()
 	return candidates
 
-func _pick_tier() -> String:
-	match _next_id % 3:
-		0:
-			if get_node("/root/RankManager").can_get_urgent_contracts():
-				return "urgent"
-			return "standard"
-		1:
-			return "basic"
-		_:
-			return "standard"
-
-func _pick_quantity(item: String, tier: String) -> int:
+func _pick_quantity(item: String, _tier: String) -> int:
 	var base_qty := 3
 	var item_price := float(_economy.BASE_PRICES.get(item, 5.0))
 	if item_price <= 5.0:
@@ -314,12 +280,7 @@ func _pick_quantity(item: String, tier: String) -> int:
 	else:
 		base_qty = 2
 
-	var tier_bonus := 0
-	if tier == "standard":
-		tier_bonus = 1
-	elif tier == "urgent":
-		tier_bonus = 2
-	return mini(base_qty + tier_bonus, maxi(1, int(_player.caravan_capacity * 0.45)))
+	return mini(base_qty, maxi(1, int(_player.caravan_capacity * 0.45)))
 
 func _calculate_reward_gold(source_town: String, target_town: String, item: String, quantity: int, tier: String) -> int:
 	var unit_price := float(_economy.BASE_PRICES.get(item, 5.0))
@@ -329,14 +290,10 @@ func _calculate_reward_gold(source_town: String, target_town: String, item: Stri
 	var multiplier := float(TIER_DATA[tier]["gold_multiplier"])
 	return int(round((unit_price * float(quantity) * 1.35 + 12.0) * distance_bonus * multiplier))
 
-func _estimate_contract_travel_days(source_town: String, target_town: String, item: String, contract_type: String) -> int:
+func _estimate_contract_travel_days(source_town: String, target_town: String, _item: String, contract_type: String) -> int:
 	if contract_type == TYPE_DELIVERY:
 		return _get_travel_days_between_towns(source_town, target_town)
-
-	var pickup_town: String = _get_nearest_obtainable_source_town(target_town, item)
-	if pickup_town == "":
-		return 0
-	return _get_travel_days_between_towns(target_town, pickup_town) * 2
+	return 0
 
 func _get_nearest_obtainable_source_town(target_town: String, item: String) -> String:
 	var best_town: String = ""
@@ -378,16 +335,12 @@ func _get_issuer_faction(npc_id: String, fallback_faction: String) -> String:
 			return String(npc.get("faction", fallback_faction))
 	return fallback_faction
 
-func _make_title(contract_type: String, item: String, quantity: int, target_town: String, tier: String) -> String:
+func _make_title(_contract_type: String, item: String, quantity: int, target_town: String, _tier: String) -> String:
 	var item_name := str(item).capitalize()
-	if contract_type == TYPE_PROCUREMENT:
-		return "%s request: %d %s" % [tier.capitalize(), quantity, item_name]
-	return "%s delivery to %s" % [tier.capitalize(), target_town]
+	return "Deliver %d %s to %s" % [quantity, item_name, target_town]
 
-func _make_description(contract_type: String, item: String, quantity: int, source_town: String, target_town: String, deadline_duration: int) -> String:
+func _make_description(_contract_type: String, item: String, quantity: int, source_town: String, target_town: String, deadline_duration: int) -> String:
 	var item_name := str(item).capitalize()
-	if contract_type == TYPE_PROCUREMENT:
-		return "Bring %d %s to %s within %d days after accepting." % [quantity, item_name, target_town, deadline_duration]
 	return "Deliver %d %s from %s to %s within %d days after accepting." % [quantity, item_name, source_town, target_town, deadline_duration]
 
 func _get_current_day() -> int:

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://coko6vmol3hsr"
+
+[deps]
+
+files=["res://data/balance/town_stocks.item.translation", "res://data/balance/town_stocks.start.translation", "res://data/balance/town_stocks.stock.translation"]
+
+source_file="res://data/balance/town_stocks.csv"
+dest_files=["res://data/balance/town_stocks.item.translation", "res://data/balance/town_stocks.start.translation", "res://data/balance/town_stocks.stock.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

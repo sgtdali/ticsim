@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cb421v1ip33cs"
+
+[deps]
+
+files=["res://data/balance_runs_db.balance.translation", "res://data/balance_runs_db.label.translation", "res://data/balance_runs_db.scenario.translation", "res://data/balance_runs_db.seed.translation", "res://data/balance_runs_db.victory.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.final.translation", "res://data/balance_runs_db.final.translation", "res://data/balance_runs_db.ashford.translation", "res://data/balance_runs_db.ironmere.translation", "res://data/balance_runs_db.stonebridge.translation", "res://data/balance_runs_db.ashford.translation", "res://data/balance_runs_db.ironmere.translation", "res://data/balance_runs_db.stonebridge.translation"]
+
+source_file="res://data/balance_runs_db.csv"
+dest_files=["res://data/balance_runs_db.balance.translation", "res://data/balance_runs_db.label.translation", "res://data/balance_runs_db.scenario.translation", "res://data/balance_runs_db.seed.translation", "res://data/balance_runs_db.victory.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.reached.translation", "res://data/balance_runs_db.final.translation", "res://data/balance_runs_db.final.translation", "res://data/balance_runs_db.ashford.translation", "res://data/balance_runs_db.ironmere.translation", "res://data/balance_runs_db.stonebridge.translation", "res://data/balance_runs_db.ashford.translation", "res://data/balance_runs_db.ironmere.translation", "res://data/balance_runs_db.stonebridge.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
