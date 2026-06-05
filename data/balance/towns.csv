@@ -1,4 +1,4 @@
-town_id,display_name,start_population,start_prosperity,faction,identity
-Ashford,Ashford,1200,25,Northern Kingdom,Farming / Bread
-Ironmere,Ironmere,1000,22,Merchants Guild,Mining / Iron
-Stonebridge,Stonebridge,900,28,Merchants Guild,Grapes / Wine
+town_id,display_name,start_population,start_prosperity,faction,identity,position_x,position_y,farm_max,mine_max,farm_allocated_wheat,farm_allocated_grapes,mine_allocated_iron_ore
+Ashford,Ashford,1200,25,Northern Kingdom,Farming / Bread,480,360,8,0,3,0,0
+Ironmere,Ironmere,1000,22,Merchants Guild,Mining / Iron,2200,440,2,6,1,0,3
+Stonebridge,Stonebridge,900,28,Merchants Guild,Grapes / Wine,1380,1080,3,1,0,2,0

@@ -21,6 +21,7 @@ class BalanceLoader:
         self.automation = {}
         self.price_curves = {}
         self.season_modifiers = {}
+        self.caravan_upgrades = []
 
     def _read_csv(self, filename):
         filepath = os.path.join(self.data_dir, filename)
@@ -47,6 +48,7 @@ class BalanceLoader:
             self._load_automation()
             self._load_price_curves()
             self._load_season_modifiers()
+            self._load_caravan_upgrades()
             self.validate_data()
             return True
         except Exception as e:
@@ -149,9 +151,23 @@ class BalanceLoader:
                 "gold_required": float(r["gold_required"]),
                 "growing_cities_required": int(r["growing_cities_required"]),
                 "prosperous_cities_required": int(r["prosperous_cities_required"]),
-                "posts_required": int(r["posts_required"])
+                "posts_required": int(r["posts_required"]),
+                "daily_upkeep": float(r["daily_upkeep"])
             })
         self.ranks.sort(key=lambda x: x["rank_index"])
+
+    def _load_caravan_upgrades(self):
+        rows = self._read_csv("caravan_upgrades.csv")
+        for r in rows:
+            self.caravan_upgrades.append({
+                "level": int(r["level"]),
+                "name": r["name"],
+                "cost": float(r["cost"]),
+                "capacity": int(r["capacity"]),
+                "daily_upkeep": float(r["daily_upkeep"]),
+                "unlock_rank": r["unlock_rank"]
+            })
+        self.caravan_upgrades.sort(key=lambda x: x["level"])
 
     def _load_automation(self):
         rows = self._read_csv("automation.csv")

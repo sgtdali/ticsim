@@ -33,7 +33,7 @@ func _ready() -> void:
 	_player = get_node("/root/PlayerData")
 
 func has_post(town_name: String) -> bool:
-	return posts.has(town_name) and posts[town_name].get("established", false) and not posts[town_name].get("suspended", false)
+	return posts.has(town_name) and posts[town_name].get("established", false)
 
 func get_active_post_count() -> int:
 	var count := 0
@@ -55,10 +55,9 @@ func establish_post(town_name: String) -> bool:
 	_player.remove_gold(POST_COST)
 	
 	if not posts.has(town_name):
-		posts[town_name] = { "established": true, "suspended": false, "depot": {}, "rules": [] }
+		posts[town_name] = { "established": true, "depot": {}, "rules": [] }
 	else:
 		posts[town_name]["established"] = true
-		posts[town_name]["suspended"] = false
 	
 	emit_signal("post_updated", town_name)
 	return true
@@ -131,21 +130,7 @@ func toggle_rule(town_name: String, idx: int, enabled: bool) -> void:
 		emit_signal("post_updated", town_name)
 
 func suspend_most_valuable_post() -> bool:
-	var best_town := ""
-	var best_value := -1.0
-	for town_name in posts.keys():
-		if not has_post(town_name):
-			continue
-		var value: float = _get_depot_value(town_name)
-		if value > best_value:
-			best_value = value
-			best_town = town_name
-	if best_town == "":
-		return false
-	posts[best_town]["suspended"] = true
-	emit_signal("post_updated", best_town)
-	print("[Debt] Trading Post suspended in %s" % best_town)
-	return true
+	return false
 
 func _get_depot_value(town_name: String) -> float:
 	var value := 0.0

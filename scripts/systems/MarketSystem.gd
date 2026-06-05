@@ -30,32 +30,31 @@ func _calculate_price_for_stock(town: Dictionary, item: String, stock: float) ->
 	var event_mult: float = 1.0
 	if eco._events != null:
 		event_mult = float(eco._events.get_price_multiplier(town.get("name", ""), item))
+	
+	var category = eco.get_goods_category(item)
+	var curves = eco.price_curves.get(category, {"zero_stock_multiplier": 2.2, "base_stock_multiplier": 1.0, "max_stock_multiplier": 0.45})
+	var zero_mult: float = curves["zero_stock_multiplier"]
+	var base_mult: float = curves["base_stock_multiplier"]
+	var max_mult: float = curves["max_stock_multiplier"]
+
 	if demand <= 0.0:
-		return _calculate_capacity_based_price(town, item, stock, base, event_mult)
+		var max_stock: float = maxf(float(eco.simulation.get_stock_cap(town, item)), 1.0)
+		var cap_ratio = clampf(stock / max_stock, 0.0, 1.0)
+		var multiplier = zero_mult - (zero_mult - max_mult) * cap_ratio
+		return maxf(base * multiplier * event_mult, base * 0.25)
+	
 	var reference_stock := demand * CONSUMPTION_REFERENCE_DAYS
 	var stock_ratio := stock / maxf(reference_stock, 1.0)
-	var price_multiplier: float = _get_consumption_price_multiplier(stock_ratio)
-	return maxf(base * price_multiplier * event_mult, base * 0.25)
-
-func _calculate_capacity_based_price(town: Dictionary, item: String, stock: float, base: float, event_mult: float) -> float:
-	var supply := float(eco.simulation.estimate_effective_daily_supply(town, item))
-	var max_stock: float = maxf(float(eco.simulation.get_stock_cap(town, item)), 1.0)
-	var pressure := -supply / max_stock
-	var scarcity := stock / max_stock
-	return maxf(base * (1.0 + clamp(pressure - scarcity, -0.7, 3.0) * 1.4) * event_mult, base * 0.25)
-
-func _get_consumption_price_multiplier(stock_ratio: float) -> float:
-	if stock_ratio <= 0.0:
-		return 3.0
-	if stock_ratio <= 0.5:
-		return lerpf(3.0, 1.8, stock_ratio / 0.5)
+	var price_multiplier: float
 	if stock_ratio <= 1.0:
-		return lerpf(1.8, 1.0, (stock_ratio - 0.5) / 0.5)
-	if stock_ratio <= 2.0:
-		return lerpf(1.0, 0.6, stock_ratio - 1.0)
-	if stock_ratio <= 3.0:
-		return lerpf(0.6, 0.35, stock_ratio - 2.0)
-	return 0.35
+		price_multiplier = zero_mult - (zero_mult - base_mult) * stock_ratio
+	elif stock_ratio <= 3.0:
+		var t = (stock_ratio - 1.0) / 2.0
+		price_multiplier = base_mult - (base_mult - max_mult) * t
+	else:
+		price_multiplier = max_mult
+	
+	return maxf(base * price_multiplier * event_mult, base * 0.25)
 
 func get_price(town_name: String, item: String) -> float:
 	return eco.towns.get(town_name, {}).get("prices", {}).get(item, (eco.BASE_PRICES[item] if eco.BASE_PRICES.has(item) else 0.0))

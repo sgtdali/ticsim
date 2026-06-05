@@ -1,6 +1,6 @@
-rank_id,rank_index,gold_required,growing_cities_required,prosperous_cities_required,posts_required
-Peddler,0,0,0,0,0
-Trader,1,500,0,0,0
-Merchant,2,1500,1,0,0
-Guild Master,3,4000,2,1,2
-Patrician,4,10000,0,3,0
+rank_id,rank_index,gold_required,growing_cities_required,prosperous_cities_required,posts_required,daily_upkeep
+Peddler,0,0,0,0,0,0.0
+Trader,1,500,0,0,0,3.0
+Merchant,2,1500,1,0,0,8.0
+Guild Master,3,4000,2,1,2,20.0
+Patrician,4,10000,0,3,0,0.0

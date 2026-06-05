@@ -11,12 +11,9 @@ const PROSPERITY_DECAY_PER_TICK := 1
 const GOLD_PER_PROSPERITY_POINT := 25.0
 const MAX_DAILY_PROSPERITY_GAIN := 50
 
-const SEASON_MULTIPLIERS := {
-	"spring": {"wheat": 1.15, "grapes": 1.10, "wood": 1.00},
-	"summer": {"wheat": 1.10, "grapes": 1.20, "wood": 0.95},
-	"autumn": {"wheat": 1.00, "grapes": 0.95, "wood": 1.05},
-	"winter": {"wheat": 0.70, "grapes": 0.60, "wood": 1.10},
-}
+var SEASON_MULTIPLIERS: Dictionary = {}
+var price_curves: Dictionary = {}
+var routes_data: Dictionary = {}
 
 var items_data: Dictionary = {}
 var BASE_PRICES: Dictionary = {}
@@ -51,52 +48,168 @@ func _ready() -> void:
 	simulation = TownSimulation.new(self)
 	investment = InvestmentSystem.new(self)
 	
+	_load_season_modifiers()
+	_load_price_curves()
 	_load_items_data()
+	_load_routes_data()
 	_init_towns()
 
+func _load_season_modifiers() -> void:
+	SEASON_MULTIPLIERS.clear()
+	var rows = CSVLoader.load_csv("res://data/balance/season_modifiers.csv")
+	for row in rows:
+		var season = row["season"]
+		var item_id = row["item_id"]
+		var prod_mult = CSVLoader.parse_float(row["production_multiplier"], 1.0)
+		if not SEASON_MULTIPLIERS.has(season):
+			SEASON_MULTIPLIERS[season] = {}
+		SEASON_MULTIPLIERS[season][item_id] = prod_mult
+
+func _load_price_curves() -> void:
+	price_curves.clear()
+	var rows = CSVLoader.load_csv("res://data/balance/price_curves.csv")
+	for row in rows:
+		var cat = row["category"]
+		price_curves[cat] = {
+			"zero_stock_multiplier": CSVLoader.parse_float(row["zero_stock_multiplier"]),
+			"base_stock_multiplier": CSVLoader.parse_float(row["base_stock_multiplier"]),
+			"max_stock_multiplier": CSVLoader.parse_float(row["max_stock_multiplier"])
+		}
+
+func _load_routes_data() -> void:
+	routes_data.clear()
+	var rows = CSVLoader.load_csv("res://data/balance/routes.csv")
+	for row in rows:
+		var from_t = row["from_town"]
+		var to_t = row["to_town"]
+		if not routes_data.has(from_t):
+			routes_data[from_t] = {}
+		routes_data[from_t][to_t] = {
+			"travel_days": CSVLoader.parse_int(row["travel_days"]),
+			"risk_level": row["risk_level"],
+			"attack_risk": CSVLoader.parse_float(row["attack_risk"])
+		}
+
+func get_route_travel_days(from_town: String, to_town: String) -> int:
+	if routes_data.has(from_town) and routes_data[from_town].has(to_town):
+		return int(routes_data[from_town][to_town]["travel_days"])
+	var t1 = towns.get(from_town, {})
+	var t2 = towns.get(to_town, {})
+	if not t1.is_empty() and not t2.is_empty():
+		var distance = t1["position"].distance_to(t2["position"])
+		return int(maxf(round(distance / 200.0), 1.0))
+	return 1
+
+func get_route_attack_risk(from_town: String, to_town: String) -> float:
+	if routes_data.has(from_town) and routes_data[from_town].has(to_town):
+		return float(routes_data[from_town][to_town]["attack_risk"])
+	return 0.05
+
 func _load_items_data() -> void:
-	var dir = DirAccess.open("res://data/items")
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "":
-			if not dir.current_is_dir() and file_name.ends_with(".tres"):
-				var res = load("res://data/items/" + file_name) as ItemData
-				if res:
-					items_data[res.id] = res
-					BASE_PRICES[res.id] = res.base_price
-			file_name = dir.get_next()
+	items_data.clear()
+	BASE_PRICES.clear()
+	
+	var items_rows = CSVLoader.load_csv("res://data/balance/items.csv")
+	for row in items_rows:
+		var item = ItemData.new()
+		item.id = row["item_id"]
+		item.display_name = row["display_name"]
+		item.category = row["category"]
+		item.base_price = CSVLoader.parse_float(row["base_price"])
+		item.stock_cap = CSVLoader.parse_int(row["stock_cap_base"])
+		item.base_daily_demand_per_1000_pop = CSVLoader.parse_float(row["base_daily_demand_per_1000_pop"])
+		
+		if item.id == "wheat" or item.id == "grapes":
+			item.is_natural_resource = true
+			item.slot_type = "farm"
+		elif item.id == "iron_ore":
+			item.is_natural_resource = true
+			item.slot_type = "mine"
+		else:
+			item.is_natural_resource = false
+			item.slot_type = "none"
+			
+		items_data[item.id] = item
+		BASE_PRICES[item.id] = item.base_price
+		
+	var recipe_rows = CSVLoader.load_csv("res://data/balance/recipes.csv")
+	for row in recipe_rows:
+		var output_item_id = row["output_item_id"]
+		var input_item_id = row["input_item_id"]
+		var input_qty = CSVLoader.parse_int(row["input_qty"])
+		if items_data.has(output_item_id):
+			items_data[output_item_id].recipe_inputs[input_item_id] = input_qty
 
 func _init_towns() -> void:
-	towns = {
-		"Ashford": {
-			"name": "Ashford", "faction": "Northern Kingdom", "population": 120, "population_cap": 180,
-			"prosperity": 0, "population_history": [],
-			"inventory": {"wheat": 30, "flour": 8, "wood": 15, "bread": 10}, "prices": {}, "position": Vector2(480, 360),
-			"production_plan": {"wood": 4, "flour": 2, "bread": 3},
-			"consumption_rules": {"bread": 0.05, "tool": 0.006},
-			"slots": {"farm": {"max": 8, "allocated": {"wheat": 3}}, "mine": {"max": 0, "allocated": {}}},
-			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
-		},
-		"Ironmere": {
-			"name": "Ironmere", "faction": "Merchants Guild", "population": 200, "population_cap": 280,
-			"prosperity": 0, "population_history": [],
-			"inventory": {"iron_ore": 20, "iron_bar": 5, "sword": 2, "wheat": 10}, "prices": {}, "position": Vector2(2200, 440),
-			"production_plan": {"iron_bar": 2, "tool": 1, "sword": 1},
-			"consumption_rules": {"wheat": 0.04, "wood": 0.025},
-			"slots": {"farm": {"max": 2, "allocated": {"wheat": 1}}, "mine": {"max": 6, "allocated": {"iron_ore": 3}}},
-			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
-		},
-		"Stonebridge": {
-			"name": "Stonebridge", "faction": "Merchants Guild", "population": 160, "population_cap": 240,
-			"prosperity": 0, "population_history": [],
-			"inventory": {"grapes": 20, "must": 8, "wine": 4, "wood": 10, "wheat": 10}, "prices": {}, "position": Vector2(1380, 1080),
-			"production_plan": {"must": 2, "wine": 1, "wood": 3, "wheat": 2},
-			"consumption_rules": {"wheat": 0.03, "iron_bar": 0.015},
-			"slots": {"farm": {"max": 3, "allocated": {"grapes": 2}}, "mine": {"max": 1, "allocated": {}}},
-			"production_upgrades": {}, "stock_cap_upgrades": {}, "report": {},
-		},
-	}
+	var town_rows = CSVLoader.load_csv("res://data/balance/towns.csv")
+	var stock_rows = CSVLoader.load_csv("res://data/balance/town_stocks.csv")
+	var production_rows = CSVLoader.load_csv("res://data/balance/production.csv")
+	
+	towns = {}
+	
+	for row in town_rows:
+		var town_id = row["town_id"]
+		var pop = CSVLoader.parse_int(row["start_population"])
+		var pos = Vector2(CSVLoader.parse_float(row["position_x"]), CSVLoader.parse_float(row["position_y"]))
+		
+		towns[town_id] = {
+			"name": row["display_name"],
+			"faction": row["faction"],
+			"population": pop,
+			"population_cap": int(pop * 1.5),
+			"prosperity": CSVLoader.parse_int(row["start_prosperity"]),
+			"population_history": [],
+			"inventory": {},
+			"prices": {},
+			"position": pos,
+			"production_plan": {},
+			"consumption_rules": {},
+			"slots": {
+				"farm": {
+					"max": CSVLoader.parse_int(row["farm_max"]),
+					"allocated": {}
+				},
+				"mine": {
+					"max": CSVLoader.parse_int(row["mine_max"]),
+					"allocated": {}
+				}
+			},
+			"production_upgrades": {},
+			"stock_cap_upgrades": {},
+			"report": {}
+		}
+		
+		var farm_wheat = CSVLoader.parse_int(row["farm_allocated_wheat"])
+		if farm_wheat > 0:
+			towns[town_id]["slots"]["farm"]["allocated"]["wheat"] = farm_wheat
+		var farm_grapes = CSVLoader.parse_int(row["farm_allocated_grapes"])
+		if farm_grapes > 0:
+			towns[town_id]["slots"]["farm"]["allocated"]["grapes"] = farm_grapes
+		var mine_iron_ore = CSVLoader.parse_int(row["mine_allocated_iron_ore"])
+		if mine_iron_ore > 0:
+			towns[town_id]["slots"]["mine"]["allocated"]["iron_ore"] = mine_iron_ore
+			
+	for row in stock_rows:
+		var town_id = row["town_id"]
+		var item_id = row["item_id"]
+		var start_stock = CSVLoader.parse_int(row["start_stock"])
+		if towns.has(town_id):
+			towns[town_id]["inventory"][item_id] = start_stock
+			
+	for row in production_rows:
+		var town_id = row["town_id"]
+		var item_id = row["item_id"]
+		var base_prod = CSVLoader.parse_float(row["base_daily_production"])
+		if towns.has(town_id):
+			if not items_data.has(item_id) or not items_data[item_id].is_natural_resource:
+				towns[town_id]["production_plan"][item_id] = base_prod
+				
+	for town_id in towns:
+		for item_id in items_data:
+			var item = items_data[item_id]
+			if item.base_daily_demand_per_1000_pop > 0:
+				towns[town_id]["consumption_rules"][item_id] = item.base_daily_demand_per_1000_pop / 1000.0
+
 	market.recalculate_all_prices()
 
 

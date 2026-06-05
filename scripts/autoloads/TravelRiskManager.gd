@@ -34,7 +34,8 @@ func calculate_attack_chance(destination_town: String) -> float:
 			# Sadece pozitif rep koruma sağlar
 			protection = maxf(rep, 0.0) * REPUTATION_PROTECTION
 
-	var chance: float = BASE_ATTACK_CHANCE + cargo_risk - protection
+	var base_risk: float = _economy.get_route_attack_risk(_player.current_town, destination_town)
+	var chance: float = base_risk + cargo_risk - protection
 	return clamp(chance, 0.0, MAX_ATTACK_CHANCE)
 
 # Saldırı olup olmayacağına karar verir. true = saldırı oldu.

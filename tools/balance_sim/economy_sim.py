@@ -1,5 +1,6 @@
 import math
 import sys
+import random
 from balance_loader import BalanceLoader
 
 class EconomySim:
@@ -26,9 +27,9 @@ class EconomySim:
         # Caravan Masters: [ { master_type, current_town, target_town, travel_days_left, route: [town_ids], cargo: {item_id: qty} } ]
         self.caravan_masters = []
         
-        # Caravan Upgrade Level: 0 = Donkey (20), 1 = Horse (35), 2 = Large (50)
+        # Caravan Upgrade Level: 0 = Donkey, 1 = Horse, 2 = Large
         self.caravan_level = 0
-        self.caravan_capacity = 20
+        self.caravan_capacity = self.loader.caravan_upgrades[0]["capacity"] if self.loader.caravan_upgrades else 20
         
         # Active contracts: [ { id, source, target, item, qty, reward_gold, deadline_day } ]
         self.active_contracts = []
@@ -133,18 +134,18 @@ class EconomySim:
 
     def get_upkeep(self):
         # Caravan Upkeep
-        caravan_upkeeps = [2.0, 5.0, 10.0]
-        c_upkeep = caravan_upkeeps[self.caravan_level]
+        c_upkeep = 2.0
+        for upgrade in self.loader.caravan_upgrades:
+            if upgrade["level"] == self.caravan_level:
+                c_upkeep = upgrade["daily_upkeep"]
+                break
         
         # Rank Upkeep
-        rank_upkeeps = {
-            "Peddler": 0.0,
-            "Trader": 3.0,
-            "Merchant": 8.0,
-            "Guild Master": 20.0,
-            "Patrician": 0.0
-        }
-        r_upkeep = rank_upkeeps.get(self.rank_id, 0.0)
+        r_upkeep = 0.0
+        for rank in self.loader.ranks:
+            if rank["rank_id"] == self.rank_id:
+                r_upkeep = rank["daily_upkeep"]
+                break
         
         # Trading Post Upkeep
         tp_cost = self.loader.automation["trading_post"]["daily_upkeep"]
@@ -398,12 +399,12 @@ class EconomySim:
         if critical_shortage:
             town["population"] = max(10.0, town["population"] * 0.97) # Lose 3%
         else:
-            # Grow based on prosperity level
-            level_mult = 0.01
+            # Grow based on prosperity level (realistic daily rates: 0.03% - 0.1%)
+            level_mult = 0.0003
             if town["prosperity"] >= 65:
-                level_mult = 0.02
+                level_mult = 0.0010
             elif town["prosperity"] >= 30:
-                level_mult = 0.015
+                level_mult = 0.0006
             town["population"] += town["population"] * level_mult
             town["population"] = min(2000.0, town["population"]) # Cap at 2000 for simulation
 
@@ -521,7 +522,6 @@ class EconomySim:
             # Random fluctuations
             for item_id in self.loader.items:
                 # 5% chance of NPC transaction
-                import random
                 if random.random() < 0.08:
                     # Is it cheap? Buy it.
                     price = town["prices"][item_id]

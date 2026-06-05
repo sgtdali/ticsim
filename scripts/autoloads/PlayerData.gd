@@ -20,18 +20,13 @@ var finance_yesterday: Dictionary = {
 }
 
 const DEBT_REP_PENALTY_DAYS := 14
-const DEBT_POST_TRADE_STOP_DAYS := 30
-const DEBT_POST_SUSPEND_DAYS := 60
 const DEBT_REP_GAIN_MULTIPLIER := 0.75
 
-const CARAVAN_UPKEEP := [2.0, 5.0, 10.0]
-const RANK_UPKEEP := {
-	"Peddler": 0.0,
-	"Trader": 3.0,
-	"Merchant": 8.0,
-	"Guild Master": 20.0,
-	"Patrician": 0.0,
-}
+var CARAVAN_UPKEEP: Array[float] = []
+var UPGRADE_NAMES: Array[String] = []
+var UPGRADE_CAPACITIES: Array[int] = []
+var UPGRADE_COSTS: Array[float] = []
+
 const TRADING_POST_UPKEEP := 8.0
 
 # --- Inventory ---
@@ -62,6 +57,24 @@ var owned_shops: Array = []
 
 # --- Time ---
 var current_day: int = 1
+
+func _ready() -> void:
+	_load_caravan_upgrades()
+
+func _load_caravan_upgrades() -> void:
+	UPGRADE_NAMES.clear()
+	UPGRADE_CAPACITIES.clear()
+	UPGRADE_COSTS.clear()
+	CARAVAN_UPKEEP.clear()
+	
+	var rows = CSVLoader.load_csv("res://data/balance/caravan_upgrades.csv")
+	rows.sort_custom(func(a, b): return CSVLoader.parse_int(a["level"]) < CSVLoader.parse_int(b["level"]))
+	
+	for row in rows:
+		UPGRADE_NAMES.append(row["name"])
+		UPGRADE_CAPACITIES.append(CSVLoader.parse_int(row["capacity"]))
+		UPGRADE_COSTS.append(CSVLoader.parse_float(row["cost"]))
+		CARAVAN_UPKEEP.append(CSVLoader.parse_float(row["daily_upkeep"]))
 
 # -----------------------------------------------
 
@@ -171,7 +184,7 @@ func get_finance_summary() -> Dictionary:
 	}
 
 func should_stop_trading_post_auto_trade() -> bool:
-	return debt_days >= DEBT_POST_TRADE_STOP_DAYS
+	return false
 
 func _pay_daily_upkeep() -> void:
 	var upkeep: float = get_daily_upkeep()
@@ -200,22 +213,18 @@ func _pay_daily_upkeep() -> void:
 		debt_days = 0
 
 func _apply_debt_duration_penalties() -> void:
-	if debt_days != DEBT_POST_SUSPEND_DAYS:
-		return
-	var posts: Node = get_node_or_null("/root/TradingPostManager")
-	if posts != null and posts.has_method("suspend_most_valuable_post"):
-		posts.call("suspend_most_valuable_post")
+	if debt_days >= 60:
+		get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
 
 func _get_caravan_upkeep() -> float:
 	var idx := clampi(caravan_upgrade_level, 0, CARAVAN_UPKEEP.size() - 1)
 	return float(CARAVAN_UPKEEP[idx])
 
 func _get_rank_upkeep() -> float:
-	var rank := "Peddler"
 	var rank_manager: Node = get_node_or_null("/root/RankManager")
-	if rank_manager != null and rank_manager.has_method("get_current_rank"):
-		rank = str(rank_manager.call("get_current_rank"))
-	return float(RANK_UPKEEP.get(rank, 0.0))
+	if rank_manager != null and rank_manager.has_method("get_current_upkeep"):
+		return float(rank_manager.get_current_upkeep())
+	return 0.0
 
 func _get_trading_post_upkeep() -> float:
 	return float(_get_active_post_count()) * TRADING_POST_UPKEEP
@@ -237,11 +246,9 @@ func _make_empty_finance_bucket() -> Dictionary:
 
 # --- Caravan Upgrade ---
 
-const UPGRADE_NAMES := ["Donkey Cart", "Horse Cart", "Small Caravan"]
-const UPGRADE_CAPACITIES := [20, 35, 50]
-const UPGRADE_COSTS := [0, 300, 800]  # index 0 = başlangıç, ücretsiz
-
 func get_upgrade_name() -> String:
+	if UPGRADE_NAMES.size() == 0:
+		return "Donkey Cart"
 	return UPGRADE_NAMES[clamp(caravan_upgrade_level, 0, UPGRADE_NAMES.size() - 1)]
 
 func get_next_upgrade_name() -> String:
@@ -254,7 +261,7 @@ func get_next_upgrade_cost() -> int:
 	var next := caravan_upgrade_level + 1
 	if next >= UPGRADE_COSTS.size():
 		return -1  # max level
-	return UPGRADE_COSTS[next]
+	return int(UPGRADE_COSTS[next])
 
 func can_upgrade_caravan() -> bool:
 	if has_debt():

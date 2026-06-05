@@ -9,6 +9,7 @@ class_name ItemData
 @export var base_price: float = 1.0
 @export var stock_cap: int = 100
 @export var stock_cap_base_cost: int = 50
+@export var base_daily_demand_per_1000_pop: float = 0.0
 
 @export var is_natural_resource: bool = false
 @export var slot_type: String = "none"

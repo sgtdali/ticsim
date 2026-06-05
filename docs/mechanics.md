@@ -54,10 +54,10 @@ Sehirler gunluk uretim ve tuketim tick'i ile yasar. Dunya oyuncu bir sey yapmasa
 - **Consumption rules:** Nüfus her gün belirli malları tüketir.
 
 - **Nüfus değişimi:** Survival malı kritik tüketim karşılanamazsa nüfus %3 azalır. 
- Aksi halde nüfus prosperity level'a göre büyür:
- - Level 1 (Struggling): %1 büyüme
- - Level 2 (Growing): %1.5 büyüme
- - Level 3 (Prosperous): %2 büyüme
+ Aksi halde nüfus prosperity level'a göre büyür (günlük gerçekçi oranlar):
+ - Level 1 (Struggling): %0.03 büyüme
+ - Level 2 (Growing): %0.06 büyüme
+ - Level 3 (Prosperous): %0.10 büyüme
 
 ## 4. Olaylar
 
@@ -245,8 +245,7 @@ Debt varken:
 Debt sure cezasi:
 
 - **14 gun debt:** Pozitif faction reputation kazanclari -%25 olur.
-- **30 gun debt:** Mevcut Trading Postlar otomatik ticareti tamamen durdurur.
-- **60 gun debt:** Depo degeri en yuksek aktif Trading Post suspended olur. Suspended post aktif post sayilmaz ve tekrar acilmasi gerekir.
+- **60 gun debt:** Oyuncu 60 gün boyunca borçta kalırsa oyun sonlandırılır (Game Over). Trading Post'ların askıya alınması veya otomatik ticaretin durdurulması cezaları kaldırılmıştır.
 
 ## 14. Gunluk Tick Sirasi
 

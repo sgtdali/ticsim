@@ -40,11 +40,53 @@ var _player: Node
 var _risk: Node
 var _rank: Node
 
+var master_templates: Dictionary = {}
+
 func _ready() -> void:
 	_economy = get_node("/root/EconomyManager")
 	_player = get_node("/root/PlayerData")
 	_risk = get_node("/root/TravelRiskManager")
 	_rank = get_node("/root/RankManager")
+	
+	_load_automation_templates()
+
+func _load_automation_templates() -> void:
+	master_templates.clear()
+	var rows = CSVLoader.load_csv("res://data/balance/automation.csv")
+	for row in rows:
+		var type = row["automation_type"]
+		if type == "trading_post":
+			continue
+		master_templates[type] = {
+			"type": type,
+			"unlock_rank": row["unlock_rank"],
+			"hire_cost": CSVLoader.parse_float(row["hire_or_build_cost"]),
+			"daily_wage": CSVLoader.parse_float(row["daily_upkeep"]),
+			"capacity": CSVLoader.parse_int(row["capacity"]),
+			"speed": CSVLoader.parse_int(row["speed_level"]),
+			"bargaining": CSVLoader.parse_int(row["bargaining_level"]),
+			"courage": CSVLoader.parse_int(row["courage_level"])
+		}
+
+func get_unlocked_templates() -> Array:
+	var list: Array = []
+	if _rank == null:
+		return list
+	var rank_idx = _rank.current_rank_index
+	for type in master_templates:
+		var t = master_templates[type]
+		var req_rank = t["unlock_rank"]
+		var req_idx = _rank.RANKS.find(req_rank)
+		if rank_idx >= req_idx:
+			list.append(t)
+	return list
+
+func can_afford_any_unlocked_master(player_gold: float) -> bool:
+	var unlocked = get_unlocked_templates()
+	for t in unlocked:
+		if player_gold >= t["hire_cost"]:
+			return true
+	return false
 
 # --- Cap ---
 

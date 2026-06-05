@@ -594,9 +594,7 @@ func _on_town_pressed(town_name: String) -> void:
 	_update_ui()
 
 func _calc_travel_days(town_name: String) -> int:
-	var from: Vector2 = _economy.towns[_player_data.current_town].get("position", Vector2.ZERO)
-	var to: Vector2   = _economy.towns[town_name].get("position", Vector2.ZERO)
-	return max(1, int(from.distance_to(to) / 200.0))
+	return _economy.get_route_travel_days(_player_data.current_town, town_name)
 
 func _update_player_travel_position() -> void:
 	var player = get_node_or_null("Player")

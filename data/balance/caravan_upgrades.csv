@@ -1,0 +1,4 @@
+level,name,cost,capacity,daily_upkeep,unlock_rank
+0,Donkey Cart,0,20,2.0,Peddler
+1,Horse Cart,300,35,5.0,Trader
+2,Small Caravan,800,50,10.0,Trader
