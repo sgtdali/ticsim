@@ -214,7 +214,7 @@ func _pay_daily_upkeep() -> void:
 
 func _apply_debt_duration_penalties() -> void:
 	if debt_days >= 60:
-		get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+		get_tree().change_scene_to_file("res://scenes/GameOver.tscn")
 
 func _get_caravan_upkeep() -> float:
 	var idx := clampi(caravan_upgrade_level, 0, CARAVAN_UPKEEP.size() - 1)

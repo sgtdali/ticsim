@@ -95,7 +95,7 @@ scripts/
   autoloads/        — singleton autoloads (see table above)
   systems/          — sub-system classes owned by EconomyManager
   data_models/      — Resource subclasses and plain data containers
-    ItemData.gd         — .tres resource: id, base_price, category, recipe_inputs
+    ItemData.gd         — Class model: id, display_name, category, base_price, stock_cap, base_daily_demand_per_1000_pop, is_natural_resource, slot_type, recipe_inputs (dynamically loaded from balance CSVs)
     TownData.gd         — (data container, not used as Resource at runtime)
     CaravanMaster.gd    — Resource: id, level, xp, hire_cost, daily_wage, skills
   ui/               — UI control scripts
@@ -170,8 +170,8 @@ scripts/
 }
 ```
 
-### Item (`.tres` Resource, `data/items/`)
-Fields: `id: String`, `base_price: float`, `category: String` (survival/comfort/production_input/tool/luxury), `recipe_inputs: Dictionary { item_id: qty }`
+### Item (Dynamically created from `items.csv`)
+Fields: `id: String`, `display_name: String`, `category: String` (survival/comfort/production_input), `base_price: float`, `stock_cap: int`, `base_daily_demand_per_1000_pop: float`, `is_natural_resource: bool`, `slot_type: String`, `recipe_inputs: Dictionary { item_id: qty }`
 
 ### Contract (runtime Dictionary inside `ContractManager.contracts`)
 Key fields: `id`, `type` (delivery/procurement), `source_town`, `target_town`, `required_item`, `required_quantity`, `deadline_duration`, `deadline_day`, `reward_gold`, `issuing_faction`, `difficulty_tier` (basic/standard/urgent), `status`
@@ -183,7 +183,7 @@ Fields: `id`, `level`, `xp`, `hire_cost`, `daily_wage`, plus computed: `get_capa
 
 ## Factions and Towns
 
-Three factions, three towns (hardcoded in `EconomyManager._init_towns()` and `FactionManager._init_npcs()`):
+Three factions, three towns (loaded from `towns.csv` in `EconomyManager._init_towns()`, and `FactionManager._init_npcs()`):
 
 | Town | Faction | Specialty | Map position |
 |------|---------|-----------|--------------|
@@ -197,24 +197,24 @@ Faction relations affect trade tax rates and reputation gain/loss side-effects. 
 
 ## Rank System
 
-Five ranks. Promotion is checked every day in `RankManager.check_rank_up()`. All conditions must be met simultaneously and player must be debt-free.
+Five ranks. Ranks and daily upkeeps are loaded dynamically from `ranks.csv`. Promotion is checked every day in `RankManager.check_rank_up()`. All conditions must be met simultaneously and player must be debt-free. Faction reputation requirements have been removed from progression.
 
-| Rank | Index | Unlocks | Requirements |
-|------|-------|---------|-------------|
-| Peddler | 0 | — | Starting rank |
-| Trader | 1 | Caravan upgrades | 500g, 1 friendly faction |
-| Merchant | 2 | Trading Posts | 1500g, 2 friendly factions |
-| Guild Master | 3 | Urgent contracts, up to 4 masters | 4000g, 3 friendly factions, 2 posts, 1 growing city |
-| Patrician | 4 | Up to 6 masters | 10000g, 3 allied factions, 3 prosperous cities |
+| Rank | Index | Unlocks | Requirements (from CSV) | Upkeep (from CSV) |
+|------|-------|---------|-------------|-------------------|
+| Peddler | 0 | — | Starting rank | 0 gold/day |
+| Trader | 1 | Caravan upgrades, up to 1 master | 500g | 3 gold/day |
+| Merchant | 2 | Trading Posts, up to 2 masters | 1500g, 1 growing city | 8 gold/day |
+| Guild Master | 3 | Urgent contracts, up to 4 masters | 4000g, 2 posts, 2 growing cities, 1 prosperous city | 20 gold/day |
+| Patrician | 4 | Up to 6 masters (Victory) | 10000g, 3 prosperous cities | 0 gold/day |
 
-Friendly = rep ≥ 30. Allied = rep ≥ 60. Growing city = prosperity ≥ 30. Prosperous city = prosperity ≥ 65.
+Growing city = prosperity ≥ 30. Prosperous city = prosperity ≥ 65.
 
 ---
 
 ## Travel and Risk
 
-Travel between towns is simulated over real game days. Speed: 200 map units/day.
+Travel days between towns are loaded directly from `routes.csv` via `EconomyManager.get_route_travel_days()`, with a fallback to `distance / 200.0`.
 
-Attack chance formula: `BASE(0.05) + cargo_count × 0.018 - positive_faction_rep × 0.001`, clamped to [0, 0.50].
+Attack chance formula: `BASE_RISK (from routes.csv) + cargo_count × 0.018 - positive_faction_rep × 0.001`, clamped to [0, 0.50].
 
 On attack: player loses cargo (amount determined by `AttackPopup`/`WorldMap`). CaravanMaster routes lose ~1/3 of each carried item. Careful-type NPC traders skip routes with risk > 15%.
