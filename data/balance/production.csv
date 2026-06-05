@@ -1,0 +1,13 @@
+town_id,item_id,base_daily_production,season_profile
+Ashford,wheat,75.0,grain_seasonal
+Ashford,flour,36.0,none
+Ashford,bread,18.0,none
+Ashford,wood,10.0,none
+Ironmere,iron_ore,25.0,none
+Ironmere,iron_bar,11.0,none
+Ironmere,tool,3.0,none
+Ironmere,sword,1.0,none
+Stonebridge,grapes,20.0,grape_seasonal
+Stonebridge,must,8.0,none
+Stonebridge,wine,4.0,none
+Stonebridge,wood,5.0,none

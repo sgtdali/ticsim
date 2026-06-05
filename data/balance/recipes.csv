@@ -1,0 +1,8 @@
+output_item_id,input_item_id,input_qty,output_qty
+flour,wheat,2,1
+bread,flour,2,1
+must,grapes,2,1
+wine,must,2,1
+iron_bar,iron_ore,2,1
+tool,iron_bar,2,1
+sword,iron_bar,2,1

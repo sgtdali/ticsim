@@ -1,0 +1,7 @@
+from_town,to_town,travel_days,risk_level,attack_risk
+Ashford,Ironmere,2,low,0.05
+Ironmere,Ashford,2,low,0.05
+Ironmere,Stonebridge,2,medium,0.12
+Stonebridge,Ironmere,2,medium,0.12
+Ashford,Stonebridge,3,medium,0.15
+Stonebridge,Ashford,3,medium,0.15

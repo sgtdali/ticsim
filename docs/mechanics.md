@@ -9,12 +9,12 @@ Oyuncunun ana hedefi rutbe atlayarak **Patrician** seviyesine ulasmak ve oyunu k
 | Rutbe | Sartlar | Acilan Ozellikler |
 | :--- | :--- | :--- |
 | **Peddler** | Baslangic | Temel al-sat, basic/standard kontratlar; Caravan Master: 0 |
-| **Trader** | 500 gold + 1 Friendly faction | **Caravan Upgrades:** Horse Cart ve Small Caravan; Caravan Master: max 1 |
-| **Merchant** | 1500 gold + 2 Friendly factions | **Trading Posts:** Sehirlerde depo ve otomatik ticaret kurallari; Caravan Master: max 2 |
-| **Guild Master** | 4000 gold + 3 Friendly factions + 2 Trading Posts + 1 Growing city | **Urgent Contracts:** Yuksek odullu kontratlar; kontrat reputation odullerine +%50 bonus; Caravan Master: max 4 |
-| **Patrician** | 10000 gold + 3 Allied factions + 3 Prosperous cities | **Win condition:** Oyun biter; Caravan Master: max 6 |
+| **Trader** | 500 gold | **Caravan Upgrades:** Horse Cart ve Small Caravan; Caravan Master: max 1 |
+| **Merchant** | 1500 gold + 1 Growing city | **Trading Posts:** Sehirlerde depo ve otomatik ticaret kurallari; Caravan Master: max 2 |
+| **Guild Master** | 4000 gold + 2 Trading Posts + 2 Growing + 1 Prosperous city | **Urgent Contracts:** Yuksek odullu kontratlar; kontrat reputation odullerine +%50 bonus; Caravan Master: max 4 |
+| **Patrician** | 10000 gold + 3 Prosperous cities | **Win condition:** Oyun biter; Caravan Master: max 6 |
 
-Not: Trading Post, Merchant rutbesinde acildigi icin Merchant sartlari Trading Post isteyemez. Trading Post sayisi ilk kez Guild Master sartinda kullanilir.
+Not: Faksiyon itibar (reputation) gereksinimleri MVP kapsamında rank ilerlemesinden kaldırılmıştır. Trading Post, Merchant rutbesinde acildigi icin Merchant sartlari Trading Post isteyemez. Trading Post sayisi ilk kez Guild Master sartinda kullanilir.
 
 ## 2. Ekonomi, Uretim ve Fiyat Sistemi
 
@@ -74,21 +74,21 @@ Olay baslangic ve bitis bildirimleri harita ekraninin alt event panelinde goster
 
 ## 5. Prosperity ve Yatirim
 
-Prosperity iki kaynaktan değişir: survival malı stok durumu (otomatik) ve oyuncu gold yatırımı (manuel).
+Prosperity iki kaynaktan değişir: tüketim memnuniyeti (otomatik) ve oyuncu gold yatırımı (manuel).
 
-**Otomatik stok bazlı değişim (her gün, tüketim sonrası):**
-Şehrin survival kategorisindeki her mal için günlük tüketim bazında stok hesaplanır:
-- 14 gün ve üzeri stok → +2 prosperity
-- 7-14 gün arası stok → 0 (değişim yok)
-- 0-7 gün arası stok → -3 prosperity
-- Stok tükenmiş (0) → -5 prosperity
+**Otomatik tüketim bazlı değişim (her gün, tüketim sonrası):**
+Şehrin survival kategorisindeki her mal için günlük tüketim memnuniyeti (`tüketilen_miktar / talep_edilen_miktar`) hesaplanır:
+- %80 ve üzeri tüketim memnuniyeti → +2 prosperity
+- %40 - %80 arası tüketim memnuniyeti → -1 prosperity
+- %40 altı tüketim memnuniyeti → -4 prosperity (nüfus düşüş riski)
 
-Birden fazla survival malı varsa tüm deltalar toplanır.
+Ayrıca, prosperity değeri 70 ve üzeri olan gelişmiş şehirlerde comfort/luxury kategorisindeki mallar yetersizse (tüketim memnuniyeti < %40) -1 prosperity cezası uygulanır. Günlük toplam otomatik prosperity değişimi clamp edilir (min -3.0, max +2.0).
 
 **Manuel gold yatırımı:**
-- 25 gold = 1 prosperity puanı
-- Günlük limit: şehir başına 50 prosperity puanı
-- Debt varken yatırım yapılamaz
+Debt varken yatırım yapılamaz. Yatırım maliyeti basamaklı band modeline tabidir:
+- 0-29 prosperity aralığı → 25 gold = 1 prosperity puanı
+- 30-64 prosperity aralığı → 50 gold = 1 prosperity puanı
+- 65+ prosperity aralığı → 100 gold = 1 prosperity puanı
 
 **Prosperity seviyeleri:**
 - Struggling (< 30): Çarpan x1.0

@@ -1,0 +1,4 @@
+category,zero_stock_multiplier,base_stock_multiplier,max_stock_multiplier
+survival,3.0,1.0,0.50
+comfort,1.8,1.0,0.45
+production_input,2.4,1.0,0.48

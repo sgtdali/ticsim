@@ -1,0 +1,12 @@
+item_id,display_name,category,base_price,base_daily_demand_per_1000_pop,demand_tags,stock_cap_base
+wheat,Wheat,production_input,8.0,2.0,food,300
+flour,Flour,production_input,14.0,1.0,food,150
+bread,Bread,survival,18.0,4.0,food,220
+grapes,Grapes,comfort,10.0,2.0,luxury,260
+must,Must,production_input,20.0,1.0,luxury,120
+wine,Wine,comfort,45.0,1.5,comfort;luxury,100
+wood,Wood,production_input,7.0,3.0,industry,200
+iron_ore,Iron Ore,production_input,12.0,2.0,industry,300
+iron_bar,Iron Bar,production_input,22.0,1.0,industry,150
+tool,Tool,production_input,35.0,1.0,construction;industry,120
+sword,Sword,comfort,75.0,0.5,military;comfort,80

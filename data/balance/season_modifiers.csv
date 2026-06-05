@@ -1,0 +1,13 @@
+season,item_id,production_multiplier,demand_multiplier
+spring,wheat,1.15,1.0
+spring,grapes,1.10,1.0
+spring,wood,1.00,1.0
+summer,wheat,1.10,1.0
+summer,grapes,1.20,1.0
+summer,wood,0.95,1.0
+autumn,wheat,1.00,1.0
+autumn,grapes,0.95,1.0
+autumn,wood,1.05,1.0
+winter,wheat,0.70,1.0
+winter,grapes,0.60,1.0
+winter,wood,1.10,1.0
