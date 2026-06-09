@@ -93,6 +93,14 @@ Bu adaylar, mevcut sistemlerin ana kullanım akışını doğrudan etkilediği i
 - [ ] **Debt warning banner.** Finance popup dışında global kritik uyarı katmanı olmalı.
 - [ ] **Event panelinin MVP karşılığı.** Event sistemi pasifken boş event paneli yerine şehir uyarıları/sezon bilgisi veya gizleme kararı verilmeli.
 
+## Benchmark Analizi Somutlaştırmaları (Karar verilmiş)
+
+Patrician III/IV ve Port Royale 4 incelemesi sonrası (2026-06-10), otomasyon UX'i MVP'nin başarı çizgisi olarak kabul edildi. Gerekçe: Patrician IV otomasyon UI'ı yüzünden, Port Royale 4 ise "iş gibi hissettiren" bilgi sunumu yüzünden eleştirildi. Aşağıdaki üç madde, mevcut P0 borçlarının somutlaştırılmış spesifikasyonlarıdır:
+
+1. **Blok nedeni sabit enum.** Trading Post rule status nedenleri serbest metin değil, sabit listeden tek satır olarak gösterilir: `Depo dolu`, `Fiyat limiti dışı`, `Market stoğu yok`, `Gold yetersiz / debt`, `İşlem yapıldı`. Bu liste "Trading Post rule status" ve "auto-buy debt davranışı" borçlarının kapanış kriteridir.
+2. **Tek ekran Trade Route editor.** Durak sırası ve her duraktaki Load/Unload malı + miktarı aynı panelde düzenlenir; kayıtlı route sonradan açılıp değiştirilebilir. Çok adımlı sihirbaz akışından kaçınılır. Bu, "Gerçek Trade Route editor" borcunun kapanış kriteridir.
+3. **7 günlük margin penceresi.** Automation profit dashboard'unda Post ve Master başına Gross / Upkeep / Net son 7 günün toplamıyla gösterilir; pozitif/negatif renk kodu kullanılır. Tek günlük değerler dalgalanma yüzünden yanıltıcı olabileceği için pencere 7 gündür. Bu, "Automation gross/upkeep/net margin" borcunun kapanış kriteridir.
+
 ## MVP İçin İlk Uygulama Adayları
 
 Bu maddeler görünürlük borcunun en yüksek etkili kısmıdır:
@@ -115,5 +123,6 @@ Bu maddeler görünürlük borcunun en yüksek etkili kısmıdır:
 
 ## Tartışma Notları
 
+- [2026-06-10] Benchmark analizi (Patrician III/IV, Port Royale 4) sonrası otomasyon UX'i MVP başarı çizgisi olarak kabul edildi ve üç P0 borcu somut spesifikasyona bağlandı: blok nedeni sabit enum listesi, tek ekran route editor ve 7 günlük gross/upkeep/net margin penceresi. Gerekçe: P4 otomasyon UI'ı, PR4 ise yorucu bilgi sunumu yüzünden başarısız bulunmuştu.
 - [2026-06-05] Kod taramasıyla mikro görünürlük borçlarının dışında ana UI yüzeyi eksikleri de ayrıldı. Tavern/Hiring sayfası, gerçek Trade Route editor, route dashboard, automation profit dashboard, city report/demand health sayfası, trade atlas, debt warning banner ve MVP event paneli karşılığı ilk büyük eksikler olarak kaydedildi.
 - [2026-06-05] Oyunda çalışan ama oyuncuya zayıf görünen sistemler için ayrı görünürlük borcu listesi oluşturuldu. Liste MVP karar kalitesi için gereken sonuç/neden/uyarı bilgisini takip eder; formül şeffaflığı hedeflemez.
