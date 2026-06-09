@@ -31,6 +31,7 @@ MVP dışı:
 - Stratejik rakip NPC trader sistemi.
 - Trade rumor / NPC rota tahmini.
 - Kapsamlı snowball test ve late-game balance.
+- Oyuncu sahipli üretim (bkz. bölüm 6 — post-MVP yönü).
 
 Bu dosyadaki bolluk spirali ve geç oyun kararları tam vizyonu korur; MVP implementasyonu için önce bu kapsam esas alınmalıdır.
 
@@ -207,6 +208,16 @@ Sonradan birlikte değerlendirilecek mekanik kararlar:
 - NPC'ler belirli ekonomik kimliklere göre mi hareket edecek, yoksa fırsat bazlı mı karar verecek?
 - NPC trader sisteminin faction rep ile bağlantısı olacak mı, yoksa tamamen ekonomik aktör olarak mı kalacak?
 
+### 6. Post-MVP yönü: prosperity yatırımının oyuncu sahipli üretime evrilmesi
+
+Kabul edilen post-MVP tasarım yönü (2026-06-10 benchmark analizi sonucu — MVP işi değildir, MVP'deki basit yatırım bandları olduğu gibi uygulanır):
+
+- Patrician III'ün çekirdek başarısı oyuncunun üretime sahip olmasıdır: işletme kurmak, üretim-tüketim dengesini yönetmek, darboğaz çözmek "gerçekten hak edilmiş imparatorluk" hissini yaratır.
+- Mevcut soyut "para -> prosperity puanı" yatırımı uzun vadede iki sorun taşır: bolluk spiralinin en çıplak hali olması ve duygusal getirisinin zayıf kalması.
+- Post-MVP'de prosperity yatırımının en azından bir kısmı somut üretim yatırımına evrilmelidir: oyuncu şehre üretim binası kurar, girdisini tedarik eder, çıktısı şehri besler ve prosperity dolaylı büyür.
+- Bu yön, bolluk spirali çözümlerinin (1) ihtiyaç bandı ve (3) kademeli yatırım maliyeti maddeleriyle doğal birleşir: üretim sahipliği hem para yakıcı hem tedarik sorumluluğu yaratır.
+- Tasarım detayları (bina tipleri, slot sistemiyle ilişki, girdi zinciri, upkeep) tam sürüm tasarım oturumlarında ele alınacaktır.
+
 ## Bolluk Spirali - Sonraki Tasarım Yapılacakları
 
 Bu yapılacaklar kod implementation görevi değildir. Her biri sonraki tasarım oturumlarında derinlemesine mekanik karara dönüştürülecek başlıklardır.
@@ -217,6 +228,7 @@ Bu yapılacaklar kod implementation görevi değildir. Her biri sonraki tasarım
 - [ ] **Automation fixed cost sayıları detaylandırılacak.** Model seçildi; Trading Post upgrade upkeep'i, depot expansion upkeep'i, Caravan Master wage çarpanları ve high-tier master maliyetleri sayısallaştırılacak.
 - [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek.
 - [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek.
+- [ ] **Oyuncu sahipli üretim post-MVP tasarlanacak.** Prosperity yatırımının somut üretim yatırımına evrilme modeli (bina tipleri, slot ilişkisi, girdi zinciri, upkeep) tam sürüm kapsamında detaylandırılacak.
 
 ## Açık Sorular
 
@@ -230,6 +242,7 @@ Oyuncu çok para kazanınca prosperity'ye yatırım yapıyor -> satış bonusu a
 
 ## Tartışma Notları
 
+- [2026-06-10] Benchmark analizi (Patrician III/IV, Port Royale 4) sonrası post-MVP tasarım yönü eklendi: prosperity yatırımı uzun vadede oyuncu sahipli üretime evrilecek. Gerekçe: Patrician III'ün "hak edilmiş imparatorluk" hissi üretim sahipliğinden geliyor; soyut para->prosperity yatırımı hem bolluk spiralinin kökü hem duygusal olarak zayıf. MVP'deki basit yatırım bandları değişmedi.
 - [2026-06-09] Günlük prosperity clamp değeri MVP için `-2 / +2` olarak kabul edildi. Amaç, 120-180 günlük victory hedefinde şehir gelişimini hissedilir tutmak; ancak demand satisfaction toplam etkilerinin ani snowball veya ani çöküş yaratmasını engellemek. Clamp yalnızca günlük prosperity puanı değişimini sınırlar; survival kötü satisfaction nüfus düşüşü sayaçları kendi kurallarıyla çalışmaya devam eder.
 - [2026-06-04] Prosperity, demand satisfaction ve bolluk spirali kararları ana `economy.md` dosyasından ayrıldı. Günlük prosperity clamp, automation fixed cost, NPC okunabilirliği ve snowball testleri bu dosyada takip edilecek.
 - [2026-06-04] Geç oyun para yakıcıları için model netleştirildi. Para yakıcılar prosperity investment, automation upkeep ve depot expansion arasında dengeli dağıtılacak; Trading Post upkeep şehir prosperity'sine göre otomatik artmayacak; depot expansion tek seferlik maliyet + küçük upkeep yaratacak; Caravan Master wage archetype + level/stat bazlı olacak; high-tier master'lar hem yüksek hire cost hem yüksek wage taşıyacak; prosperity yatırımı basamaklı band modeliyle pahalılaşacak; prestige/rank maliyeti MVP'de kullanılmayacak; automation UI gross + upkeep + net margin gösterecek.
