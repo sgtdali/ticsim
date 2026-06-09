@@ -25,6 +25,13 @@
 | Ironmere | Merchants Guild | Iron ore, iron bar, swords | 2 farm (1 dolu), 6 mine (3 dolu) |
 | Stonebridge | Merchants Guild | Grapes, wine, must | 3 farm (2 dolu), 1 mine |
 
+## Seyahat Riski (Karar verilmiş)
+
+- Mevcut basit seyahat riski MVP'de olduğu gibi korunur: base route risk + cargo + faction rep etkisi, harita tooltip'inde risk yüzdesi ve saldırı sonrası kayıp popup'ı.
+- Seyahat riskinin bir **karar katmanına** dönüştürülmesi MVP dışıdır. Bu kapsama girenler: route planlamasında risk/kâr trade-off'u, Caravan Master courage statının riske anlamlı etkisi, eskort veya önlem kararları.
+- Bu derinleştirme silinmemiştir; post-MVP tasarım notu olarak korunur. Referans his Patrician III'teki "kargo alanı mı, silah mı" kararıdır.
+- Post-MVP uygulanırken Patrician IV'ün geç oyunda korsan spam'iyle oyunu işletilemez hale getirme hatasından kaçınılmalıdır: saldırı frekansı düşük tutulmalı, risk taciz değil karar yaratmalıdır.
+
 ## Açık Sorular
 
 **RoadData ne yapıyor?**
@@ -38,4 +45,5 @@ Harita 2688×1536 oldukça büyük. 3 kasabayla bu alan çok boş kalıyor. Daha
 
 ## Tartışma Notları
 
+- [2026-06-10] Benchmark analizi (Patrician III/IV, Port Royale 4) sonrası seyahat riski kararı alındı. Mevcut basit risk görünürlüğü MVP'de korunacak; riskin karar katmanına dönüştürülmesi (courage trade-off'u, eskort kararları) MVP dışı bırakıldı ancak silinmedi, post-MVP notu olarak saklandı. P4'ün korsan spam hatası anti-pattern olarak not edildi.
 - [2026-06-04] Kasaba sayısı vizyonu netleştirildi. Patrician serilerindeki 20+ şehirli ağ referans alındı ama scope MVP için dar tutulacak: MVP 3 kasaba, ilk tam ekonomi hedefi en az 6 kasaba, uzun vadeli ideal 8-10 kasaba. 3 kasabalı MVP'de rota ezberini kırma yükü NPC trader, mevsim, prosperity ve stok dalgalanmasına kalacak; harita/ekonomi mimarisi ileride genişlemeye uygun korunacak.
