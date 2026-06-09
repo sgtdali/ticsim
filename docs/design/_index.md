@@ -30,7 +30,6 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 
 ## Açık Sorular (MVP İçin)
 
-- [ ] **Günlük prosperity clamp değeri ne olacak?** Temel demand satisfaction MVP'de uygulanacağı için otomatik prosperity değişiminin min/max günlük sınırı MVP implementasyonu sırasında netleşmeli. `economy_prosperity.md`, `mvp_balance.md`
 - [ ] **Balance data ana düzenleme formatı ne olacak?** İlk aşamada `balance_data.xlsx` mi ana kaynak olacak, yoksa doğrudan CSV dosyaları mı düzenlenecek? `balance_workflow.md`
 - [ ] **Python simülasyon modeli ne kadar birebir olacak?** Godot ekonomi kodunun birebir yansıması mı kurulacak, yoksa daha sade bağımsız test modeli mi kullanılacak? `balance_workflow.md`
 
@@ -74,6 +73,7 @@ Oyunda çalışan ama oyuncuya yeterince görünmeyen sistemler [visibility_debt
 
 ## Son Tartışma Notları
 
+- [2026-06-09] Günlük prosperity clamp kararı kapatıldı. MVP için otomatik prosperity değişimi günlük `-2 / +2` aralığına clamp edilecek. Açık soru listesinde kalan MVP kararları artık balance data ana formatı ve Python simülasyon modelinin birebirlik seviyesidir. Detay karar `economy_prosperity.md` içinde tutuluyor.
 - [2026-06-05] Oyuncunun görmediği veya nedeni zayıf görünen sistemler için `visibility_debt.md` dosyası açıldı. MVP görünürlük borçları P0/P1/P2 öncelikleriyle ayrıldı; automation net margin, kontrat disabled nedeni, demand satisfaction/prosperity delta, debt eşikleri, Trading Post blok nedenleri ve mevsim bilgisi ilk uygulama adayları olarak kaydedildi. Ardından gerçek scene/script taramasıyla ana UI yüzeyi eksikleri eklendi: Tavern/Hiring sayfası, gerçek Trade Route editor, route dashboard, automation profit dashboard, city report/demand health sayfası, trade atlas, debt warning banner ve MVP event paneli karşılığı.
 - [2026-06-04] Sayısal balans workflow'u ayrı `balance_workflow.md` dosyasına kaydedildi. Değerlerin tek tek elle seçilmemesi; Excel/CSV'nin düzenleme, Python simülasyonun 120-180 günlük ekonomi testi, Godot'un ise onaylanmış veriyi kullanma katmanı olması gerektiği kararlaştırılan tasarım yönü olarak yazıldı. Balance data tablo şemaları, Python araç rolleri, scenario runner, parametre taraması ve rapor formatı detaylandırıldı.
 - [2026-06-04] MVP balans için ayrı `mvp_balance.md` dosyası açıldı. Patrician victory hedefi 120-180 oyun günü olarak kabul edildi. Manuel ticaret, kontrat, Trading Post, Caravan Master, automation zinciri, prosperity, debt ve playtest senaryoları için başlangıç balans hedefleri kaydedildi. Sayısal öneriler playtest başlangıç değeri olarak tutuldu; yalnızca 120-180 gün victory hedefi kesinleşmiş karar olarak işlendi.
