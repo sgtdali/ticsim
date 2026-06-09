@@ -86,7 +86,7 @@ MVP'de temel demand satisfaction olacak:
 - Luxury/Comfort yüksek prosperity şehirlerde hafif baskı.
 - Processed/Industry üretime hafif verim etkisi.
 - Raw material için çifte ceza yok.
-- Günlük prosperity clamp.
+- Günlük prosperity clamp (`-2 / +2`, bkz. economy_prosperity.md).
 - Basit prosperity yatırım bandları.
 - Rank koşullarıyla uyumlu Growing / Prosperous eşikleri.
 
@@ -103,6 +103,7 @@ MVP dışı:
 - Çok ayrıntılı prosperity ihtiyaç profilleri.
 - Derin şehir bakım ekonomisi.
 - Kapsamlı snowball test/balance.
+- Oyuncu sahipli üretim (post-MVP tasarım yönü olarak economy_prosperity.md'de korunuyor).
 
 ### NPC Trader
 
@@ -120,6 +121,18 @@ MVP dışı:
 - Trade rumor sistemi.
 - NPC'nin oyuncu rotalarını bilinçli bozması.
 - Faction/NPC relation bağlantısı.
+
+### Seyahat Riski
+
+MVP'de mevcut basit seyahat riski korunur:
+
+- Base route risk + cargo + faction rep etkisi.
+- Harita tooltip'inde risk yüzdesi.
+- Saldırı sonrası kayıp popup'ı.
+
+MVP dışı:
+
+- Riskin karar katmanına dönüştürülmesi: route planlamasında risk/kâr trade-off'u, courage statının riske anlamlı etkisi, eskort/önlem kararları. Bu derinleştirme silinmedi; post-MVP notu olarak `world.md` içinde korunuyor.
 
 ### Ekonomik Fırsat Gösterimi
 
@@ -148,6 +161,7 @@ MVP'de kontrat sistemi minimal olacak:
 - Sadece Delivery kontrat tipi.
 - Tek kontrat tier'ı.
 - A kasabasından B kasabasına belirli mal taşıma.
+- Kontrat malı rastgele seçilmez; hedef şehirde gerçek açığı olan mallardan seçilir (kontratlar erken oyunda rota öğretmeni olsun diye).
 - Basit deadline.
 - Ödül: gold + faction rep.
 - Her şehirde 1-2 available kontrat.
@@ -263,7 +277,13 @@ MVP'de olsun:
 - Tooltip'te anlamlı fiyat nedenleri.
 - Basit şehir uyarıları.
 - Trading Post rule status.
+- Trading Post rule blok nedenleri sabit enum listesinden tek satır olarak: `Depo dolu`, `Fiyat limiti dışı`, `Market stoğu yok`, `Gold yetersiz / debt`, `İşlem yapıldı`.
 - Caravan Master route status.
+- Tek ekran Trade Route editor: durak sırası + Load/Unload kuralları aynı panelde, kayıtlı route düzenlenebilir.
+- Automation margin paneli: Post ve Master başına gross/upkeep/net, 7 günlük pencere, pozitif/negatif renk kodu.
+- Şehir panelinde günlük prosperity delta ve ana nedeni (tek satır).
+- Rank için eksik kalan net hedef satırı (örn. `Merchant için eksik: 800g + Ironmere prosperity 24/30`).
+- Prosperity bandına göre 3 kademeli şehir görseli (0-29 köy, 30-64 kasaba, 65+ şehir).
 - Debt uyarısı.
 - Game over ekranı.
 - Victory summary ekranı.
@@ -279,7 +299,7 @@ MVP dışı:
 
 ## Açık MVP Kararları
 
-- Günlük prosperity clamp sayısı ne olacak? Temel demand satisfaction MVP'de olduğu için bu sayı MVP implementasyonu sırasında ayrıca netleştirilecek.
+- Açık MVP kapsam kararı kalmamıştır. Günlük prosperity clamp `-2 / +2` olarak kapatıldı (2026-06-09, detay `economy_prosperity.md`).
 
 ## Decision Log
 
@@ -300,8 +320,13 @@ MVP dışı:
 - MVP'de UI okunabilir ama sade olacak.
 - MVP'de gross/upkeep/net margin UI olacak.
 - MVP'de temel Caravan Master hiring şehir bazlı 0-2 aday modeliyle kurulacak.
+- Günlük prosperity clamp `-2 / +2` olarak kapatıldı.
+- Benchmark analizi (2026-06-10) sonrası MVP UI'a somut maddeler eklendi: blok nedeni sabit enum, tek ekran route editor, 7 günlük margin paneli, prosperity delta + neden satırı, rank eksik hedef satırı, 3 kademeli şehir görseli.
+- Kontrat malı hedef şehirde gerçek açığı olan mallardan seçilecek.
+- Seyahat riskinin karar katmanına dönüştürülmesi MVP dışı bırakıldı; post-MVP notu `world.md` içinde korunuyor.
 
 ## Tartışma Notları
 
+- [2026-06-10] Patrician III/IV ve Port Royale 4 benchmark analizi yapıldı. Otomasyon UX'i MVP başarı çizgisi kabul edildi ve somut UI maddeleri MVP kapsamına işlendi (blok nedeni enum, tek ekran route editor, 7 günlük margin paneli, prosperity delta satırı, rank eksik hedef satırı, 3 kademeli şehir görseli). Kontrat malı gerçek açıktan seçilecek. Seyahat riski derinliği MVP dışı bırakıldı ama post-MVP notu olarak korundu. Oyuncu sahipli üretim post-MVP tasarım yönü olarak economy_prosperity.md'ye kaydedildi. Ayrıca günlük prosperity clamp kararının (`-2 / +2`) bu dosyaya senkronu yapıldı.
 - [2026-06-04] MVP kapsamı ayrı doküman olarak oluşturuldu. Hedef otomasyonlu ekonomi MVP'si: manuel ticaret, 3 kasaba, stok bazlı ekonomi, minimal Delivery kontratları, tam rank ladder, orta seviye Trading Post, orta seviye Caravan Master, temel demand satisfaction, basit NPC stok dalgalanması, basitleştirilmiş debt/game over ve victory summary.
 - [2026-06-04] Açık MVP kararlarının çoğu kapatıldı. Victory summary sonrası oyuncu devam edebilir; Delivery kontratları tek tier olacak; gross/upkeep/net margin UI MVP'de olacak; temel Caravan Master hiring şehir bazlı 0-2 aday modeliyle kurulacak; Delivery fail ödülden mahrum kalma + küçük faction rep cezası verecek. Günlük prosperity clamp sayısı MVP içinde sonradan netleştirilecek tek açık kapsam kararı olarak kaldı.
