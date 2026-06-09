@@ -39,6 +39,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - [ ] **Ekonomik fırsatlar MVP sonrası nasıl genişletilecek?** MVP'de market tooltip + basit şehir uyarıları yeterli. Tam sürümde trade hint, rumor, şehir uyarısı, rota tavsiyesi veya ekonomik rapor katmanları değerlendirilebilir. `economy_market.md`, `economy_prosperity.md`, `ux.md`
 - [ ] **NPC trader stratejik aktöre dönüşecek mi?** MVP'de NPC trader arka plan stok dalgalandırıcı. Tam sürümde rotaları/etkileri oyuncu tarafından okunabilir rakip/aktör haline gelip gelmeyeceği ayrıca tasarlanacak. `economy_prosperity.md`
 - [ ] **Demand tag sistemi MVP sonrası şehir bazlı genişleyecek mi?** MVP'de item bazlı `category`, `base_price`, `base_daily_demand_per_1000_pop`, `demand_tags` yeterli. Tam sürümde şehir bazlı özel katsayılar veya tam demand profilleri değerlendirilebilir. `economy_market.md`
+- [ ] **Seyahat riski karar katmanına nasıl dönüşecek?** MVP'de mevcut basit risk korunuyor. Post-MVP'de risk/kâr trade-off'u, courage statının anlamlı etkisi ve eskort/önlem kararları tasarlanacak; P4'ün korsan spam hatasından kaçınılacak. `world.md`
 
 ## Çelişkiler / Gerilimler
 
@@ -63,6 +64,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 - [ ] **Automation fixed cost sayıları detaylandırılacak.** Model seçildi; Trading Post upgrade upkeep'i, depot expansion upkeep'i, Caravan Master wage çarpanları ve high-tier master maliyetleri sayısallaştırılacak. `economy_prosperity.md`, `trading_post.md`, `caravan_master_hiring.md`, `mvp_balance.md`
 - [ ] **NPC trader okunabilirlik modeli detaylandırılacak.** NPC hareketlerinin oyuncuya ne kadar ve hangi UI katmanından gösterileceği ekonomi + UX dokümanlarıyla birlikte değerlendirilecek. `economy_prosperity.md`, `ux.md`
 - [ ] **Bolluk spirali test senaryoları hazırlanacak.** Oyuncunun post/master ağı kurduğu, prosperity yatırımı yaptığı ve 3 şehirli MVP ekonomisinde snowball'a girip girmediği örnek senaryolarla kontrol edilecek. `economy_prosperity.md`, `mvp_balance.md`
+- [ ] **Oyuncu sahipli üretim post-MVP tasarlanacak.** Prosperity yatırımının somut üretim yatırımına evrilme modeli (bina tipleri, slot ilişkisi, girdi zinciri, upkeep) tam sürüm kapsamında detaylandırılacak. `economy_prosperity.md`
 
 ## Implementation Senkronu
 
@@ -73,6 +75,7 @@ Oyunda çalışan ama oyuncuya yeterince görünmeyen sistemler [visibility_debt
 
 ## Son Tartışma Notları
 
+- [2026-06-10] Patrician III/IV ve Port Royale 4 benchmark analizi yapıldı ve sonuçları dosyalara işlendi. Otomasyon UX'i MVP başarı çizgisi kabul edildi; üç P0 borcu somut spesifikasyona bağlandı (blok nedeni sabit enum, tek ekran route editor, 7 günlük gross/upkeep/net margin penceresi — `visibility_debt.md`, `mvp_scope.md`). Üç yeni MVP UI kararı eklendi: prosperity delta + neden satırı, rank eksik hedef satırı, 3 kademeli şehir görseli (`ux.md`). Kontrat malı hedef şehirdeki gerçek açıktan seçilecek (`contracts.md`). Seyahat riskinin karar katmanı derinliği MVP dışı bırakıldı, post-MVP notu olarak `world.md`'de korundu. Oyuncu sahipli üretim post-MVP tasarım yönü olarak `economy_prosperity.md`'ye eklendi. `mvp_scope.md`'deki bayat prosperity clamp açık kararı `-2 / +2` ile senkronlandı.
 - [2026-06-09] Günlük prosperity clamp kararı kapatıldı. MVP için otomatik prosperity değişimi günlük `-2 / +2` aralığına clamp edilecek. Açık soru listesinde kalan MVP kararları artık balance data ana formatı ve Python simülasyon modelinin birebirlik seviyesidir. Detay karar `economy_prosperity.md` içinde tutuluyor.
 - [2026-06-05] Oyuncunun görmediği veya nedeni zayıf görünen sistemler için `visibility_debt.md` dosyası açıldı. MVP görünürlük borçları P0/P1/P2 öncelikleriyle ayrıldı; automation net margin, kontrat disabled nedeni, demand satisfaction/prosperity delta, debt eşikleri, Trading Post blok nedenleri ve mevsim bilgisi ilk uygulama adayları olarak kaydedildi. Ardından gerçek scene/script taramasıyla ana UI yüzeyi eksikleri eklendi: Tavern/Hiring sayfası, gerçek Trade Route editor, route dashboard, automation profit dashboard, city report/demand health sayfası, trade atlas, debt warning banner ve MVP event paneli karşılığı.
 - [2026-06-04] Sayısal balans workflow'u ayrı `balance_workflow.md` dosyasına kaydedildi. Değerlerin tek tek elle seçilmemesi; Excel/CSV'nin düzenleme, Python simülasyonun 120-180 günlük ekonomi testi, Godot'un ise onaylanmış veriyi kullanma katmanı olması gerektiği kararlaştırılan tasarım yönü olarak yazıldı. Balance data tablo şemaları, Python araç rolleri, scenario runner, parametre taraması ve rapor formatı detaylandırıldı.
