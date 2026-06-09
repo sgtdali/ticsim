@@ -339,36 +339,21 @@ Survival satisfaction %40 altı -> prosperity -4
 
 Ayrıca survival kötü satisfaction 3 gün birikirse nüfus -%3 azalır.
 
-### Günlük Prosperity Clamp Önerisi
+### Günlük Prosperity Clamp (Karar verilmiş)
 
-Bu konu hâlâ açık MVP kararıdır. Balance başlangıç önerisi:
+Bu karar kapatılmıştır (2026-06-09, detay `economy_prosperity.md`):
 
 ```text
-Günlük prosperity clamp: -3 / +2
+Günlük prosperity clamp: -2 / +2
 ```
 
 Gerekçe:
 
-- +2 mevcut iyi survival etkisiyle uyumludur.
-- -3 oyuncuya şehir bozuluyor hissi verir ama -4 kadar sert değildir.
-- 30'dan 65'e çıkmak teorik olarak en iyi durumda yaklaşık 18 gün sürer; yatırım maliyeti, tedarik eksikleri ve üç şehir hedefi bunu pratikte uzatır.
-- MVP'de prosperity fazla yavaş olursa 3 kasabalı oyun gereksiz uzar.
+- 120-180 günlük victory hedefinde şehir gelişimini hissedilir tutar; ani snowball veya ani çöküş riskini azaltır.
+- Clamp yalnızca günlük prosperity puanı değişimini sınırlar; survival kötü satisfaction ve nüfus düşüşü sayaçları kendi kurallarıyla çalışmaya devam eder.
+- +2 mevcut iyi survival etkisiyle uyumludur; -2 simetrik düşüş sınırı şehir bozulmasını hissettirir ama -4'ün sertliğini tek güne yığmaz.
 
-Daha güvenli ama yavaş alternatif:
-
-```text
-Günlük prosperity clamp: -2 / +1
-```
-
-Bu alternatif daha kontrollüdür ama şehir geliştirme temposunu fazla yavaşlatabilir.
-
-İlk öneri:
-
-```text
-MVP başlangıç testi için -3 / +2 kullanılmalı.
-```
-
-Bu değer, henüz kesin karar değildir; playtest ile kontrol edilmelidir.
+Tarihçe notu: Bu dosyada başlangıç playtest önerisi olarak `-3 / +2` yazılmıştı; nihai karar daha kontrollü `-2 / +2` olarak alındı. 30'dan 65'e çıkış en iyi durumda yaklaşık 18 gün sürer; yatırım maliyeti, tedarik eksikleri ve üç şehir hedefi bunu pratikte uzatır. Playtest bu temponun 120-180 gün hedefiyle uyumunu kontrol etmelidir; tempo fazla yavaş çıkarsa clamp yeniden açılabilir.
 
 ---
 
@@ -497,8 +482,8 @@ Kontrol soruları:
 
 ## Açık Balance Soruları
 
-- Günlük prosperity clamp kesin olarak `-3 / +2` mi olacak, yoksa daha yavaş `-2 / +1` mi seçilecek?
 - Rank gold eşikleri mevcut haliyle 120-180 gün victory hedefini destekliyor mu?
+- `-2 / +2` clamp ile prosperity temposu 120-180 gün victory hedefiyle uyumlu mu? (Playtest ile kontrol edilecek; tempo fazla yavaşsa clamp kararı revize edilebilir.)
 - Kontrat ödülü manuel ticaret kârının 1.2x-1.5x'i olarak mı kalacak?
 - Trading Post 300g açılış maliyeti ve 8g/gün upkeep ile doğru geri dönüş süresini veriyor mu?
 - Caravan Master hire/upkeep değerleri archetype bazında hangi kesin sayılara bağlanacak?
@@ -509,4 +494,5 @@ Kontrol soruları:
 
 ## Tartışma Notları
 
+- [2026-06-10] Günlük prosperity clamp kararı bu dosyaya senkronlandı. Eski `-3 / +2` başlangıç önerisi tarihçe notu olarak korundu; nihai karar `-2 / +2` (2026-06-09, `economy_prosperity.md`). Clamp açık balance sorusu olmaktan çıkarıldı; yerine `-2 / +2` temposunun 120-180 gün victory hedefiyle uyumunun playtest'te doğrulanması sorusu eklendi.
 - [2026-06-04] MVP balans için ayrı dosya açıldı. Patrician victory hedef süresi 120-180 oyun günü olarak kabul edildi. Manuel ticaret, kontrat, Trading Post, Caravan Master, automation zinciri, prosperity, debt ve playtest senaryoları için başlangıç balans hedefleri kaydedildi. Sayısal öneriler playtest başlangıç değeri olarak tutuldu; yalnızca 120-180 gün victory hedefi kesinleşmiş karar olarak işlendi.
