@@ -15,6 +15,9 @@ MVP'de UI okunabilir ama sade olacak:
 - Victory summary ekranı.
 - Victory summary sonrası devam edebilme.
 - Temel rank/progression görünürlüğü.
+- Şehir panelinde günlük prosperity delta ve ana nedeni (tek satır).
+- Rank için eksik kalan net hedef satırı.
+- Prosperity bandına göre 3 kademeli şehir görseli.
 
 MVP'de sade/opsiyonel:
 
@@ -51,6 +54,9 @@ Aşağıdaki UX kararları tam vizyonu korur; MVP implementasyonu için bu kapsa
 - Risk tooltip haritada gösteriliyor.
 - Trading Post rule'larının durumu (active/waiting_price/vb.) UI'da gösteriliyor.
 - Rank progress ekranında her koşul için current/required gösteriliyor.
+- Rank progress alanı yalnızca current/required değil, eksik kalan net hedefi tek cümle olarak da gösterir. Örnek: `Merchant için eksik: 800g + Ironmere prosperity 24/30`.
+- Şehir panelinde günlük prosperity delta'sı ve ana nedeni tek satırda gösterilir. Örnek: `Prosperity 24 (↓ -1) — Survival %62`. Oyuncu sayının neden değiştiğini her gün okuyabilmelidir.
+- Şehir görseli prosperity bandına göre 3 kademede değişir: `0-29` köy, `30-64` kasaba, `65+` şehir görünümü. Amaç, oyuncunun "bu şehir benim sayemde büyüyor" hissini haritada doğrudan görmesidir (Patrician III referansı).
 - Trade Routes paneli route odaklıdır; route listesi, bağlı master, status, cargo özeti ve route uyarılarını gösterir.
 - Trade Routes panelinde şehirleri, yolları, route çizgilerini ve master konumlarını gösteren interaktif mini map bulunur.
 - Mini mapte tüm aktif route'lar çizilir; seçili route güçlü şekilde vurgulanır.
@@ -89,6 +95,7 @@ Caravan Master adaylarının her şehirde garanti çıkmaması arama hissi oluş
 
 ## Tartışma Notları
 
+- [2026-06-10] Benchmark analizi (Patrician III/IV, Port Royale 4) sonrası üç somut MVP UI kararı eklendi: şehir panelinde günlük prosperity delta + neden satırı, rank için eksik kalan net hedef satırı ve prosperity bandına göre 3 kademeli şehir görseli. Gerekçe: Patrician III'ün çekirdek duygusal getirisi oyuncunun şehri görünür şekilde büyütmesi; bu his 3 kasabalı MVP'de ancak güçlü görsel/sayısal geri bildirimle yakalanabilir.
 - [2026-06-02] Caravan Master işe alma akışı TownUI içinden açılan ayrı Tavern paneline bağlandı. Tavern paneli MarketUI gibi ayrı bir panel olarak açılacak; şehir bazlı adayları gösterecek. Adaylar her zaman çıkmayacak ve aday kalitesi oyuncu rank'ına göre değişecek.
 - [2026-06-02] Trade Routes mini map route gösterimi netleştirildi. Route çizgileri route kimliğine göre otomatik farklı renk alacak; mal bazlı renk kullanılmayacak. Seçili route kalın çizilecek, diğer route'lar soluklaşacak. Seçili route'un durak sırası küçük sıra numaralarıyla gösterilecek.
 - [2026-06-02] Trade Routes paneli world map üzerinden açılan ayrı bir yönetim paneli olarak kararlaştırıldı. Panel route odaklı olacak, içinde interaktif mini map bulunacak. Mini mapte şehirler, yollar, aktif route çizgileri ve master konumları gösterilecek. Yeni route oluştururken şehirler mini map üzerinden sırayla tıklanarak seçilecek. Mini mapte tüm route'lar görünecek, seçili route vurgulanacak.
