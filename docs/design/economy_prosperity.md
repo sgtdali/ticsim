@@ -61,7 +61,12 @@ Bu dosyadaki bolluk spirali ve geç oyun kararları tam vizyonu korur; MVP imple
   - `%40 altı` -> production_plan üretimi `-%10`
 - Processed/Industry üretim cezası doğal kaynak üretimini etkilemez.
 - Raw Material eksikliği input eksikliği dışında ek şehir etkisi yaratmaz; çifte ceza uygulanmaz.
-- Günlük otomatik prosperity değişimi kategori etkilerinin toplamı olacak ve günlük clamp ile sınırlandırılacak. Clamp değerleri henüz karara bağlanmadı.
+- Günlük otomatik prosperity değişimi kategori etkilerinin toplamı olacak ve günlük clamp ile sınırlandırılacak.
+- MVP günlük prosperity clamp değeri `-2 / +2` olarak kabul edildi:
+  - Ham toplam `+2` üstündeyse uygulanacak günlük artış `+2` ile sınırlanır.
+  - Ham toplam `-2` altındaysa uygulanacak günlük düşüş `-2` ile sınırlanır.
+  - Bu değer, 120-180 günlük MVP victory hedefinde şehir gelişimini görünür tutarken ani snowball veya ani çöküş riskini azaltmak için seçildi.
+  - Survival kötü satisfaction ve nüfus düşüşü sayaçları clamp dışında kendi kurallarıyla çalışır; clamp yalnızca günlük prosperity puanı değişimini sınırlar.
 
 ## Bolluk Spirali - Kabul Edilen Çözüm Yönleri
 
@@ -218,9 +223,6 @@ Bu yapılacaklar kod implementation görevi değildir. Her biri sonraki tasarım
 **NPC trader ekonomiye etkisi**
 NPC'ler town_buy/town_sell üzerinden işlem yapıyor; yani marginal pricing etkisi var, stok değişiyor. Oyuncu buna karşı strateji kurabilmeli mi? NPC'ler sadece arka plan stok değiştirici olarak mı kalacak, yoksa oyuncunun takip edebileceği rakip/aktör gibi mi davranacak? Kabul edilen yön: NPC etkisi oyuncuya en azından sınırlı/okunabilir şekilde gösterilecek; detay mekanik sonra alınacak.
 
-**Günlük prosperity clamp değeri**
-Kategori etkileri toplanınca günlük otomatik prosperity değişiminin hangi min/max aralığa clamp edileceği henüz kararlaştırılmadı.
-
 ## Gerilimler
 
 **Bolluk spiraline karşı mekanizma**
@@ -228,6 +230,7 @@ Oyuncu çok para kazanınca prosperity'ye yatırım yapıyor -> satış bonusu a
 
 ## Tartışma Notları
 
+- [2026-06-09] Günlük prosperity clamp değeri MVP için `-2 / +2` olarak kabul edildi. Amaç, 120-180 günlük victory hedefinde şehir gelişimini hissedilir tutmak; ancak demand satisfaction toplam etkilerinin ani snowball veya ani çöküş yaratmasını engellemek. Clamp yalnızca günlük prosperity puanı değişimini sınırlar; survival kötü satisfaction nüfus düşüşü sayaçları kendi kurallarıyla çalışmaya devam eder.
 - [2026-06-04] Prosperity, demand satisfaction ve bolluk spirali kararları ana `economy.md` dosyasından ayrıldı. Günlük prosperity clamp, automation fixed cost, NPC okunabilirliği ve snowball testleri bu dosyada takip edilecek.
 - [2026-06-04] Geç oyun para yakıcıları için model netleştirildi. Para yakıcılar prosperity investment, automation upkeep ve depot expansion arasında dengeli dağıtılacak; Trading Post upkeep şehir prosperity'sine göre otomatik artmayacak; depot expansion tek seferlik maliyet + küçük upkeep yaratacak; Caravan Master wage archetype + level/stat bazlı olacak; high-tier master'lar hem yüksek hire cost hem yüksek wage taşıyacak; prosperity yatırımı basamaklı band modeliyle pahalılaşacak; prestige/rank maliyeti MVP'de kullanılmayacak; automation UI gross + upkeep + net margin gösterecek.
 - [2026-06-03] Demand satisfaction sistemi tasarlandı. Survival, Luxury/Comfort, Processed/Industry ve Raw Material eksikliklerinin şehir etkileri ayrıştırıldı. Survival şehir sağlığının ana göstergesi olacak; luxury yüksek prosperity korumasına, industry ise işlenmiş üretim verimine hafif etki edecek. Günlük prosperity clamp değeri açık soru olarak bırakıldı.
