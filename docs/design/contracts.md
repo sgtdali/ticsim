@@ -10,6 +10,7 @@ MVP'de kontrat sistemi minimal olacak:
 - Basit deadline.
 - Ödül: gold + faction rep.
 - Her şehirde 1-2 available kontrat.
+- Kontrat malı rastgele seçilmez; hedef şehirde gerçek açığı olan (düşük stok-gün veya karşılanamayan talep) mallardan seçilir. Amaç, kontratların erken oyunda oyuncuya gerçek ticaret fırsatlarını öğreten bir rota rehberi olmasıdır.
 - Fail davranışı: oyuncu ödülden mahrum kalır ve küçük faction rep cezası alır.
 
 MVP'de sade/opsiyonel:
@@ -75,5 +76,6 @@ Kontrat yapmakfaksiyon rep kazandırıyor. Bu rep hem ticaret avantajına hem ra
 
 ## Tartışma Notları
 
+- [2026-06-10] Benchmark analizi sonrası MVP kontrat mal seçimi kuralı eklendi. Kontrat malı hedef şehirde gerçek açığı olan mallardan seçilecek; böylece kontratlar Port Royale 4'teki görev/deadline yapısının küçük ölçekli karşılığı olarak erken oyunda rota öğretmeni rolü üstlenecek.
 - [2026-06-04] NPC relation kaldırma kararıyla kontrat ödüllerinden NPC relation çıkarıldı. Kontratların ilişki etkisi faction rep üzerinden kalacak.
 - [2026-06-04] MVP kontrat kapsamı netleşti. MVP'de yalnızca tek tier Delivery kontratları olacak; Procurement/Urgent ve tier balance MVP dışı kalacak. Kontrat fail davranışı ödülden mahrum kalma + küçük faction rep cezası olacak.
