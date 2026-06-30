@@ -10,6 +10,8 @@ var _events: Node
 var _traders: Node
 var _posts: Node
 var _masters: Node
+var _saves: Node
+var _loaded_save := false
 
 # Controllers
 var _side_panel: SidePanelController
@@ -77,13 +79,18 @@ func _ready() -> void:
 	_traders     = get_node_or_null("/root/TraderManager")
 	_posts       = get_node_or_null("/root/TradingPostManager")
 	_masters     = get_node_or_null("/root/CaravanMasterManager")
+	_saves       = get_node_or_null("/root/SaveManager")
 
 	_side_panel   = SidePanelController.new(self)
 	_finance      = FinancePanelController.new(self)
 	_trader_labels = TraderLabelController.new(self)
 	_event_log    = EventLogController.new(self)
 
-	_player_data.current_town = "Ashford"
+	if _saves != null and _saves.pending_load:
+		_saves.pending_load = false
+		_loaded_save = _saves.load_game()
+	if not _loaded_save:
+		_player_data.current_town = "Ashford"
 
 	_setup_view()
 	get_viewport().size_changed.connect(_on_viewport_resized)
@@ -103,10 +110,36 @@ func _ready() -> void:
 	_place_player()
 	_build_town_buttons()
 	_setup_day_timer()
+	if _loaded_save:
+		_apply_loaded_world_state()
 	_update_ui()
 	_event_log.update_panel()
 	_trader_labels.build()
 	_layout_ui()
+
+func _apply_loaded_world_state() -> void:
+	var state: Dictionary = _saves.consume_world_state()
+	if state.is_empty():
+		return
+
+	is_traveling = bool(state.get("is_traveling", false))
+	travel_destination = str(state.get("travel_destination", ""))
+	travel_days_remaining = int(state.get("travel_days_remaining", 0))
+	travel_total_days = int(state.get("travel_total_days", 0))
+	travel_elapsed_seconds = float(state.get("travel_elapsed_seconds", 0.0))
+	_victory_summary_shown = bool(state.get("victory_summary_shown", false))
+
+	if is_traveling:
+		travel_start_map_pos = _economy.towns.get(_player_data.current_town, {}).get("position", Vector2.ZERO)
+		travel_end_map_pos = _economy.towns.get(travel_destination, {}).get("position", Vector2.ZERO)
+		travel_start_pos = _map_to_screen(travel_start_map_pos)
+		travel_end_pos = _map_to_screen(travel_end_map_pos)
+		_update_player_travel_position()
+		_refresh_buttons()
+
+	_set_speed(int(state.get("game_speed", 1)))
+	if _victory_summary_shown:
+		_day_timer.paused = true
 
 # -----------------------------------------------
 # MAP VIEW
@@ -446,6 +479,7 @@ func _on_day_tick() -> void:
 		if travel_days_remaining <= 0:
 			get_node("Player").position = _map_to_screen(travel_end_map_pos)
 			_arrive()
+			_autosave()
 			return
 	_update_ui()
 	_refresh_buttons()
@@ -453,6 +487,28 @@ func _on_day_tick() -> void:
 	_trader_labels.update()
 	_finance.refresh()
 	_check_win_condition()
+	_autosave()
+
+func _gather_world_state() -> Dictionary:
+	return {
+		"is_traveling": is_traveling,
+		"travel_destination": travel_destination,
+		"travel_days_remaining": travel_days_remaining,
+		"travel_total_days": travel_total_days,
+		"travel_elapsed_seconds": travel_elapsed_seconds,
+		"game_speed": game_speed,
+		"victory_summary_shown": _victory_summary_shown,
+	}
+
+func _autosave() -> void:
+	if _saves == null:
+		return
+	_saves.save_game(_gather_world_state())
+
+func _on_save_requested() -> void:
+	_autosave()
+	if top_bar and top_bar.has_method("show_notification"):
+		top_bar.call("show_notification", "Game saved")
 
 # -----------------------------------------------
 # BINDINGS
@@ -469,6 +525,8 @@ func _bind_top_bar() -> void:
 		top_bar.connect("speed_changed", _set_speed)
 	if top_bar and top_bar.has_signal("finance_requested"):
 		top_bar.connect("finance_requested", _finance.toggle)
+	if top_bar and top_bar.has_signal("save_requested"):
+		top_bar.connect("save_requested", _on_save_requested)
 
 func _bind_side_panel() -> void:
 	var old_toggle := get_node_or_null("UI/ContractsToggle") as Control

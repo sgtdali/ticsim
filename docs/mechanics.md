@@ -278,3 +278,13 @@ Gun ilerlemesi `EconomyManager.advance_day()` tarafindan merkezi olarak yonetili
 5. **Trading Post kur** -> otomatik ticaretle pasif stok/gold akisi yarat.
 6. **Yasayan dunyaya mudahale et** -> kriz yasayan sehirleri besle, firsat olan sehirlere mal gotur.
 7. **Hedef:** 3 prosperous city ve yeterli gold ile **Patrician** rutbesine ulas.
+
+## 16. Kayit ve Yukleme Sistemi
+
+Oyun tek slotluk JSON kayit dosyasi kullanir (`user://saves/savegame.json`). Tum oyun durumu (gold/debt/envanter, sehir ekonomisi, rutbe, kontratlar, trading post'lar, caravan master'lar, NPC tuccarlar, seyahat/hiz durumu) bu dosyaya yazilir.
+
+- **Otomatik kayit:** Her gun tick'inin sonunda (varissa varis gunu dahil) otomatik kayit yapilir. Oyuncunun ayrica bir sey yapmasina gerek yoktur.
+- **Manuel kayit:** Ust bardaki **Save** butonuyla istedigi an elle kayit alabilir.
+- **Devam etme:** Ana menudeki **Continue** butonu, kayitli bir oyun varsa gorunur ve son kayitli duruma (seyahat halindeyse seyahatin ortasina dahil) donulmesini saglar.
+- **Game Over ve kayit:** Oyuncu 60 gun borc cezasina ugrayip Game Over olursa, kayit dosyasi silinir. Boylece "Continue" hicbir zaman kazanilmasi imkansiz bir borc durumuna geri donmez. Ana menuden "Start" (yeni oyun) ise PlayerData/RankManager/EconomyManager'i sifirlar; eski kayit dosyasi sadece bir sonraki otomatik/manuel kayitla ezilir.
+- **Kaydedilmeyenler:** Sehir koordinatlari (harita anchor'larindan her yuklemede yeniden hesaplanir), caravan master aday havuzu (sahiplenilmemis teklifler, dogal olarak yeniden uretilir), ve tum CSV tabanli denge verileri (her zaman dosyadan yeniden yuklenir).

@@ -28,6 +28,7 @@ EventBus="*res://scripts/autoloads/EventBus.gd"
 TradingPostManager="*res://scripts/autoloads/TradingPostManager.gd"
 RankManager="*res://scripts/autoloads/RankManager.gd"
 CaravanMasterManager="*res://scripts/autoloads/CaravanMasterManager.gd"
+SaveManager="*res://scripts/autoloads/SaveManager.gd"
 
 [display]
 
