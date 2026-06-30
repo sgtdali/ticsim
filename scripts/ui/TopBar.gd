@@ -3,11 +3,13 @@ extends Control
 
 signal speed_changed(speed: int)
 signal finance_requested
+signal save_requested
 
 const HORIZONTAL_MARGIN_RATIO := 0.05
 
 @onready var content_margin: MarginContainer = $ContentMargin
 @onready var gold_slot: Control = $ContentMargin/Content/GoldSlot
+@onready var save_button: Button = $ContentMargin/Content/SaveSlot/SaveButton
 @onready var time_label: Label = $ContentMargin/Content/DateSpeedSlot/Inner/TopRow/DateInfo/DateLabel
 @onready var season_label: Label = $ContentMargin/Content/DateSpeedSlot/Inner/TopRow/DateInfo/SeasonLabel
 @onready var gold_label: Label = $ContentMargin/Content/GoldSlot/GoldStat/Text/Value
@@ -33,6 +35,8 @@ func _ready() -> void:
 	gold_slot.mouse_filter = Control.MOUSE_FILTER_STOP
 	gold_slot.tooltip_text = "Open finance summary"
 	gold_slot.gui_input.connect(_on_gold_slot_gui_input)
+	save_button.tooltip_text = "Save game"
+	save_button.pressed.connect(func(): save_requested.emit())
 	set_speed(1)
 
 func _update_content_margins() -> void:

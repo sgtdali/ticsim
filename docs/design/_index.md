@@ -25,6 +25,7 @@ Her dosya bir konuya odaklanır. Kodlama kararları için `docs/architecture.md`
 | [caravan_master_routes.md](caravan_master_routes.md) | Caravan Master route, durak ve temporary unload sistemi |
 | [caravan_master_hiring.md](caravan_master_hiring.md) | Tavern üzerinden Caravan Master işe alma ve aday sistemi |
 | [ux.md](ux.md) | Oyuncu akışı, bilgi sunumu, UI kararları |
+| [save_load.md](save_load.md) | Kayıt/yükleme sistemi tasarımı, kapsam ve hariç tutulan veriler |
 
 ---
 
@@ -75,6 +76,7 @@ Oyunda çalışan ama oyuncuya yeterince görünmeyen sistemler [visibility_debt
 
 ## Son Tartışma Notları
 
+- [2026-06-30] Kayıt/yükleme sistemi tasarlandı ve uygulandı. Tek slot JSON format (`user://saves/savegame.json`), her gün tick'inde otomatik kayıt + TopBar üzerinde manuel kayıt butonu, ana menüde "Continue" akışı ve 60 günlük debt game over'unda kaydın silinmesi kararlaştırıldı. Şehir `position`, `town_candidates`, CSV balance verisi ve `FactionManager.npcs` gibi türetilebilir/statik durum kapsam dışı bırakıldı. Detaylar yeni `save_load.md` dosyasında, kod tarafı `architecture.md`'nin "Save System" bölümünde, oyuncuya yönelik özet `mechanics.md` bölüm 16'da.
 - [2026-06-10] Patrician III/IV ve Port Royale 4 benchmark analizi yapıldı ve sonuçları dosyalara işlendi. Otomasyon UX'i MVP başarı çizgisi kabul edildi; üç P0 borcu somut spesifikasyona bağlandı (blok nedeni sabit enum, tek ekran route editor, 7 günlük gross/upkeep/net margin penceresi — `visibility_debt.md`, `mvp_scope.md`). Üç yeni MVP UI kararı eklendi: prosperity delta + neden satırı, rank eksik hedef satırı, 3 kademeli şehir görseli (`ux.md`). Kontrat malı hedef şehirdeki gerçek açıktan seçilecek (`contracts.md`). Seyahat riskinin karar katmanı derinliği MVP dışı bırakıldı, post-MVP notu olarak `world.md`'de korundu. Oyuncu sahipli üretim post-MVP tasarım yönü olarak `economy_prosperity.md`'ye eklendi. `mvp_scope.md`'deki bayat prosperity clamp açık kararı `-2 / +2` ile senkronlandı.
 - [2026-06-09] Günlük prosperity clamp kararı kapatıldı. MVP için otomatik prosperity değişimi günlük `-2 / +2` aralığına clamp edilecek. Açık soru listesinde kalan MVP kararları artık balance data ana formatı ve Python simülasyon modelinin birebirlik seviyesidir. Detay karar `economy_prosperity.md` içinde tutuluyor.
 - [2026-06-05] Oyuncunun görmediği veya nedeni zayıf görünen sistemler için `visibility_debt.md` dosyası açıldı. MVP görünürlük borçları P0/P1/P2 öncelikleriyle ayrıldı; automation net margin, kontrat disabled nedeni, demand satisfaction/prosperity delta, debt eşikleri, Trading Post blok nedenleri ve mevsim bilgisi ilk uygulama adayları olarak kaydedildi. Ardından gerçek scene/script taramasıyla ana UI yüzeyi eksikleri eklendi: Tavern/Hiring sayfası, gerçek Trade Route editor, route dashboard, automation profit dashboard, city report/demand health sayfası, trade atlas, debt warning banner ve MVP event paneli karşılığı.

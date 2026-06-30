@@ -200,6 +200,9 @@ func _pay_daily_upkeep() -> void:
 
 func _apply_debt_duration_penalties() -> void:
 	if debt_days >= 60:
+		var saves: Node = get_node_or_null("/root/SaveManager")
+		if saves != null:
+			saves.delete_save()
 		get_tree().change_scene_to_file("res://scenes/GameOver.tscn")
 
 func _get_caravan_upkeep() -> float:
