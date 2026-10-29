@@ -19,7 +19,7 @@ Her tesis tipinin reçetesi: girdiler, çıktılar, döngü süresi, meslek baz�
 - Her mal partisi `kalite` + `üretici şirket` taşır.
 - `Çıktı kalitesi = a × (girdilerin ağırlıklı ort. kalitesi) + b × (şirketin ürün teknolojisi)`, `a + b = 1`, oran ürüne göre değişir (ekmekte girdi, ev aletinde teknoloji baskın).
 - `Hammadde kalitesi = c × (karo zenginliği) + d × (çıkarım teknolojisi)`.
-- Tesis seviyesi ve işgücü kaliteyi değil, kapasite ve hızı etkiler.
+- Tesis seviyesi, tesis deneyimi (K55) ve işgücü kaliteyi değil, kapasite ve hızı etkiler.
 - Marka şirket × ürün kategorisi düzeyinde; reklam ve satış memnuniyetiyle büyür, zamanla söner.
 - Hane seçimi: fiyat, kalite, marka, erişilebilirlik; ağırlıklar gelir seviyesine göre değişir.
 

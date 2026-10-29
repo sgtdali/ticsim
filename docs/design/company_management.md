@@ -41,13 +41,41 @@ Referans: Song of Syx'te yerleşim unvanları nüfusla açılır; Administration
 - Ölçek büyüdükçe yönetim maliyeti verimi düşürür → tekelleşmeye doğal fren.
 - Genel Merkez yeri Ofis personeli işgücüne bağlı bir karardır.
 
+### Capitalism'den eklenenler (K55)
+
+Referans: Capitalism 2 / Capitalism Lab'de COO sadece açıkça devredilen tesisleri yönetir; etkinliği verilen serbestliğe (ürün değiştirme, rakipten alım, fiyat agresifliği) bağlıdır; yöneticinin tesis tipine özel uzmanlığı birimlere aktarılır; tesis birimleri 1–9 seviye kazanır.
+
+**Yetki ayarları** (her devretmede ayrı)
+- Fiyat: kapalı / normal / agresif + marj alt-üst sınırı
+- Tedarik: kullanılabilir kalite sınıfları ve şehir borsaları
+- Üretim: reçete/ürün değiştirme izni
+- İşgücü: prim üst sınırı, işten çıkarma izni
+- Bütçe: bakım ve küçük genişletme harcama limiti
+
+**Seçerek devretme**
+- Devredilebilir birimler: tek tesis/mağaza, bütün şehir (bölge müdürü) veya fonksiyon (örn. tüm mağazaların fiyatlaması → Satış direktörü).
+- Her yöneticinin beceriyle artan bir **yönetim kapsamı** (yönetebileceği birim sayısı) vardır.
+- Devredilen birimlerin yönetim puanı maliyeti yöneticinin becerisine göre düşer; K54'teki "bölge müdürü yarıya indirir" kuralı bunun özel halidir.
+
+**Sektör uzmanlığı**
+- Alanlar: Tarım, Hammadde (maden, kuyu, orman), İmalat, Perakende, Lojistik, Ar-Ge, Pazarlama.
+- `Bonus = uzmanlık × katsayı`, sadece eşleşen birim türlerinde.
+- Oyuncu CEO'su da uzmanlık taşıyabilir (başlangıçta seçilir; Aşama 2).
+
+**Tesis deneyimi**
+- Tesis 1–5 seviye kazanır; seviye kapasite ve hızı artırır (örn. seviye 5'te +%60). Kaliteyi etkilemez (K4).
+- Deneyim kapasite kullanımıyla birikir; reçete/ürün değişince düşer.
+- Çalışanlar prim için başka şirkete geçtiğinde (K45) tesis deneyim kaybeder → rakipten işçi kapmak stratejik silah.
+- Deneyim tesis bazında toplu tutulur; çalışanlar bireysel simüle edilmez.
+
 ## Açık Sorular
 
 - Finansman: kredi, borç, yatırımcı; oyuncunun başlangıç sermayesi.
 - Yönetici işe alma: aday havuzu, maaş, kişilik seçimi.
-- Kademe eşikleri, puan değerleri, yönetici bonus oranları ve beceri artış hızı.
+- Kademe eşikleri, puan değerleri, yönetici bonus oranları, beceri artış hızı, uzmanlık katsayıları, yönetim kapsamı, tesis deneyimi eşikleri ve bonusları.
 - Oyuncunun karar yüzeylerinin geri kalanı ve kriz uyarıları (Aşama 2).
 
 ## Tartışma Notları
 
 - [2026-10-29] Oyuncunun şirket yönetimi odağı yeniden teyit edildi; dünya sistemleri için K52 filtre prensibi konuldu. Kontrol modeli ve Song of Syx tarzı mikro→makro geçiş kararlaştırıldı (K53, K54). Ofis personeli beşinci meslek grubu olarak eklendi.
+- [2026-10-29] Capitalism'in yönetim modeli incelendi; yetki ayarları, seçerek devretme, sektör uzmanlığı ve tesis deneyimi eklendi (K55).

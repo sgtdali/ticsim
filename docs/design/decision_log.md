@@ -56,3 +56,4 @@
 | K52 | Prensip: dünya sistemi şirkete karar/fırsat/kriz doğurduğu kadar derinleştirilir | — | Oyun şehir simülasyonuna kaymasın |
 | K53 | Oyuncu başta elle yönetir, büyüdükçe yönetici atar | Her şey elle; politika + müdahale; sadece yönetici | Kullanıcı kararı; mikrodan makroya geçiş |
 | K54 | Kademe + yönetim puanı + yönetici (Song of Syx modeli); Ofis personeli 5. meslek | Kademe + slot; sadece yönetim puanı | Geçiş kendiliğinden zorunlu; ölçek verimsizliği tekele fren |
+| K55 | Capitalism'den: yetki ayarları, seçerek devretme, sektör uzmanlığı, tesis deneyimi (1–5) | Sadece Song of Syx modeli | Erken oyunda kısmi devretme, doğru yönetici seçimi, mikro büyüme hissi, işçi kapma stratejisi |
