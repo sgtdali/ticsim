@@ -1,45 +1,66 @@
 # UI Panel Mimarisi
 
-Bu belge, oyunun sağ panel yapısını ve her tab'ın içeriğini tanımlar.
+> **Durum (2026-10-29):** Eski ortaçağ prototipinin panelleri (Caravan Masters, Trading Posts, Rank, Kontratlar) geçersizdir. Aşama 1'de oyuncu yok; tek UI **debug viewer**'dır. Oyuncu UI'ı Aşama 2'de tasarlanacak.
+>
+> Kaynak tasarım: `docs/design/observation.md`. Viewer sim durumunu sadece okur (bkz. `docs/architecture.md`).
 
-## Sağ Panel — Tab Yapısı
+## Ekran Düzeni
 
-Sağ panel üç tab'dan oluşur: Operasyonlar, Oyuncu, Kontratlar.
-
----
-
-## Tab 1 — Operasyonlar
-
-### Caravan Masters
-- Her master için tek satır: İsim | Konum veya rota durumu | Seviye
-- Satıra tıklayınca expand olur: rota durakları, taşınan envanter, XP progress bar
-- Hire Master butonu: cap dolmamışsa aktif, dolmuşsa disabled
-
-### Trading Posts
-- Her post için tek satır: Şehir adı | Depot doluluk (ör. 23/50) | Aktif rule sayısı
-- Satıra tıklayınca expand olur: rule listesi, her rule'un status ikonu (active / waiting_price / waiting_stock / waiting_market / depot_full / depot_empty)
-- Establish Post butonu: oyuncu o şehirdeyken ve şartlar sağlanmışsa aktif
+- **Orta:** Harita görünümü (zoom/pan)
+- **Üst çubuk:** Tarih, mevsim, hız kontrolü, seed
+- **Sol panel:** Harita katmanları
+- **Sağ panel:** İnceleme (seçili varlık)
+- **Alt panel:** Metrik grafikleri ve alarm logu
 
 ---
 
-## Tab 2 — Oyuncu
+## Üst Çubuk
 
-### Caravan
-- Mevcut upgrade adı ve kapasite (ör. "Horse Cart — 35")
-- Cargo doluluk (ör. 12/35)
-- Envanter listesi: her item için isim | miktar | ortalama alış fiyatı
-- Upgrade butonu: şartlar sağlanmışsa aktif
-
-### İlerleme
-- Mevcut rank adı
-- Sonraki rank için gereksinimler ve mevcut değerleri
-- Her şehir için prosperity progress bar (isim | bar | seviye etiketi)
+- Oyun tarihi ve mevsim
+- Hız: duraklat, 1x, 4x, 16x, 64x; tek tick ilerlet
+- Aktif seed ve yeni seed ile dünya oluştur
+- Tick süresi göstergesi (ms) — bütçe aşılınca kırmızı
 
 ---
 
-## Tab 3 — Kontratlar
+## Sol Panel — Harita Katmanları
 
-- Sadece oyuncunun kabul ettiği aktif kontratlar listelenir
-- Her kontrat: başlık | durum | progress (ör. 3/10 wheat) | kalan gün | ödül (gold)
-- Liste boşsa "Aktif kontrat yok." mesajı gösterilir
-- Tamamlanan, başarısız olan veya henüz kabul edilmemiş kontratlar bu panelde görünmez
+Aç/kapa listesi:
+- Arazi / biyom
+- Kaynaklar (tip + zenginlik)
+- Şehirler ve yoğunluk
+- Tesisler ve mağazalar (şirket rengiyle)
+- Altyapı (kamu / özel ayrı renk; mod bazında filtre)
+- Araçlar (hareket halinde; mod bazında filtre)
+- Tıkanıklık ısı haritası
+
+---
+
+## Sağ Panel — İnceleme
+
+Haritada tıklanan varlığın tüm verisi gösterilir. Tipler:
+
+- **Şehir:** nüfus, konut doluluk, meslek bazında maaş ve işsizlik, ortalama bar seviyeleri, mağaza listesi
+- **Borsa:** mal bazında son fiyat/hacim, açık emir defteri, depo stokları
+- **Hane:** kişi sayısı, çalışanlar (meslek, işyeri), gelir, birikim, ihtiyaç barları, dayanıklı mallar, memnuniyet
+- **Tesis:** tip, sahip, reçete durumu, girdi/çıktı stokları (kalite ile), kapasite kullanımı, işgücü
+- **Mağaza:** sahip, raflar (kategori, stok, fiyat), son satışlar, kapsama alanı (haritada vurgulanır)
+- **Araç:** tip, yük (kalite, yaş), aktif bacak ve rota (haritada çizilir), bağlı depo
+- **Şirket:** nakit, kişilik, varlık listesi, teknoloji seviyeleri, patentler, marka değerleri, son stratejik karar ve skoru
+
+---
+
+## Alt Panel — Metrikler
+
+- Metrik seçici: `observation.md`'deki 6 aile (para, üretim, nüfus, şirketler, lojistik, dinamizm)
+- Zaman serisi grafiği; birden fazla seri üst üste
+- Kapsam filtresi: tüm ülke / seçili şehir / seçili şirket / seçili mal
+- **Alarm logu:** tetiklenen alarmlar, tarih ve ilgili varlık; tıklayınca o varlığa gider
+
+---
+
+## Uygulama Notları
+
+- Paneller `.tscn` sahneleri olarak kurulur (AGENTS.md UI Workflow).
+- Harita, araç ve katman çizimi performans için kodla, chunk bazında yapılır.
+- Viewer sim'e hiçbir şey yazmaz; hız ve seed kontrolleri sim'in çalıştırıcısına komut gönderir.
