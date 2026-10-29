@@ -25,7 +25,7 @@ sim/
     Population/    Barlar, tüketim, meslek geçişi, büyüme, göç
     Production/    Birim akışları, reçete döngüleri, işgücü darboğazı, kalite, bakım/arıza, inşaat
     Market/        Retail (mağaza seçimi), Exchange (emir eşleşme), Import
-    Logistics/     NetworkGraph, Pathfinding, Dispatch, Movement, Congestion
+    Logistics/     NetworkGraph, Pathfinding, Dispatch, Movement, Congestion (BPR), Terminals, FreightMarket, Tolls
     CompanyAI/     Strategic, Tactical, Lifecycle (iflas/girişim)
     Research/      Seviyeler, kilitler, patent
     Finance/       Bankalar (mevduat, kredi), merkez bankası, hisse borsası, devralma

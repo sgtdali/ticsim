@@ -19,6 +19,39 @@ Grid inşa ve görselleştirme içindir. Altyapıdan ağ grafiği türetilir (ka
 - **Araç:** Depoya/terminale bağlı; tip, kargo sınıfı, kapasite, hız, yakıt tüketimi, ömür/bakım; Sürücü gerektirir. Boştaki en yakın uygun araç bacağı alır.
 - **Maliyet:** yakıt + sürücü maaşı + kamu ücretleri + bakım.
 
+### Araç kaynağı (K66)
+- Aşama 1'de araçlar sabit fiyatlı bir **katalogdan** alınır (ithalat; para ekonomiden çıkar). Ar-Ge (K30) kataloğa yeni modeller ekler.
+- Her mod için katalogda birkaç model: tip, kargo sınıfları, kapasite, hız, dolu/boş yakıt tüketimi, ağırlık sınıfı, ömür, fiyat.
+- Araç üretim zinciri (çelik + motor → kamyon vb.) ileride eklenince yerli üreticiler ithalatın yerine geçer; ithalat tavan fiyat olarak kalır (K26).
+
+### Taşıma pazarı (K67)
+- Şirket bir taşıma işini kendi filosuna vermek yerine **taşıma pazarına** koyabilir.
+- Lojistik şirketleri (NPC veya oyuncu) teklif verir; pazar günlük toplu ihaleyle çalışır (K40 mantığı). Kazanan, `fiyat + itibar cezası` en düşük olan teklif.
+- Teklif fiyatı = tahmini bacak maliyeti × (1 + öğrenilen marj; K39 mantığı).
+- **İtibar:** zamanında teslim oranından; geç teslimde sözleşmedeki ceza ödenir ve itibar düşer.
+- Filosu olmayan şirket de üretebilir; lojistik tek başına bir iş modeli olur.
+
+### Kamu ücretleri (K68)
+- Yol/ray kenarı: `mesafe × araç ağırlık sınıfı × mod tarifesi × (1 + κ × max(0, doluluk − 0,7))`.
+- Terminal: `sabit yanaşma ücreti + yükleme/boşaltma birim ücreti`, doluyken aynı ek ücret çarpanıyla.
+- Planlayıcı rota seçiminde süreyle birlikte ücreti tartar; tıkanık güzergahlar pahalanınca trafik dağılır.
+- Gelir bulunduğu şehrin bütçesine gider (K50).
+
+### Tıkanıklık ve terminaller (K69)
+- **BPR fonksiyonu:** `Geçiş süresi = serbest süre × (1 + 0,15 × (hacim / kapasite)⁴)`.
+- Hacim = araçlar + alışveriş ve işe gidiş yolculuklarının toplu yükü (K36).
+- Kenar kapasitesi yol tipine göre (şehir yolu < karayolu < otoyol); ray için hat başına tren sayısı.
+- Terminallerin yanaşma yeri sayısı (rıhtım, apron, peron) ve yükleme hızı var; doluysa araç kuyrukta bekler.
+- Aktarmada mal terminal deposunda bekler; depolama ücreti ve bozulma işler (K7).
+- Özel terminal sahibi kendi kuyruğunu kontrol eder.
+
+### Bacak maliyeti
+`Yakıt (dolu/boş tüketim × mesafe) + sürücü maaşı × süre + kamu ücretleri + bakım/yıpranma + amortisman`
+
+## Açık Sorular
+
+- Katalog modelleri ve değerleri, tarifeler, κ, yanaşma yeri sayıları, yol kapasiteleri.
+
 ## Gerilimler
 
 - Dinamik sevkiyat oyuncu için "kur ve unut" riski; oyuncu katmanında sabit hat ve öncelik kontrolleriyle dengelenecek (park).
@@ -26,3 +59,4 @@ Grid inşa ve görselleştirme içindir. Altyapıdan ağ grafiği türetilir (ka
 ## Tartışma Notları
 
 - [2026-10-29] Lojistik modeli kuruldu (K20–K23). K23 kullanıcının isteğiyle Claude tarafından seçildi.
+- [2026-10-29] Lojistik maliyeti modeli kuruldu (K66–K69): katalog araçlar, taşıma pazarı, yoğunluk ek ücretli kamu tarifesi, BPR tıkanıklık ve terminal kuyrukları.

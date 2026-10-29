@@ -67,3 +67,7 @@
 | K63 | İşgücü darboğazı: hız = en kıt meslek doluluk oranı | Ağırlıklı ortalama; darboğaz + ikame | Nadir meslek değerini net gösterir |
 | K64 | Bakım bütçesi + yıpranma; düşük durumda hız düşer, arıza riski artar | Sabit bakım; + planlı duruş | Kısa vade kâr ↔ uzun vade risk kararı |
 | K65 | İnşaat = para + süre + çelik/kereste | Para + süre; inşaat sektörü | Yatırım dalgaları ara mal talebi yaratır |
+| K66 | Aşama 1'de araçlar sabit katalogdan (ithalat); üretim zinciri sonra | Sadece katalog; şimdiden yerli üretim | Kapsam kontrolü, ileride genişletilebilir |
+| K67 | Taşıma pazarı: günlük ihale, öğrenilen marj, itibar, geç teslim cezası | Herkes kendi filosu; kamu taşıyıcısı | Lojistik ayrı iş modeli; küçük üreticiye giriş |
+| K68 | Kamu ücreti = sabit tarife + %70 doluluk üstünde yoğunluk ek ücreti | Sabit tarife; kamu bütçesine göre | Trafik kendiliğinden dağılır; özel altyapı anlam kazanır |
+| K69 | Tıkanıklık BPR fonksiyonu; terminal yanaşma kuyrukları | — | Standart, okunur, kapasiteye yaklaşınca sert artış |

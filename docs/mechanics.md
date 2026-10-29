@@ -26,6 +26,7 @@
 | Altyapı inşası, kamu ücretleri | `design/logistics.md` | Uygulanmadı |
 | Tıkanıklık | `design/logistics.md` | Uygulanmadı |
 | Yol bulma ve dinamik sevkiyat | `design/logistics.md` | Uygulanmadı |
+| Araç kataloğu ve taşıma pazarı | `design/logistics.md` | Uygulanmadı |
 | Şirket AI (stratejik, taktik, kişilik) | `design/company_ai.md` | Uygulanmadı |
 | İflas, yeni girişim, yatırım havuzu | `design/company_ai.md` | Uygulanmadı |
 | Ar-Ge seviyeleri, kilitler, patent | `design/research.md` | Uygulanmadı |
