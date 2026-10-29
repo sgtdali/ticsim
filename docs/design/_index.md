@@ -26,6 +26,8 @@
 
 ## Çelişkiler / Gerilimler
 
+- Maaş tabanı (K46) fiyatlara bağlı olduğu için fiyat–maaş enflasyon sarmalı mümkün; para arzı alarmıyla izlenecek.
+
 - `AGENTS.md`, `docs/architecture.md` ve `docs/mechanics.md` hâlâ eski ortaçağ koduna ait. Yeni kod tabanı başladığında yeniden yazılmalı.
 - Dinamik sevkiyat (K23) oyuncu için "kur ve unut" riski taşır; core fantasy kriz yönetimi. Oyuncu katmanında sabit hat ve öncelik kontrolleriyle dengelenecek.
 - Sadece kendi ürününü satma (K15) nihai mal pazarına girişi pahalılaştırır; NPC girişim oranı izlenmeli.

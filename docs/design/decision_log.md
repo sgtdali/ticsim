@@ -45,3 +45,6 @@
 | K41 | Borsada 4 kalite sınıfı, ayrı defter ve fiyat | Kalite düzeltilmiş tek fiyat; kalite eşikli tek fiyat | Okunur fiyatlar ve kalite primi korunur |
 | K42 | Satış emri = günün fiyatı × stok sapması, maliyet tabanı | Maliyet + öğrenilmiş marj; karışım | Borsada herkes ortak fiyatı görür |
 | K43 | Alış emri = min(türetilmiş değer, günün fiyatı × aciliyet) | Sadece piyasa; sadece türetilmiş değer | Zararına üretimi sınırlar, kıtlıkta üretimi sürdürür |
+| K44 | Maaş haftalık boş kadro / işsizlik oranına göre değişir; artış hızlı, düşüş yavaş | İşgücü borsası; doğrudan denge formülü | Okunur, yapışkan, ucuz |
+| K45 | Şirketler şehir maaşı üstüne %0–20 prim verebilir | Orantılı dağılım; prim + işe gidiş süresi | İşgücü için rekabet, kritik tesis işçi bulabilir |
+| K46 | Maaş tabanı yaşam maliyeti sepetine bağlı | Sabit asgari ücret; taban yok | Fiyatlarla tutarlı; çöküşü önler |
