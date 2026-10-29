@@ -12,6 +12,7 @@
 - **Taşıma türleri:** Karayolu, demiryolu, denizyolu, havayolu.
 - **Teknoloji:** Ar-Ge ile açılır; tarihsel dönem ilerlemesi yok.
 - **Hedef yapısı:** Açık sandbox, bitiş yok.
+- **Yayın hedefi:** Steam (K32).
 - **Görsel:** 2D top-down.
 - **Teknoloji yığını:** Godot 4 + C#, simülasyon headless çalışır (K2).
 - **Geliştirme sırası:** Önce dünya simülasyonu, oyuncusuz (K1). Oyuncu katmanı Aşama 2.
@@ -41,3 +42,4 @@
 ## Tartışma Notları
 
 - [2026-10-29] Oyunun yönü ortaçağ ticaret siminden ülke haritalı üretim/lojistik tycoon'a çevrildi. Dikey dilim (B) önerildi, kullanıcı önce dünya simülasyonunu (A) seçti.
+- [2026-10-29] Yayın hedefi Steam olarak belirlendi (K32).

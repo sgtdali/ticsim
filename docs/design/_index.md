@@ -21,7 +21,6 @@
 ## Açık Sorular
 
 - Üretim zinciri, lojistik ve şirket rekabetinin kendi aralarındaki ağırlık sırası ne? (Mikro simülasyon birinci ağırlık — karar verildi.)
-- Yayın hedefi: itch.io mu, Steam mi?
 - Oyuncu katmanı (Aşama 2) tasarımı: oyuncu dünyaya nasıl girer, başlangıç sermayesi, karar yüzeyleri.
 - Başlangıç mal setindeki sayısal değerler (reçeteler, süreler, işgücü) — headless koşularla belirlenecek.
 

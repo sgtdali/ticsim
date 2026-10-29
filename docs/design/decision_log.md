@@ -33,3 +33,4 @@
 | K29 | Debug viewer + headless toplu koşu | Sadece biri | Hem canlı his hem hızlı denge iterasyonu |
 | K30 | Ar-Ge kilitleri: ürün, araç, verimlilik, tesis tipi | Daha dar kapsam | Uzun vadeli dinamizm motoru |
 | K31 | Patent süresi sonra yayılım | Tamamen özel; lisans satışı | Liderlik geçici, lider değişimi doğal |
+| K32 | Yayın hedefi Steam | itch.io | Kullanıcı kararı |
