@@ -48,3 +48,8 @@
 | K44 | Maaş haftalık boş kadro / işsizlik oranına göre değişir; artış hızlı, düşüş yavaş | İşgücü borsası; doğrudan denge formülü | Okunur, yapışkan, ucuz |
 | K45 | Şirketler şehir maaşı üstüne %0–20 prim verebilir | Orantılı dağılım; prim + işe gidiş süresi | İşgücü için rekabet, kritik tesis işçi bulabilir |
 | K46 | Maaş tabanı yaşam maliyeti sepetine bağlı | Sabit asgari ücret; taban yok | Fiyatlarla tutarlı; çöküşü önler |
+| K47 | Memnuniyet 8 kategori; faktör = karşılanan − beklenen | Bar ortalaması (K9) | Nedenleri açıklar, şirket etkilerini taşır |
+| K48 | 4 kademe Maslow birleşimi; olumsuzlar tam yansır | Ağırlıklı toplam; en zayıf halka | Temel ihtiyaç önceliği, telafi edilemezlik |
+| K49 | Beklenti = asimetrik alışkanlık + komşu kıyası | Gelire göre; sadece alışkanlık | Geçici mutluluk, kayıp acısı, eşitsizlik hissi |
+| K50 | Kamu hizmetleri vergiyle finanse; dengeli şehir bütçesi | Şehir büyüklüğüne bağlı sabit; + belediye kararları | Şirket kârı şehre döner; dren kalemleri ekonomiye geri akar |
+| K51 | Kirlilik ve gürültü memnuniyet + sağlığı etkiler | Sadece memnuniyet; + tarım/arazi değeri | Şirketin şehre zararı sistemik maliyet olur |

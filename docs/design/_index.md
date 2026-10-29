@@ -9,7 +9,7 @@
 | `vision.md` | Vizyon, kapsam, varsayımlar, hedef dışı, geliştirme sırası |
 | `decision_log.md` | K1–K31 tüm kararlar, alternatifler, gerekçeler |
 | `goods.md` | Mallar, üretim zincirleri, kalite, marka, kargo sınıfı, bozulma |
-| `population.md` | Hane, ihtiyaç barları, meslek, maaş, büyüme, göç |
+| `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi ve kamu hizmetleri, kirlilik, meslek, maaş, büyüme, göç |
 | `market.md` | Mağaza (B2C), şehir borsaları (B2B), fiyat oluşumu |
 | `company_ai.md` | NPC şirket karar katmanları, kişilik, iflas, girişim |
 | `logistics.md` | Kamu/özel altyapı, tıkanıklık, yol bulma, dinamik sevkiyat |
