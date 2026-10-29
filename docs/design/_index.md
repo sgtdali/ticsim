@@ -19,7 +19,7 @@
 | `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, arazi, başlangıç ekonomisi |
 | `performance.md` | Veri yapısı, determinizm, tick ritmi, performans bütçesi |
 | `observation.md` | Sağlık metrikleri, alarmlar, debug viewer, headless koşu, Aşama 1 çıkış kriterleri |
-| `research.md` | Ar-Ge seviyeleri, kilit ağacı, patent ve yayılım |
+| `research.md` | Ar-Ge projeleri, seviyeler, Aşama 1 kilit ağacı, patent ve yayılım |
 
 ## Açık Sorular
 

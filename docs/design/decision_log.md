@@ -76,3 +76,5 @@
 | K72 | Arazi kamudan satın alınır veya kiralanır | Sadece satın alma; sadece kira | Nakit ↔ sabit gider finans kararı |
 | K73 | Arazi değeri = merkez yakınlığı, altyapı erişimi, kirlilik, kaynak zenginliği, talep; kira faize bağlı | Daha az faktör | Yer seçimi anlamlı; kirlilik şirkete geri döner |
 | K74 | Şehir büyümesi boş/atıl şirket arazisine primli teklif verir | Büyüme durur; kamulaştırma | Spekülasyon stratejisi; şirket arazisi korunur |
+| K75 | Ar-Ge proje bazlı: laboratuvar birimleri, süre ve ekip eğrileri (Capitalism) | Sürekli akış + öncelik; sürekli seviye + proje kilitleri | Kullanıcı kararı; Ar-Ge taahhüt kararı olur |
+| K76 | Seviye kazancı %70–130 sapmalı; kilit süresi ±%20 | Kesin; başarısızlık riski | Patent yarışında belirsizlik, cezasız |
