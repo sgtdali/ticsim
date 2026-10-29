@@ -16,14 +16,13 @@
 | `finance.md` | Banka kredisi, NPC bankalar, merkez bankası, hisse borsası, devralma |
 | `company_ai.md` | NPC şirket karar katmanları, kişilik, iflas, girişim |
 | `logistics.md` | Kamu/özel altyapı, tıkanıklık, yol bulma, dinamik sevkiyat |
-| `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, başlangıç ekonomisi |
+| `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, arazi, başlangıç ekonomisi |
 | `performance.md` | Veri yapısı, determinizm, tick ritmi, performans bütçesi |
 | `observation.md` | Sağlık metrikleri, alarmlar, debug viewer, headless koşu, Aşama 1 çıkış kriterleri |
 | `research.md` | Ar-Ge seviyeleri, kilit ağacı, patent ve yayılım |
 
 ## Açık Sorular
 
-- Arazi fiyatı yok; karolar ücretsiz. Arazi/kira maliyeti, şehir içi konum değeri olsun mu?
 
 - Üretim zinciri, lojistik ve şirket rekabetinin kendi aralarındaki ağırlık sırası ne? (Mikro simülasyon birinci ağırlık — karar verildi.)
 - Oyuncu katmanı (Aşama 2) tasarımı: oyuncu dünyaya nasıl girer, karar yüzeyleri, kriz uyarıları. Kontrol modeli ve ölçek mekanikleri karara bağlandı (`company_management.md`).

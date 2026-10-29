@@ -10,6 +10,7 @@
 |---------|---------|-------|
 | Harita üretimi (arazi, biyom, nehir, kaynak, şehir, kamu ağı) | `design/world_gen.md` | Uygulanmadı |
 | Şehir büyümesi ve yoğunlaşma | `design/world_gen.md` | Uygulanmadı |
+| Arazi satın alma, kira, değer | `design/world_gen.md` | Uygulanmadı |
 | Mallar, reçeteler, kalite | `design/goods.md` | Uygulanmadı |
 | Tesis kabuğu, birimler, bağlantılar | `design/production.md` | Uygulanmadı |
 | İşgücü darboğazı, bakım ve arıza | `design/production.md` | Uygulanmadı |

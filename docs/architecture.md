@@ -55,7 +55,7 @@ data/defs/     Mal, reçete, tesis, araç, ihtiyaç tanımları ve ayar dosyalar
 
 | Tablo | Ana alanlar |
 |-------|-------------|
-| Tile | arazi tipi, yükseklik, biyom, kaynak tipi + zenginlik, içerik (boş/şehir karosu/tesis/altyapı), sahip |
+| Tile | arazi tipi, yükseklik, biyom, kaynak tipi + zenginlik, içerik (boş/şehir karosu/tesis/altyapı), sahip, kiracı, arazi değeri, kirlilik, gürültü |
 | Chunk | 64×64 karo, kirli bayrağı |
 | City | karolar, nüfus, meslek bazında maaş ve işgücü, konut kapasitesi, borsa ID |
 | Household | şehir, konut karosu, kişi sayısı, çalışanlar (meslek, işyeri), gelir, birikim, ihtiyaç barları, dayanıklı mallar, memnuniyet |

@@ -98,7 +98,7 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 | `finance.md` | Kredi, bankalar, merkez bankası, hisse borsası, devralma |
 | `company_ai.md` | NPC şirket kararları, kişilik, iflas, girişim |
 | `logistics.md` | Altyapı, tıkanıklık, yol bulma, sevkiyat, araçlar |
-| `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, başlangıç ekonomisi |
+| `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, arazi, başlangıç ekonomisi |
 | `performance.md` | Veri yapısı, determinizm, tick ritmi, performans bütçesi |
 | `observation.md` | Metrikler, alarmlar, debug viewer, headless koşu, Aşama 1 çıkış kriterleri |
 | `research.md` | Ar-Ge seviyeleri, kilitler, patent |

@@ -73,3 +73,6 @@
 | K69 | Tıkanıklık BPR fonksiyonu; terminal yanaşma kuyrukları | — | Standart, okunur, kapasiteye yaklaşınca sert artış |
 | K70 | Stratejik adaylar risk düzeltilmiş getiri/yatırım (geri ödeme) ile kıyaslanır; kişilik ufku | Basit utility skoru; + stratejik hedef | Tüm eylem tipleri tek birimde (para) |
 | K71 | Rakip şantiyeleri haritada görünür, kapasite kaba tahmin | Görünmez; tam görünür | Ilımlı yatırım döngüleri; oyuncu rakip hamlesine tepki verebilir |
+| K72 | Arazi kamudan satın alınır veya kiralanır | Sadece satın alma; sadece kira | Nakit ↔ sabit gider finans kararı |
+| K73 | Arazi değeri = merkez yakınlığı, altyapı erişimi, kirlilik, kaynak zenginliği, talep; kira faize bağlı | Daha az faktör | Yer seçimi anlamlı; kirlilik şirkete geri döner |
+| K74 | Şehir büyümesi boş/atıl şirket arazisine primli teklif verir | Büyüme durur; kamulaştırma | Spekülasyon stratejisi; şirket arazisi korunur |

@@ -18,6 +18,20 @@
 - Konut doluluğu eşiği geçince şehir kenar karolarına kendiliğinden yayılır; verimli arazi, nehir ve tesisler büyümeyi keser.
 - Karolar yoğunlaşabilir (düşük → orta → yüksek).
 
+### Arazi (K72–K74)
+
+- **Edinme (K72):** Başlangıçta tüm arazi kamuya aittir. Şirket karoyu kamudan **satın alır** (bir kerelik; varlık olur, kredi teminatı, satılabilir) veya **kiralar** (aylık, şehir bütçesine; süresiz, kira her ay değere göre güncellenir). Şirketler arası arazi satışı serbest (iflas varlıkları dahil, K18).
+- **Değer (K73):** `Değer = Taban × (1 + a × Merkez yakınlığı) × (1 + b × Altyapı erişimi) × (1 − c × Kirlilik/gürültü) × (1 + d × Kaynak zenginliği) × Talep çarpanı`
+  - Taban: arazi tipine göre (ova > tepe > dağ; nehir kenarı primli)
+  - Merkez yakınlığı şehir büyüklüğüyle ölçeklenir
+  - Altyapı erişimi: en yakın otoyol, ray istasyonu, liman, havalimanı mesafesi; yeni altyapı çevresini değerlendirir
+  - Kirlilik/gürültü: K51 karo alanları; kirleten komşu araziyi ucuzlatır
+  - Kaynak zenginliği: K5
+  - Talep çarpanı: şehir büyüme hızı + son arazi işlemleri
+  - Aylık güncellenir. `Kira = değer × (politika faizi + kira primi) / 12` (K58).
+- **Şehir büyümesi (K74):** Büyüme şirket arazisine dayanırsa şehir, **boş veya atıl** arazi için `değer × (1 + %20–50)` teklif eder (şehir bütçesinden; yetmezse bekler). Çalışan tesise teklif yok. Ret → büyüme o yönde durur. Kenar arazisi spekülasyonu mümkün ama atıl arazi verim üretmez.
+- Arazi maliyeti K70 değerlendirmesinde yatırıma (satın alma) veya sabit gidere (kira) eklenir.
+
 ### Başlangıç (K26)
 - Boş ekonomi: şehirler, haneler, kaynaklar, kamu ağı; şirket yok.
 - **İthalat güvenlik ağı:** Her şehirde pahalı ithal mal noktası (limanlarda daha ucuz); tavan fiyat görevi görür, ödemeler ekonomiden para çıkarır.
@@ -26,7 +40,9 @@
 ## Açık Sorular
 
 - Başlangıç şehir sayısı/boyutları, ithalat fiyat çarpanı, başlangıç birikimi.
+- Arazi parametreleri: taban değerler, a/b/c/d, kira primi, şehir teklif primi.
 
 ## Tartışma Notları
 
 - [2026-10-29] Harita modeli kuruldu (K24–K26). İthalat güvenlik ağı boş ekonomi riskine çözüm olarak onaylandı.
+- [2026-10-29] Arazi sahipliği, değeri ve şehir büyümesiyle ilişkisi kararlaştırıldı (K72–K74).
