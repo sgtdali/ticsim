@@ -43,7 +43,7 @@ Amaç, önceki oturumlarda verilmiş kararları yok sayan veya kullanıcıya ayn
 
 - Kullanıcı bir fikir önerirse: avantajları, dezavantajları ve mevcut sistemlerle çatışmaları söyle.
 - Tek cevap vermek yerine alternatifler sun: "A seçeneği şunu sağlar, B seçeneği şunu."
-- Oyunun geneline etkisini değerlendir: "Bu karar kontrat sistemini de etkiler, çünkü..."
+- Oyunun geneline etkisini değerlendir: "Bu karar lojistik sistemini de etkiler, çünkü..."
 - Eğer bir karar açık bir sorunu çözüyorsa bunu teyit et.
 - Eğer bir karar yeni bir sorun yaratıyorsa hemen söyle.
 - Kullanıcı kararsızsa iki-üç seçenek sun ve hangisini önerdiğini belirt, nedenini açıkla.
@@ -55,6 +55,7 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 
 **Karar verildiyse:**
 - Dosyanın "Karar verilmiş" bölümüne ekle veya mevcut satırı düzelt.
+- Kararı `decision_log.md`'ye yeni K numarasıyla ekle (karar, alternatifler, gerekçe).
 - Eğer bu karar bir açık soruyu yanıtladıysa, o soruyu dosyadan ve `_index.md`'den kaldır.
 
 **Fikir veya olasılık tartışıldıysa ama karar verilmediyse:**
@@ -62,11 +63,11 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 
 **Gerilim veya çelişki keşfedildiyse:**
 - İlgili dosyanın "Gerilimler" bölümüne ekle.
-- `_index.md`'deki "Çelişkiler" bölümünü de güncelle.
+- `_index.md`'deki "Çelişkiler / Gerilimler" bölümünü de güncelle.
 
 **Tartışma özeti:**
 - Dosyanın "Tartışma Notları" bölümüne tarihi ve kısa özeti ekle.
-- Örnek format: `[2026-05-31] Famine eventi fiyat çarpanı x3.0'dan x2.5'e düşürüldü. Gerekçe: x3.0 oyuncuyu kasabada kilitlemeye zorluyor.`
+- Örnek format: `[2026-10-29] Borsa komisyonu %2'den %1'e düşürüldü. Gerekçe: küçük şirketlerin girişini zorluyordu.`
 
 ### 4. Güncellemeler Hakkında
 
@@ -86,22 +87,18 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 
 | Dosya | Ne zaman okunur |
 |-------|-----------------|
-| `_index.md` | Her tasarım oturumu başında — açık sorulara ve çelişkilere bak |
-| `economy.md` | Ekonomi tasarımı giriş kapısı; doğru alt dosyaya yönlenmek için okunur |
-| `economy_market.md` | Fiyat, üretim, tüketim, piyasa dengesi, mevsimler, market bilgi görünürlüğü |
-| `economy_prosperity.md` | Demand satisfaction, şehir refahı, bolluk spirali, prosperity yatırımı |
-| `economy_events.md` | MVP dışına alınmış event sistemi referansı |
-| `progression.md` | Rank gereksinimleri, unlock kapıları, oyun ritmi |
-| `factions.md` | Faksiyon sistemi, NPC ilişkileri, reputasyon mekaniği |
-| `world.md` | Kasabalar, harita, seyahat, dünya büyümesi |
-| `contracts.md` | Kontrat tipleri, tier dengesi, ödül tasarımı |
-| `mvp_scope.md` | MVP kapsamı, MVP dışı bırakılanlar, MVP karar günlüğü |
-| `implementation_sync.md` | Tasarım kararlarının kod, mekanik ve UI senkron borçları |
-| `trading_post.md` | Trading Post otomasyonu giriş kapısı, Post/Master rol ayrımı |
-| `trading_post_debt.md` | Debt, upkeep ve game over modeli |
-| `caravan_master_routes.md` | Caravan Master route, durak, temporary unload ve route UI kararları |
-| `caravan_master_hiring.md` | Tavern üzerinden Caravan Master işe alma, aday havuzu ve archetype kararları |
-| `ux.md` | Oyuncu akışı, bilgi sunumu, UI kararları |
+| `_index.md` | Her tasarım oturumu başında — açık sorular, çelişkiler, park edilenler |
+| `vision.md` | Tür, kapsam, varsayımlar, hedef dışı, aşamalar |
+| `decision_log.md` | Bir kararın gerekçesini veya alternatiflerini kontrol ederken |
+| `goods.md` | Mallar, reçeteler, kalite, marka, kargo sınıfı, bozulma |
+| `population.md` | Hane, ihtiyaç barları, meslek, maaş, büyüme, göç, mevsim |
+| `market.md` | Mağazalar, şehir borsaları, fiyat oluşumu |
+| `company_ai.md` | NPC şirket kararları, kişilik, iflas, girişim |
+| `logistics.md` | Altyapı, tıkanıklık, yol bulma, sevkiyat, araçlar |
+| `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, başlangıç ekonomisi |
+| `performance.md` | Veri yapısı, determinizm, tick ritmi, performans bütçesi |
+| `observation.md` | Metrikler, alarmlar, debug viewer, headless koşu, Aşama 1 çıkış kriterleri |
+| `research.md` | Ar-Ge seviyeleri, kilitler, patent |
 
 ---
 
