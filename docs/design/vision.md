@@ -15,6 +15,8 @@
 - **Yayın hedefi:** Steam (K32).
 - **Görsel:** 2D top-down.
 - **Teknoloji yığını:** Godot 4 + C#, simülasyon headless çalışır (K2).
+- **Odak prensibi (K52):** Oyuncu şehri değil şirketi yönetir; bir dünya sistemi şirkete karar, fırsat veya kriz doğurduğu kadar derinleştirilir.
+- **Kontrol:** Başta elle, büyüdükçe yöneticiler (K53, K54; bkz. `company_management.md`).
 - **Geliştirme sırası:** Önce dünya simülasyonu, oyuncusuz (K1). Oyuncu katmanı Aşama 2.
 
 ## Hedef dışı

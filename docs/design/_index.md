@@ -11,6 +11,7 @@
 | `goods.md` | Mallar, üretim zincirleri, kalite, marka, kargo sınıfı, bozulma |
 | `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi ve kamu hizmetleri, kirlilik, meslek, maaş, büyüme, göç |
 | `market.md` | Mağaza (B2C), şehir borsaları (B2B), fiyat oluşumu |
+| `company_management.md` | Şirket kademeleri, yönetim puanı, yöneticiler, kontrol modeli (oyuncu + NPC) |
 | `company_ai.md` | NPC şirket karar katmanları, kişilik, iflas, girişim |
 | `logistics.md` | Kamu/özel altyapı, tıkanıklık, yol bulma, dinamik sevkiyat |
 | `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, başlangıç ekonomisi |
@@ -21,7 +22,8 @@
 ## Açık Sorular
 
 - Üretim zinciri, lojistik ve şirket rekabetinin kendi aralarındaki ağırlık sırası ne? (Mikro simülasyon birinci ağırlık — karar verildi.)
-- Oyuncu katmanı (Aşama 2) tasarımı: oyuncu dünyaya nasıl girer, başlangıç sermayesi, karar yüzeyleri.
+- Oyuncu katmanı (Aşama 2) tasarımı: oyuncu dünyaya nasıl girer, karar yüzeyleri, kriz uyarıları. Kontrol modeli ve ölçek mekanikleri karara bağlandı (`company_management.md`).
+- Finansman: kredi, borç, yatırımcı; oyuncunun başlangıç sermayesi.
 - Başlangıç mal setindeki sayısal değerler (reçeteler, süreler, işgücü) — headless koşularla belirlenecek.
 
 ## Çelişkiler / Gerilimler

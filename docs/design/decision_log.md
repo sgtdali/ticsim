@@ -53,3 +53,6 @@
 | K49 | Beklenti = asimetrik alışkanlık + komşu kıyası | Gelire göre; sadece alışkanlık | Geçici mutluluk, kayıp acısı, eşitsizlik hissi |
 | K50 | Kamu hizmetleri vergiyle finanse; dengeli şehir bütçesi | Şehir büyüklüğüne bağlı sabit; + belediye kararları | Şirket kârı şehre döner; dren kalemleri ekonomiye geri akar |
 | K51 | Kirlilik ve gürültü memnuniyet + sağlığı etkiler | Sadece memnuniyet; + tarım/arazi değeri | Şirketin şehre zararı sistemik maliyet olur |
+| K52 | Prensip: dünya sistemi şirkete karar/fırsat/kriz doğurduğu kadar derinleştirilir | — | Oyun şehir simülasyonuna kaymasın |
+| K53 | Oyuncu başta elle yönetir, büyüdükçe yönetici atar | Her şey elle; politika + müdahale; sadece yönetici | Kullanıcı kararı; mikrodan makroya geçiş |
+| K54 | Kademe + yönetim puanı + yönetici (Song of Syx modeli); Ofis personeli 5. meslek | Kademe + slot; sadece yönetim puanı | Geçiş kendiliğinden zorunlu; ölçek verimsizliği tekele fren |

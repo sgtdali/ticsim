@@ -93,6 +93,7 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 | `goods.md` | Mallar, reçeteler, kalite, marka, kargo sınıfı, bozulma |
 | `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi/kamu, kirlilik, meslek, maaş, büyüme, göç, mevsim |
 | `market.md` | Mağazalar, şehir borsaları, fiyat oluşumu |
+| `company_management.md` | Şirket kademeleri, yönetim puanı, yöneticiler, kontrol modeli |
 | `company_ai.md` | NPC şirket kararları, kişilik, iflas, girişim |
 | `logistics.md` | Altyapı, tıkanıklık, yol bulma, sevkiyat, araçlar |
 | `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, başlangıç ekonomisi |

@@ -11,6 +11,9 @@
 - **Operasyonel (tick):** Lojistik sisteminin dinamik sevkiyatı (bkz. `logistics.md`).
 - **Ar-Ge ve reklam:** Kişiliğe bağlı bütçe yüzdesi.
 
+### Ölçek kuralları
+NPC şirketler de kademe, yönetim puanı ve yönetici kurallarına tabidir (bkz. `company_management.md`).
+
 ### Kişilik
 Risk iştahı, kalite/fiyat odağı, genişleme hızı.
 
