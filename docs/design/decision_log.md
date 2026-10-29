@@ -62,3 +62,8 @@
 | K58 | Kural tabanlı merkez bankası; tam aracılık, para yaratılmaz | Yok; + son çare kredisi | Enflasyon sarmalına fren, para arzı izlenebilir |
 | K59 | Ulusal hisse borsası, günlük toplu eşleşme | Temel değer formülü; + spekülasyon | Dalgalanma ve devralma fırsatları, baloncuksuz |
 | K60 | %50+ hisse = bağlı şirket; oyuncu kontrolü kaybederse oyun biter | Doğrudan birleşme; oyun bitmez | Yönetim puanı patlamaz; halka açılma risk kararı olur |
+| K61 | Capitalism tarzı tesis: kabuk (4/6/9 slot) + birimler; deneyim birim bazında; otomatik şablon | Sabit tip + boyut; modüler hatlar | Kullanıcı kararı; tesis içi karar yüzeyi |
+| K62 | Komşu birimler arası açık bağlantılar (≤3 giriş/çıkış) | Otomatik akış; otomatik + öncelik | Yerleşim bulmacası; şablon mikro yükü azaltır |
+| K63 | İşgücü darboğazı: hız = en kıt meslek doluluk oranı | Ağırlıklı ortalama; darboğaz + ikame | Nadir meslek değerini net gösterir |
+| K64 | Bakım bütçesi + yıpranma; düşük durumda hız düşer, arıza riski artar | Sabit bakım; + planlı duruş | Kısa vade kâr ↔ uzun vade risk kararı |
+| K65 | İnşaat = para + süre + çelik/kereste | Para + süre; inşaat sektörü | Yatırım dalgaları ara mal talebi yaratır |
