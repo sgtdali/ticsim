@@ -70,7 +70,6 @@ Referans: Capitalism 2 / Capitalism Lab'de COO sadece açıkça devredilen tesis
 
 ## Açık Sorular
 
-- Finansman: kredi, borç, yatırımcı; oyuncunun başlangıç sermayesi.
 - Yönetici işe alma: aday havuzu, maaş, kişilik seçimi.
 - Kademe eşikleri, puan değerleri, yönetici bonus oranları, beceri artış hızı, uzmanlık katsayıları, yönetim kapsamı, tesis deneyimi eşikleri ve bonusları.
 - Oyuncunun karar yüzeylerinin geri kalanı ve kriz uyarıları (Aşama 2).

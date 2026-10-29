@@ -12,6 +12,7 @@
 | `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi ve kamu hizmetleri, kirlilik, meslek, maaş, büyüme, göç |
 | `market.md` | Mağaza (B2C), şehir borsaları (B2B), fiyat oluşumu |
 | `company_management.md` | Şirket kademeleri, yönetim puanı, yöneticiler, kontrol modeli (oyuncu + NPC) |
+| `finance.md` | Banka kredisi, NPC bankalar, merkez bankası, hisse borsası, devralma |
 | `company_ai.md` | NPC şirket karar katmanları, kişilik, iflas, girişim |
 | `logistics.md` | Kamu/özel altyapı, tıkanıklık, yol bulma, dinamik sevkiyat |
 | `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, başlangıç ekonomisi |
@@ -23,10 +24,12 @@
 
 - Üretim zinciri, lojistik ve şirket rekabetinin kendi aralarındaki ağırlık sırası ne? (Mikro simülasyon birinci ağırlık — karar verildi.)
 - Oyuncu katmanı (Aşama 2) tasarımı: oyuncu dünyaya nasıl girer, karar yüzeyleri, kriz uyarıları. Kontrol modeli ve ölçek mekanikleri karara bağlandı (`company_management.md`).
-- Finansman: kredi, borç, yatırımcı; oyuncunun başlangıç sermayesi.
+- Oyuncunun başlangıç sermayesi ve CEO'su; oyuncu banka kurabilir mi? (Finansman modeli `finance.md`'de karara bağlandı.)
 - Başlangıç mal setindeki sayısal değerler (reçeteler, süreler, işgücü) — headless koşularla belirlenecek.
 
 ## Çelişkiler / Gerilimler
+
+- NPC bankacılık sektörü (K57) kapsamı büyütüyor; K52 filtresine göre sınırlı tutulmalı.
 
 - Maaş tabanı (K46) fiyatlara bağlı olduğu için fiyat–maaş enflasyon sarmalı mümkün; para arzı alarmıyla izlenecek.
 
@@ -39,7 +42,6 @@
 ## İleriye Park Edilenler
 
 - Oyuncu için sabit hat/rota tanımı (lojistik)
-- Şirket satın alma / birleşme
 - Yeni yerleşimlerin doğması
 - Eğitim tesisleri (meslek geçişini hızlandırır)
 - B2B uzun vadeli tedarik sözleşmeleri

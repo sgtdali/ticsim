@@ -23,7 +23,8 @@ AI oyuncuyla aynı kurallara tabi, sınırlı bilgiyle çalışır. Görür: ken
 ### Yaşam döngüsü (K18)
 - **İflas:** Nakit belirli süre negatif kalırsa şirket batar; tesis ve araçlar indirimli satılık listesine düşer, stoklar borsaya boşaltılır.
 - **Yeni girişim:** Aylık sektör kârlılığı kontrolü; marj yüksek ve rekabet azsa o sektör/bölgede yeni şirket doğar.
-- **Başlangıç sermayesi:** Hane birikimlerinden beslenen yatırım havuzu (varsayım; para dengesi `observation.md`'de izlenir).
+- **Başlangıç sermayesi:** Hane birikimlerinden; banka kredisi ve halka arz üzerinden (bkz. `finance.md`, K57–K59).
+- **Devralma:** Şirketler birbirinin hissesini alıp bağlı şirket yapabilir (K60).
 
 ## Açık Sorular
 
@@ -31,4 +32,4 @@ AI oyuncuyla aynı kurallara tabi, sınırlı bilgiyle çalışır. Görür: ken
 
 ## Tartışma Notları
 
-- [2026-10-29] Şirket AI modeli kuruldu (K18, K19). Her ikisi kullanıcının isteğiyle Claude tarafından seçildi; satın alma/birleşme ileriye park edildi.
+- [2026-10-29] Şirket AI modeli kuruldu (K18, K19). Her ikisi kullanıcının isteğiyle Claude tarafından seçildi; satın alma/birleşme ileriye park edildi (sonradan K60 ile çözüldü).

@@ -57,3 +57,8 @@
 | K53 | Oyuncu başta elle yönetir, büyüdükçe yönetici atar | Her şey elle; politika + müdahale; sadece yönetici | Kullanıcı kararı; mikrodan makroya geçiş |
 | K54 | Kademe + yönetim puanı + yönetici (Song of Syx modeli); Ofis personeli 5. meslek | Kademe + slot; sadece yönetim puanı | Geçiş kendiliğinden zorunlu; ölçek verimsizliği tekele fren |
 | K55 | Capitalism'den: yetki ayarları, seçerek devretme, sektör uzmanlığı, tesis deneyimi (1–5) | Sadece Song of Syx modeli | Erken oyunda kısmi devretme, doğru yönetici seçimi, mikro büyüme hissi, işçi kapma stratejisi |
+| K56 | Finansman araçları: kredi, hisse/halka arz, hisse alımı/devralma | + tahvil ve kredi notu | Yeterli derinlik, daha az sistem |
+| K57 | Kredi NPC bankalardan; mevduat = hane birikimi | Dışsal merkez bankası; yatırım havuzu = banka | Kullanıcı kararı; kredi sıkışması ve banka iflası krizleri |
+| K58 | Kural tabanlı merkez bankası; tam aracılık, para yaratılmaz | Yok; + son çare kredisi | Enflasyon sarmalına fren, para arzı izlenebilir |
+| K59 | Ulusal hisse borsası, günlük toplu eşleşme | Temel değer formülü; + spekülasyon | Dalgalanma ve devralma fırsatları, baloncuksuz |
+| K60 | %50+ hisse = bağlı şirket; oyuncu kontrolü kaybederse oyun biter | Doğrudan birleşme; oyun bitmez | Yönetim puanı patlamaz; halka açılma risk kararı olur |

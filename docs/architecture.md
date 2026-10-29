@@ -28,6 +28,10 @@ sim/
     Logistics/     NetworkGraph, Pathfinding, Dispatch, Movement, Congestion
     CompanyAI/     Strategic, Tactical, Lifecycle (iflas/girişim)
     Research/      Seviyeler, kilitler, patent
+    Finance/       Bankalar (mevduat, kredi), merkez bankası, hisse borsası, devralma
+    Management/    Kademeler, yönetim puanı, yöneticiler, tesis deneyimi
+    Public/        Vergi, şehir bütçesi, kamu hizmetleri
+    Environment/   Kirlilik ve gürültü alanları
     Season/        Mevsim döngüsü
     Observation/   Metrikler, alarmlar
   Save/        Tam durum snapshot (kaydet/yükle)
@@ -61,7 +65,11 @@ data/defs/     Mal, reçete, tesis, araç, ihtiyaç tanımları ve ayar dosyalar
 | Lot (mal partisi) | mal, adet, kalite, üretici şirket, yaş (bozulma) |
 | Vehicle | tip, kargo sınıfı, kapasite, konum (grafik kenarı + ilerleme), yük, aktif bacak, bağlı depo, ömür |
 | TransportJob / Leg | mal, adet, kaynak, hedef, son tarih / mod, başlangıç-bitiş düğümü, atanmış araç |
-| Company | nakit, kişilik, tesisler, mağazalar, araçlar, teknoloji seviyeleri, patentler, marka değerleri |
+| Company | nakit, kişilik, kademe, yönetim puanı, yöneticiler, tesisler, mağazalar, araçlar, teknoloji seviyeleri, patentler, marka değerleri, krediler, hisse yapısı, ana/bağlı şirket |
+| Manager | rol, uzmanlıklar, beceri, kişilik, maaş, devredilen birimler, yetki ayarları |
+| Bank | mevduatlar, krediler, sermaye, faiz marjları |
+| Loan | borçlu, banka, anapara, faiz |
+| Shareholding | şirket, sahip (hane/şirket/fon), adet |
 
 ## Lojistik Ağı
 
@@ -73,9 +81,9 @@ data/defs/     Mal, reçete, tesis, araç, ihtiyaç tanımları ve ayar dosyalar
 | Sıklık | İşler (sıra) |
 |--------|--------------|
 | Her tick | 1. Araç hareketi ve teslimat → 2. Terminal kuyrukları → 3. Üretim döngüleri |
-| Günlük (tick'lere yayılır) | Bar düşüşü ve hane alışverişi, mağaza satışı, bozulma, borsa eşleşmesi, metrik kaydı |
-| Haftalık | Şirket taktik kararları, maaş güncellemesi |
-| Aylık | Şirket stratejik kararları, göç, meslek geçişi, girişim/iflas, Ar-Ge ilerlemesi |
+| Günlük (tick'lere yayılır) | Bar düşüşü ve hane alışverişi, mağaza satışı, bozulma, mal borsası ve hisse borsası eşleşmesi, kirlilik/gürültü güncellemesi, metrik kaydı |
+| Haftalık | Şirket taktik kararları (fiyat, emir, prim), maaş güncellemesi, memnuniyet hesabı |
+| Aylık | Şirket stratejik kararları, göç, meslek geçişi, girişim/iflas, Ar-Ge ilerlemesi, politika faizi, vergi ve kamu bütçesi |
 | Birkaç saatte bir | Tıkanıklık maliyeti ve rota önbelleği yenileme |
 
 ## Determinizm Kuralları
