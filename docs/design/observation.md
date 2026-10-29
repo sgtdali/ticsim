@@ -4,7 +4,7 @@
 
 ### Metrikler
 - **Finans:** politika faizi, toplam kredi hacmi, banka sermaye oranları, banka iflasları, hisse endeksi
-- **Para:** toplam para arzı, kaynak/dren dökümü (ithalat, komisyon, altyapı ücretleri, maaşlar), fiyat endeksi
+- **Para:** toplam para arzı, kaynak/dren dökümü (ithalat, dış göç birikim akışı, komisyon, altyapı ücretleri, maaşlar), fiyat endeksi
 - **Üretim:** toplam üretim değeri, yerli üretim / ithalat oranı
 - **Nüfus:** nüfus, memnuniyet dağılımı, bar karşılama oranları, meslek bazında işsizlik, göç akışları
 - **Şirketler:** sayı, doğum/iflas oranı, sektör bazında pazar yoğunlaşması, kâr marjları

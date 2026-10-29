@@ -78,3 +78,5 @@
 | K74 | Şehir büyümesi boş/atıl şirket arazisine primli teklif verir | Büyüme durur; kamulaştırma | Spekülasyon stratejisi; şirket arazisi korunur |
 | K75 | Ar-Ge proje bazlı: laboratuvar birimleri, süre ve ekip eğrileri (Capitalism) | Sürekli akış + öncelik; sürekli seviye + proje kilitleri | Kullanıcı kararı; Ar-Ge taahhüt kararı olur |
 | K76 | Seviye kazancı %70–130 sapmalı; kilit süresi ±%20 | Kesin; başarısızlık riski | Patent yarışında belirsizlik, cezasız |
+| K77 | Göç bilgisi mesafeyle azalır; büyük şehirler her yerden görünür | Tam bilgi; sosyal ağ | Uzak bölgeye işçi çekmek stratejik maliyet |
+| K78 | Dış göç ulusal işgücü açığına bağlı | Yok; sabit akış | Yavaş güvenlik vanası; kronik kıtlığı önler |

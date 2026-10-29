@@ -21,6 +21,7 @@
 | Mevsimler | `design/population.md` | Uygulanmadı |
 | Meslek, maaş piyasası, meslek geçişi | `design/population.md` | Uygulanmadı |
 | Nüfus büyümesi ve göç | `design/population.md` | Uygulanmadı |
+| Dış göç | `design/population.md` | Uygulanmadı |
 | Mağazalar ve hane satın alma seçimi | `design/market.md` | Uygulanmadı |
 | Şehir borsaları (emir eşleşme, depolama ücreti, komisyon) | `design/market.md` | Uygulanmadı |
 | İthalat güvenlik ağı | `design/world_gen.md` | Uygulanmadı |

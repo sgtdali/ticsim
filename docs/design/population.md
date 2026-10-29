@@ -14,6 +14,29 @@ Temel birim hane (2–5 kişi). Hane verisi: konut karosu, kişi sayısı, çal�
 - Isınma kışın hızlı düşer → **mevsim sistemi** var.
 - Aşama 1'de araba zinciri yok; ulaşım doğrudan yakıtla dolar.
 
+### Göç ve nüfus — formül düzeyi (K77, K78)
+
+K13'ün içini doldurur. Şirkete etkisi (K52): göç işgücü krizlerini çözen ana mekanizma.
+
+**Çekim puanı (aylık, hane bazında)**
+`Çekim(şehir) = w₁ × Beklenen gelir oranı + w₂ × Memnuniyet farkı − Taşınma maliyeti − Aidiyet`
+- Beklenen gelir oranı = `(hedef meslek maaşı × iş bulma olasılığı) / hedef yaşam maliyeti`, mevcut şehirle oranlanır. İş bulma olasılığı = boş kadro / (işsiz + boş kadro).
+- Memnuniyet farkı = hedef şehir ortalaması − hanenin mevcut memnuniyeti.
+- Taşınma maliyeti mesafe ve hane büyüklüğüyle artar; birikimden ödenir, yetmeyen taşınamaz.
+- Aidiyet şehirde geçen süreyle artar (üst sınırlı, K48).
+- Eşik aşılınca taşınma ihtimali; ayda bir şehirden en fazla nüfusun %2'si göç eder. Hedefte boş konut yoksa taşınamaz.
+
+**Bilgi (K77):** Hane bilgi yarıçapındaki şehirleri ve büyük şehirleri değerlendirir; uzak şehir verisi birkaç ay gecikmeli. Göç dalgaları komşu şehirlerden başlar; uzak bölgeye işçi çekmek prim (K45) gerektirir.
+
+**Dış göç (K78)**
+- Giriş: ulusal boş kadro oranı ve maaş/yaşam maliyeti eşiği geçerse sınır şehirlerine ve limanlara aylık hane gelir (en fazla ulusal nüfusun ~%0,2'si); meslek dağılımı açığı izler.
+- Çıkış: ulusal işsizlik yüksek ve memnuniyet düşükse haneler ülkeyi terk eder.
+- Gelen hane küçük birikim getirir, giden götürür → ithalattan sonra ikinci dış para akışı; para arzı metriğinde ayrı izlenir.
+
+**Doğal büyüme**
+- Hane bölünmesi: `p = taban × memnuniyet çarpanı × sağlık hizmeti çarpanı` (yeterli birikim + boş konut şartıyla). Yeni çalışanın mesleği şehrin meslek açığına göre atanır.
+- Dağılma: memnuniyet ~6 ay kritik eşik altında kalan hane önce göç dener; edemezse dağılır, birikimi şehirdeki hanelere dağıtılır.
+
 ### Maaş oluşumu (K44–K46)
 
 - **Haftalık değişim (K44):** `Δmaaş = λ × (Boş kadro − İşsiz) / Meslekteki toplam işgücü`, şehir × meslek bazında. Artış haftada en fazla %+3, düşüş en fazla %−1 (yapışkanlık).
@@ -63,10 +86,11 @@ K9'daki "barların ortalaması = memnuniyet" kuralının yerini alır; barlar ar
 - Memnuniyet parametreleri: kademe eşikleri, kategori ağırlıkları, γ, alışkanlık hızları, vergi oranları, bütçe payları, emisyon/gürültü katsayıları ve yayılım yarıçapları.
 - Maaş parametreleri: λ, prim karar kuralları, temel sepet miktarları.
 
-- Bar düşüş hızları, eşikler, geçiş ve göç yüzdeleri.
+- Bar düşüş hızları, eşikler, geçiş ve göç yüzdeleri, w₁/w₂, bilgi yarıçapı, dış göç eşikleri, bölünme tabanı.
 
 ## Tartışma Notları
 
 - [2026-10-29] Nüfus modeli kuruldu (K8–K13). K12 ve K13 kullanıcının isteğiyle Claude tarafından seçildi.
 - [2026-10-29] Maaş oluşumu formül düzeyinde tasarlandı (K44–K46).
 - [2026-10-29] Memnuniyet modeli kuruldu (K47–K51); K9'daki bar ortalaması kuralının yerini aldı. Vergi ve kamu bütçesi eklendi.
+- [2026-10-29] Göç ve nüfus formül düzeyinde tasarlandı (K77, K78).
