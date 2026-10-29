@@ -23,6 +23,8 @@
 
 ## Açık Sorular
 
+- Arazi fiyatı yok; karolar ücretsiz. Arazi/kira maliyeti, şehir içi konum değeri olsun mu?
+
 - Üretim zinciri, lojistik ve şirket rekabetinin kendi aralarındaki ağırlık sırası ne? (Mikro simülasyon birinci ağırlık — karar verildi.)
 - Oyuncu katmanı (Aşama 2) tasarımı: oyuncu dünyaya nasıl girer, karar yüzeyleri, kriz uyarıları. Kontrol modeli ve ölçek mekanikleri karara bağlandı (`company_management.md`).
 - Oyuncunun başlangıç sermayesi ve CEO'su; oyuncu banka kurabilir mi? (Finansman modeli `finance.md`'de karara bağlandı.)

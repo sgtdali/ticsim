@@ -71,3 +71,5 @@
 | K67 | Taşıma pazarı: günlük ihale, öğrenilen marj, itibar, geç teslim cezası | Herkes kendi filosu; kamu taşıyıcısı | Lojistik ayrı iş modeli; küçük üreticiye giriş |
 | K68 | Kamu ücreti = sabit tarife + %70 doluluk üstünde yoğunluk ek ücreti | Sabit tarife; kamu bütçesine göre | Trafik kendiliğinden dağılır; özel altyapı anlam kazanır |
 | K69 | Tıkanıklık BPR fonksiyonu; terminal yanaşma kuyrukları | — | Standart, okunur, kapasiteye yaklaşınca sert artış |
+| K70 | Stratejik adaylar risk düzeltilmiş getiri/yatırım (geri ödeme) ile kıyaslanır; kişilik ufku | Basit utility skoru; + stratejik hedef | Tüm eylem tipleri tek birimde (para) |
+| K71 | Rakip şantiyeleri haritada görünür, kapasite kaba tahmin | Görünmez; tam görünür | Ilımlı yatırım döngüleri; oyuncu rakip hamlesine tepki verebilir |
