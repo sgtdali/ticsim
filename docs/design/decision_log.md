@@ -34,3 +34,10 @@
 | K30 | Ar-Ge kilitleri: ürün, araç, verimlilik, tesis tipi | Daha dar kapsam | Uzun vadeli dinamizm motoru |
 | K31 | Patent süresi sonra yayılım | Tamamen özel; lisans satışı | Liderlik geçici, lider değişimi doğal |
 | K32 | Yayın hedefi Steam | itch.io | Kullanıcı kararı |
+| K33 | Hane rezervasyon fiyatı kullanır; pahalıysa almaz | Her zaman en iyi skoru alır; rezervasyon + ayrı ikame sistemi | Gerçek talep esnekliği; ikame bar→çoklu mal eşleşmesiyle kendiliğinden (Claude seçti) |
+| K34 | Referans fiyat hanenin kendi geçmiş alımlarından | Şehir ortalaması; sabit değer | Zamlar önce talebi düşürür, zamanla kabullenilir |
+| K35 | Tüketim mallarında ev stoku | Sadece ihtiyaç kadar; + panik alımı | Fiyat şoklarına ve mevsime kendiliğinden tepki |
+| K36 | Mesafe = yakıt + zaman maliyeti | Sabit yarıçap; mesafe cezası | Kullanıcı kararı; alışveriş bölgeleri ve trafik bağlantısı |
+| K37 | Girdi maliyeti = stok ortalaması + yerine koyma maliyetinin kişiliğe göre karışımı | Sadece biri | Zamların zincirde farklı hızda yayılması |
+| K38 | Sabit gider normal kapasiteye (%80) bölünür | Gerçek üretim; fiyata katılmaz | Ölüm sarmalını önler; atıl kapasite stratejik sinyal olur |
+| K39 | Marj = konum + deneyerek öğrenme | Sabit kişilik marjı; sadece konum | Şehre özgü fiyatlar sınırlı bilgiyle keşfedilir |
