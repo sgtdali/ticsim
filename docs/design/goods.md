@@ -8,6 +8,7 @@
 - **Nihai ürün:** Haneler tüketir.
 
 ### Reçete
+Reçeteyi tesisin Üretim birimi çalıştırır (bkz. `production.md`).
 Her tesis tipinin reçetesi: girdiler, çıktılar, döngü süresi, meslek bazında işgücü (bkz. `population.md`), tesis maliyeti. İşgücü bulunamazsa tesis yavaşlar.
 
 ### Aşama 1 başlangıç seti

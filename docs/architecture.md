@@ -23,7 +23,7 @@ sim/
   Systems/
     MapGen/        Yükseklik, iklim, nehir, kaynak, şehir, kamu ağı
     Population/    Barlar, tüketim, meslek geçişi, büyüme, göç
-    Production/    Reçete döngüleri, işgücü, kalite
+    Production/    Birim akışları, reçete döngüleri, işgücü darboğazı, kalite, bakım/arıza, inşaat
     Market/        Retail (mağaza seçimi), Exchange (emir eşleşme), Import
     Logistics/     NetworkGraph, Pathfinding, Dispatch, Movement, Congestion
     CompanyAI/     Strategic, Tactical, Lifecycle (iflas/girişim)
@@ -59,7 +59,8 @@ data/defs/     Mal, reçete, tesis, araç, ihtiyaç tanımları ve ayar dosyalar
 | Chunk | 64×64 karo, kirli bayrağı |
 | City | karolar, nüfus, meslek bazında maaş ve işgücü, konut kapasitesi, borsa ID |
 | Household | şehir, konut karosu, kişi sayısı, çalışanlar (meslek, işyeri), gelir, birikim, ihtiyaç barları, dayanıklı mallar, memnuniyet |
-| Facility | tip, karolar, sahip şirket, reçete durumu, girdi/çıktı stokları, kapasite, işgücü |
+| Facility | tip, boyut, karolar, sahip şirket, birim slotları, inşaat durumu |
+| Unit | tesis, slot, tip (satın alma/üretim/depo/satış/çıkarım/raf/reklam), reçete, bağlantılar ve bölme oranları, stok, kapasite, meslek bazında işgücü, deneyim, durum |
 | Store | şehir, karo, sahip, raflar (kategori, stok, fiyat), kapsama yarıçapı |
 | Exchange | şehir, depo partileri, alış/satış emir defterleri, son işlem fiyat/hacim |
 | Lot (mal partisi) | mal, adet, kalite, üretici şirket, yaş (bozulma) |

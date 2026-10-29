@@ -10,6 +10,7 @@
 | `decision_log.md` | K1–K31 tüm kararlar, alternatifler, gerekçeler |
 | `goods.md` | Mallar, üretim zincirleri, kalite, marka, kargo sınıfı, bozulma |
 | `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi ve kamu hizmetleri, kirlilik, meslek, maaş, büyüme, göç |
+| `production.md` | Tesis kabuğu ve birimleri, bağlantılar, işgücü darboğazı, bakım/arıza, inşaat |
 | `market.md` | Mağaza (B2C), şehir borsaları (B2B), fiyat oluşumu |
 | `company_management.md` | Şirket kademeleri, yönetim puanı, yöneticiler, kontrol modeli (oyuncu + NPC) |
 | `finance.md` | Banka kredisi, NPC bankalar, merkez bankası, hisse borsası, devralma |

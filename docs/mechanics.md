@@ -11,6 +11,9 @@
 | Harita üretimi (arazi, biyom, nehir, kaynak, şehir, kamu ağı) | `design/world_gen.md` | Uygulanmadı |
 | Şehir büyümesi ve yoğunlaşma | `design/world_gen.md` | Uygulanmadı |
 | Mallar, reçeteler, kalite | `design/goods.md` | Uygulanmadı |
+| Tesis kabuğu, birimler, bağlantılar | `design/production.md` | Uygulanmadı |
+| İşgücü darboğazı, bakım ve arıza | `design/production.md` | Uygulanmadı |
+| İnşaat (malzeme, süre) | `design/production.md` | Uygulanmadı |
 | Marka | `design/goods.md` | Uygulanmadı |
 | Kargo sınıfları ve bozulma | `design/goods.md` | Uygulanmadı |
 | Hane, ihtiyaç barları, memnuniyet | `design/population.md` | Uygulanmadı |

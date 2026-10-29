@@ -92,6 +92,7 @@ Kullanıcı bir konuda net karar verdiğinde veya tartışma doğal olarak kapan
 | `decision_log.md` | Bir kararın gerekçesini veya alternatiflerini kontrol ederken |
 | `goods.md` | Mallar, reçeteler, kalite, marka, kargo sınıfı, bozulma |
 | `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi/kamu, kirlilik, meslek, maaş, büyüme, göç, mevsim |
+| `production.md` | Tesis yapısı, birimler, bağlantılar, işgücü, bakım, inşaat |
 | `market.md` | Mağazalar, şehir borsaları, fiyat oluşumu |
 | `company_management.md` | Şirket kademeleri, yönetim puanı, yöneticiler, kontrol modeli |
 | `finance.md` | Kredi, bankalar, merkez bankası, hisse borsası, devralma |

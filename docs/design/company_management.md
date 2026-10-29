@@ -63,6 +63,7 @@ Referans: Capitalism 2 / Capitalism Lab'de COO sadece açıkça devredilen tesis
 - Oyuncu CEO'su da uzmanlık taşıyabilir (başlangıçta seçilir; Aşama 2).
 
 **Tesis deneyimi**
+- **Güncelleme (K61):** Deneyim tesis yerine birim bazında tutulur; aşağıdaki kurallar her birim için ayrı işler.
 - Tesis 1–5 seviye kazanır; seviye kapasite ve hızı artırır (örn. seviye 5'te +%60). Kaliteyi etkilemez (K4).
 - Deneyim kapasite kullanımıyla birikir; reçete/ürün değişince düşer.
 - Çalışanlar prim için başka şirkete geçtiğinde (K45) tesis deneyim kaybeder → rakipten işçi kapmak stratejik silah.
