@@ -1,6 +1,6 @@
 # Architecture
 
-> **Durum (2026-10-29):** Bu belge yeni üretim/lojistik tycoon için **planlanan** mimariyi tanımlar. Yeni kod henüz yazılmadı. Repodaki `scripts/`, `scenes/`, `data/` ve `tools/balance_sim/` eski ortaçağ prototipine aittir (legacy) ve bu mimarinin parçası değildir. Kod yazıldıkça bu belge gerçek yapıya göre güncellenir.
+> **Durum (2026-10-29):** Bu belge yeni üretim/lojistik tycoon için **planlanan** mimariyi tanımlar. Yeni kod henüz yazılmadı. Eski ortaçağ prototipinin kodu ve varlıkları 2026-10-29'da repodan silindi (sadece git geçmişinde). Kod yazıldıkça bu belge gerçek yapıya göre güncellenir.
 >
 > Tasarım gerekçeleri: `docs/design/` (özellikle `performance.md`, `logistics.md`, `observation.md`).
 

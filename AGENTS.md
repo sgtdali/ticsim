@@ -5,7 +5,7 @@
 ticsim changed direction on 2026-10-29. It is now a modern-industrial company production & logistics tycoon on a procedurally generated, country-sized grid map, targeting Song of Syx–level simulation depth.
 
 - **Current phase:** Stage 1 — world simulation without a player (see `docs/design/vision.md`).
-- **Legacy code:** Everything currently under `scripts/`, `scenes/`, `data/` and `tools/balance_sim/` belongs to the abandoned medieval trading-sim prototype. Do not extend it, do not use it as a reference for new systems, and do not update docs to match it. It will be removed or replaced as the new codebase is built.
+- **Legacy code:** The abandoned medieval trading-sim prototype (GDScript code, scenes, data, art assets, balance sim) was removed on 2026-10-29. It survives only in git history; do not restore it or use it as a reference for new systems.
 
 ## Architecture Reference
 
