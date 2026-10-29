@@ -52,10 +52,24 @@ Her hane, erişebildiği her ürün için:
 - İşlem başına komisyon (para dreni).
 - Şehirler arası fiyat farkı > taşıma maliyeti ise arbitraj kendiliğinden oluşur.
 
+### Borsa fiyat oluşumu (K40–K43)
+
+- **Günlük toplu eşleşme (K40):** Günde bir kez tüm emirler toplanır. Her olası fiyatta satışa hazır ve almaya hazır miktar hesaplanır; en çok işlemin gerçekleştiği fiyat **günün fiyatı** olur ve tüm işlemler bu fiyattan yapılır. Talep arzdan fazlaysa yüksek teklif önce alır (fazla arzda düşük satış önce satar). Eşitlikte önce eski emir, sonra şirket ID'si. Emir ömrü ~7 gün. Her gün mal × sınıf başına günün fiyatı ve hacmi kaydedilir.
+- **Kalite sınıfları (K41):** C (0–39), B (40–59), A (60–79), Premium (80–100). Her sınıfın ayrı emir defteri ve günlük fiyatı var. Parti gerçek kalitesini korur (K4 formülünde kullanılır); sınıf sadece fiyatlama içindir. Alış emri tek bir sınıfa verilir.
+- **Satış emri (K42):** `max(Taban, Günün fiyatı × (1 + s))`. `s = −σ × (stok günü − hedef stok günü) / hedef stok günü`, %−10 ile %+5 arası. Taban = birim maliyet (K38); nakit krizinde kırılabilir. Günün fiyatı yoksa `birim maliyet × (1 + kişilik marjı)`. σ kişilikten.
+- **Alış emri (K43):** `min(Türetilmiş değer, Günün fiyatı × (1 + a))`.
+  - Türetilmiş değer = `(çıktı satış fiyatı − diğer maliyetler) × (1 − min. marj)`, girdi birimi başına; çok girdili reçetelerde maliyet payına göre bölünür.
+  - `a = β × (hedef stok günü − mevcut stok günü) / hedef stok günü`, 0 ile %+20 arası.
+  - Kritik stokta min. marj geçici olarak sıfıra iner.
+  - Miktar = `hedef stok − (depo + yolda + açık emirler)`.
+  - Borsa seçimi: `günün fiyatı + fabrikaya taşıma` en düşük şehir.
+  - Sınıf seçimi: kişiliğin kalite odağına göre hedef çıktı kalitesine ulaştıran en ucuz sınıf.
+- **Fiyat zinciri:** Talep zincirin sonundan başına (hane → perakende → türetilmiş değer → girdi teklifleri), maliyet başından sonuna akar; her kademede borsada buluşur.
+
 ## Açık Sorular
 
 - Komisyon ve depolama ücreti oranları.
-- Fiyat parametreleri: α, e, u, w, k, m, adım büyüklükleri, hedef stok günleri (headless koşularla ayarlanacak).
+- Fiyat parametreleri: α, e, u, w, k, m, σ, β, adım büyüklükleri, hedef stok günleri (headless koşularla ayarlanacak).
 
 ## Gerilimler
 
@@ -65,3 +79,4 @@ Her hane, erişebildiği her ürün için:
 
 - [2026-10-29] Piyasa modeli kuruldu (K14–K17). K17 kullanıcının isteğiyle Claude tarafından seçildi.
 - [2026-10-29] Perakende fiyat oluşumu formül ve parametre düzeyinde tasarlandı (K33–K39). K33 kullanıcının isteğiyle Claude tarafından seçildi.
+- [2026-10-29] Borsa fiyat oluşumu formül düzeyinde tasarlandı (K40–K43).

@@ -41,3 +41,7 @@
 | K37 | Girdi maliyeti = stok ortalaması + yerine koyma maliyetinin kişiliğe göre karışımı | Sadece biri | Zamların zincirde farklı hızda yayılması |
 | K38 | Sabit gider normal kapasiteye (%80) bölünür | Gerçek üretim; fiyata katılmaz | Ölüm sarmalını önler; atıl kapasite stratejik sinyal olur |
 | K39 | Marj = konum + deneyerek öğrenme | Sabit kişilik marjı; sadece konum | Şehre özgü fiyatlar sınırlı bilgiyle keşfedilir |
+| K40 | Borsa günlük toplu eşleşme | Sürekli eşleşme; haftalık | Deterministik, okunur tek günlük fiyat |
+| K41 | Borsada 4 kalite sınıfı, ayrı defter ve fiyat | Kalite düzeltilmiş tek fiyat; kalite eşikli tek fiyat | Okunur fiyatlar ve kalite primi korunur |
+| K42 | Satış emri = günün fiyatı × stok sapması, maliyet tabanı | Maliyet + öğrenilmiş marj; karışım | Borsada herkes ortak fiyatı görür |
+| K43 | Alış emri = min(türetilmiş değer, günün fiyatı × aciliyet) | Sadece piyasa; sadece türetilmiş değer | Zararına üretimi sınırlar, kıtlıkta üretimi sürdürür |
