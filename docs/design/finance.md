@@ -7,19 +7,22 @@
 ### Araçlar (K56)
 Banka kredisi, hisse/halka arz, rakip hisse alımı/devralma. Tahvil ve kredi notu sistemi yok; kredi faizi şirket riskine göre basit bir primle değişir.
 
-### NPC bankalar (K57)
-- **Mevduat:** Haneler birikimlerini bankaya yatırır. Banka seçimi: mevduat faizi, güven (sermaye sağlamlığı), şehirde şube.
-- **Kredi:** Mevduatın bir kısmı şirketlere kredi olarak verilir. `Faiz = baz oran + risk primi`; risk primi borç/varlık oranı ve kâr geçmişinden. Teminat şirket varlıkları.
-- **Banka kârı:** kredi faizi − mevduat faizi − temerrüt kayıpları.
-- **Sağlamlık:** Sermaye / mevduat oranı zorunlu eşiğin altına düşerse banka yeni kredi veremez. Temerrütler sermayeyi eritirse banka iflas eder, mevduat sahipleri (haneler) kayıp yaşar.
-- **Başlangıç (K26):** Harita birkaç başlangıç bankasıyla doğar; hanelerin başlangıç birikimi mevduat olarak girer.
-- **Yatırım havuzu (K18) ile ilişki:** Hane birikimi = banka mevduatı + hisse yatırımı payı. Yeni girişimler kredi ve halka arzla finanse olur.
+### Bankacılık sistemi (K81 — K57'nin sadeleştirilmiş hali)
+- Tek **toplu bankacılık sistemi**; ayrı banka şirketleri yok.
+- **Mevduat:** hanelerin birikiminin bankadaki payı ulusal mevduat havuzunu oluşturur. `Mevduat faizi = politika faizi − sabit marj`.
+- **Kredi:** havuzdan verilir. `Kredi faizi = politika faizi + sabit marj + risk primi`; risk primi borç/varlık oranı ve kâr geçmişinden. Teminat şirket varlıkları; kredi/varlık üst sınırı.
+- **Kredi sıkışması:** toplam kredi / mevduat oranı eşiğe yaklaştıkça risk primi ve onay eşiği yükselir; eşik aşılınca yeni kredi verilmez.
+- **Temerrüt:** borçlu iflas edince kayıp önce sistem rezervinden, rezerv yetmezse mevduattan düşer (haneler kayıp yaşar, harcama düşer).
+- **Marj geliri:** rezerve gider; rezerv hedefin üstündeyse fazlası mevduat faizi olarak hanelere dağıtılır (para sistemde kalır).
+- **Başlangıç (K26):** hanelerin başlangıç birikimi havuza girer.
+- **Yatırım havuzu (K18) ile ilişki:** hane birikimi = mevduat + hisse yatırımı payı. Yeni girişimler kredi ve halka arzla finanse olur.
+- Oyuncu banka kurabilirse sistem ayrı bankalara genişletilir (açık soru).
 
 ### Merkez bankası (K58)
 - `Politika faizi = nötr faiz + φ × (enflasyon − hedef)`, aylık, ayda en fazla ±0,5 puan.
-- Kredi baz oranı = politika faizi + banka marjı; mevduat faizi = politika faizi − banka marjı. Banka marjları rekabetle, deneyerek öğrenmeyle (K39 mantığı) bulunur.
+- Kredi ve mevduat faizleri politika faizine sabit marjla bağlıdır (K81).
 - **Tam aracılık:** Krediler mevduattan karşılanır; para yaratılmaz. Para arzı sadece ithalat (çıkış) ve ileride ihracat (giriş) ile değişir.
-- Zorunlu sermaye oranı tanım dosyasında sabit.
+- Kredi/mevduat eşiği ve rezerv hedefi tanım dosyasında sabit.
 
 ### Hisse borsası (K59)
 - Tek ulusal borsa, günlük toplu eşleşme (K40 mantığı).
@@ -36,18 +39,19 @@ Banka kredisi, hisse/halka arz, rakip hisse alımı/devralma. Tahvil ve kredi no
 - Oyuncunun şirketinde başka biri %50+ hisseye ulaşırsa oyun biter.
 
 ### Şirkete doğan kararlar ve krizler (K52)
-Borçla hızlı büyüme ↔ faiz riski; halka arz ↔ devralınma riski; kredi sıkışması; banka iflası (müşteri harcaması düşer); ucuzlamış rakibi devralma fırsatı.
+Borçla hızlı büyüme ↔ faiz riski; halka arz ↔ devralınma riski; kredi sıkışması; iflas dalgasında mevduat kaybı (müşteri harcaması düşer); ucuzlamış rakibi devralma fırsatı.
 
 ## Açık Sorular
 
 - Oyuncunun başlangıç sermayesi ve CEO'su (Aşama 2).
 - Oyuncu banka kurabilir mi?
-- Parametreler: nötr faiz, φ, hedef enflasyon, zorunlu sermaye oranı, risk primi formülü, kredi/varlık üst sınırı, hane yatırım payları, değer çarpanı.
+- Parametreler: nötr faiz, φ, hedef enflasyon, banka marjı, kredi/mevduat eşiği, rezerv hedefi, risk primi formülü, kredi/varlık üst sınırı, hane yatırım payları, değer çarpanı.
 
 ## Gerilimler
 
-- NPC bankacılık sektörü kapsamı büyütüyor; K52 filtresine göre sadece şirkete kredi/kriz üreten kadar derin tutulmalı.
+- Yok (NPC bankacılık gerilimi K81 ile çözüldü).
 
 ## Tartışma Notları
 
 - [2026-10-29] Capitalism'in finans modeli incelendi; kredi, NPC bankalar, kural tabanlı merkez bankası, hisse borsası ve bağlı şirket modeli kararlaştırıldı (K56–K60). K18'de park edilen satın alma/birleşme K60 ile çözüldü.
+- [2026-10-30] K52 sözgeci: NPC bankalar tek toplu bankacılık sistemine indirildi (K81).

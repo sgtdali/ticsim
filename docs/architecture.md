@@ -28,9 +28,9 @@ sim/
     Logistics/     NetworkGraph, Pathfinding, Dispatch, Movement, Congestion (BPR), Terminals, FreightMarket, Tolls
     CompanyAI/     Strategic, Tactical, Lifecycle (iflas/girişim)
     Research/      Seviyeler, kilitler, patent
-    Finance/       Bankalar (mevduat, kredi), merkez bankası, hisse borsası, devralma
+    Finance/       Bankacılık sistemi (mevduat havuzu, kredi, rezerv), merkez bankası, hisse borsası, devralma
     Management/    Kademeler, yönetim puanı, yöneticiler, tesis deneyimi
-    Public/        Vergi, şehir bütçesi, kamu hizmetleri
+    Public/        Vergi, şehir bütçesi, işsizlik desteği, kamu istihdamı
     Environment/   Kirlilik ve gürültü alanları
     Season/        Mevsim döngüsü
     Observation/   Metrikler, alarmlar
@@ -65,11 +65,12 @@ data/defs/     Mal, reçete, tesis, araç, ihtiyaç tanımları ve ayar dosyalar
 | Exchange | şehir, depo partileri, alış/satış emir defterleri, son işlem fiyat/hacim |
 | Lot (mal partisi) | mal, adet, kalite, üretici şirket, yaş (bozulma) |
 | Vehicle | tip, kargo sınıfı, kapasite, konum (grafik kenarı + ilerleme), yük, aktif bacak, bağlı depo, ömür |
-| TransportJob / Leg | mal, adet, kaynak, hedef, son tarih / mod, başlangıç-bitiş düğümü, atanmış araç |
+| TransportJob / Leg | mal, adet, kaynak, hedef, son tarih, öncelik, mod tercihi / mod, başlangıç-bitiş düğümü, atanmış araç |
+| Line (sabit hat) | sahip, duraklar, durak kuralları, sefer sıklığı, atanmış araçlar |
 | Company | nakit, kişilik, kademe, yönetim puanı, yöneticiler, tesisler, mağazalar, araçlar, teknoloji seviyeleri, patentler, marka değerleri, krediler, hisse yapısı, ana/bağlı şirket |
 | Manager | rol, uzmanlıklar, beceri, kişilik, maaş, devredilen birimler, yetki ayarları |
-| Bank | mevduatlar, krediler, sermaye, faiz marjları |
-| Loan | borçlu, banka, anapara, faiz |
+| BankingSystem | mevduat havuzu, rezerv, kredi/mevduat oranı |
+| Loan | borçlu, anapara, faiz |
 | Shareholding | şirket, sahip (hane/şirket/fon), adet |
 
 ## Lojistik Ağı

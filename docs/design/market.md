@@ -36,7 +36,7 @@ Her hane, erişebildiği her ürün için:
 
 `Fiyat = Birim maliyet × (1 + Öğrenilmiş marj) × Stok çarpanı × Bozulma çarpanı`, değişim sınırı ve taban/tavanla kırpılır.
 
-- **Girdi maliyeti (K37):** `w × stok ortalaması + (1 − w) × yerine koyma maliyeti`. Yerine koyma = en yakın borsanın son işlem fiyatı + tahmini taşıma. w kişilikten (temkinli düşük, agresif yüksek).
+- **Girdi maliyeti (K82 — K37'nin sadeleştirilmiş hali):** yerine koyma maliyeti = en yakın borsanın son işlem fiyatı + tahmini taşıma.
 - **Birim maliyet (K38):** `Girdi + değişken giderler + sabit giderler / (kapasite × 0,8)`. Düşük kullanım fiyata yansımaz; "atıl kapasite zararı" olarak kayda geçer ve stratejik katmana küçültme/satış/kapatma sinyali gönderir.
 - **Marj (K39):** `Baz marj = kişilik marjı + k × (kendi kalite − rakip ort. kalite) + m × marka farkı`. Her şehir × ürün için haftalık deneme: marj küçük adımla oynatılır, kâr arttıysa aynı yönde devam, azaldıysa geri dönüp adım küçülür; küçük rastgele denemeler; kişiliğe bağlı alt-üst sınır.
 - **Stok çarpanı:** Raf stoku hedefin çok üstündeyse geçici indirim, boşalmak üzereyse geçici artış; öğrenilen marjı bozmaz.
@@ -69,7 +69,7 @@ Her hane, erişebildiği her ürün için:
 ## Açık Sorular
 
 - Komisyon ve depolama ücreti oranları.
-- Fiyat parametreleri: α, e, u, w, k, m, σ, β, adım büyüklükleri, hedef stok günleri (headless koşularla ayarlanacak).
+- Fiyat parametreleri: α, e, u, k, m, σ, β, adım büyüklükleri, hedef stok günleri (headless koşularla ayarlanacak).
 
 ## Gerilimler
 
@@ -80,3 +80,4 @@ Her hane, erişebildiği her ürün için:
 - [2026-10-29] Piyasa modeli kuruldu (K14–K17). K17 kullanıcının isteğiyle Claude tarafından seçildi.
 - [2026-10-29] Perakende fiyat oluşumu formül ve parametre düzeyinde tasarlandı (K33–K39). K33 kullanıcının isteğiyle Claude tarafından seçildi.
 - [2026-10-29] Borsa fiyat oluşumu formül düzeyinde tasarlandı (K40–K43).
+- [2026-10-30] K52 sözgeci: girdi maliyeti tek kurala indirildi (K82).

@@ -9,7 +9,7 @@
 - **Ağırlık:** Mikro simülasyon birinci; üretim zinciri, lojistik ve şirket rekabeti onun üzerinde farklı ağırlıklarla çalışır.
 - **Tek tek simüle edilenler:** Haneler (nüfus/tüketiciler), araçlar/sevkiyatlar, rakip şirketler. Çalışanlar tek tek simüle edilmez (sadece meslek grubu ve işyeri).
 - **Altyapı:** Oyuncu/şirketler inşa eder; harita kamu ağıyla doğar (bkz. `logistics.md`).
-- **Taşıma türleri:** Karayolu, demiryolu, denizyolu, havayolu.
+- **Taşıma türleri:** Aşama 1'de karayolu ve demiryolu (K84); denizyolu ve havayolu sonraki aşamada.
 - **Teknoloji:** Ar-Ge ile açılır; tarihsel dönem ilerlemesi yok.
 - **Hedef yapısı:** Açık sandbox, bitiş yok.
 - **Yayın hedefi:** Steam (K32).
@@ -45,3 +45,4 @@
 
 - [2026-10-29] Oyunun yönü ortaçağ ticaret siminden ülke haritalı üretim/lojistik tycoon'a çevrildi. Dikey dilim (B) önerildi, kullanıcı önce dünya simülasyonunu (A) seçti.
 - [2026-10-29] Yayın hedefi Steam olarak belirlendi (K32).
+- [2026-10-30] Tüm kararlar K52 sözgecinden geçirildi; sadeleştirmeler K79–K84.

@@ -11,7 +11,7 @@
 3. Nehirler: tarım verimini artırır, köprü maliyeti yaratır
 4. Kaynaklar: petrol, cevher, kömür yatakları zenginlik değeriyle; tarım/orman verimi biyomdan
 5. Şehirler: kıyı/nehir/ova tercihi, minimum mesafe, boyut hiyerarşisi
-6. Kamu ağı: karayolu (minimum yayılan ağaç + ek bağlantılar), ray omurgası, limanlar, havalimanları
+6. Kamu ağı: karayolu (minimum yayılan ağaç + ek bağlantılar), ray omurgası (Aşama 1; limanlar ve havalimanları sonraki aşama, K84)
 
 ### Şehir büyümesi (K25)
 - Karo tipleri: konut, ticari, şehir yolu.
@@ -24,7 +24,7 @@
 - **Değer (K73):** `Değer = Taban × (1 + a × Merkez yakınlığı) × (1 + b × Altyapı erişimi) × (1 − c × Kirlilik/gürültü) × (1 + d × Kaynak zenginliği) × Talep çarpanı`
   - Taban: arazi tipine göre (ova > tepe > dağ; nehir kenarı primli)
   - Merkez yakınlığı şehir büyüklüğüyle ölçeklenir
-  - Altyapı erişimi: en yakın otoyol, ray istasyonu, liman, havalimanı mesafesi; yeni altyapı çevresini değerlendirir
+  - Altyapı erişimi: en yakın otoyol ve ray istasyonu mesafesi; yeni altyapı çevresini değerlendirir
   - Kirlilik/gürültü: K51 karo alanları; kirleten komşu araziyi ucuzlatır
   - Kaynak zenginliği: K5
   - Talep çarpanı: şehir büyüme hızı + son arazi işlemleri
@@ -34,7 +34,7 @@
 
 ### Başlangıç (K26)
 - Boş ekonomi: şehirler, haneler, kaynaklar, kamu ağı; şirket yok.
-- **İthalat güvenlik ağı:** Her şehirde pahalı ithal mal noktası (limanlarda daha ucuz); tavan fiyat görevi görür, ödemeler ekonomiden para çıkarır.
+- **İthalat güvenlik ağı:** Her şehirde pahalı ithal mal noktası (sınır şehirlerinde daha ucuz); tavan fiyat görevi görür, ödemeler ekonomiden para çıkarır.
 - Hanelerin başlangıç birikimi yatırım havuzunu besler, ilk şirketler buradan doğar.
 
 ## Açık Sorular

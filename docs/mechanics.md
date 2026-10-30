@@ -28,16 +28,17 @@
 | Altyapı inşası, kamu ücretleri | `design/logistics.md` | Uygulanmadı |
 | Tıkanıklık | `design/logistics.md` | Uygulanmadı |
 | Yol bulma ve dinamik sevkiyat | `design/logistics.md` | Uygulanmadı |
+| Sabit hat, sevkiyat önceliği, filo kuralları | `design/logistics.md` | Uygulanmadı |
 | Araç kataloğu ve taşıma pazarı | `design/logistics.md` | Uygulanmadı |
 | Şirket AI (stratejik, taktik, kişilik) | `design/company_ai.md` | Uygulanmadı |
 | İflas, yeni girişim, yatırım havuzu | `design/company_ai.md` | Uygulanmadı |
 | Ar-Ge seviyeleri, kilitler, patent | `design/research.md` | Uygulanmadı |
 | Perakende ve borsa fiyat oluşumu | `design/market.md` | Uygulanmadı |
 | Maaş oluşumu ve prim | `design/population.md` | Uygulanmadı |
-| Memnuniyet, vergi ve kamu hizmetleri | `design/population.md` | Uygulanmadı |
+| Memnuniyet, vergi ve kamu bütçesi | `design/population.md` | Uygulanmadı |
 | Kirlilik ve gürültü | `design/population.md` | Uygulanmadı |
 | Şirket kademeleri, yönetim puanı, yöneticiler, tesis deneyimi | `design/company_management.md` | Uygulanmadı |
-| Bankalar, merkez bankası, kredi | `design/finance.md` | Uygulanmadı |
+| Bankacılık sistemi, merkez bankası, kredi | `design/finance.md` | Uygulanmadı |
 | Hisse borsası ve devralma | `design/finance.md` | Uygulanmadı |
 | Sağlık metrikleri ve alarmlar | `design/observation.md` | Uygulanmadı |
 

@@ -32,7 +32,7 @@
 
 ### Aşama 1 kilit ağacı
 - **Yeni ürünler:** Makarna (un → makarna; ikinci gıda, ikame ve gıda çeşitliliği); Buzdolabı (çelik → buzdolabı; sahibi hanede ev stoku gıdası yavaş bozulur); Kombi (çelik → kombi; ısınma için daha az yakıt)
-- **Araç modelleri:** büyük kamyon, soğutmalı kamyon, hızlı yük treni, konteyner gemisi, büyük kargo uçağı
+- **Araç modelleri:** büyük kamyon, soğutmalı kamyon, hızlı yük treni, soğutmalı vagon
 - **Tesis verimliliği:** Otomasyon I–II (İşçi −%20 / −%35, Teknisyen ihtiyacı artar); Emisyon filtresi (kirlilik −%40); Kestirimci bakım (yıpranma −%30); Yakıt verimliliği (araç yakıtı −%15)
 - **Yeni tesis tipleri:** soğuk hava deposu, otomatik depo, rafineri II
 

@@ -22,9 +22,9 @@
 | K18 | Şirket döngüsü: iflas + yeni girişim | Sabit sayı; + satın alma/birleşme | Tükenmeyen kaynaklarda uzun vadeli canlılık (Claude seçti) |
 | K19 | AI aynı kurallar, sınırlı bilgi | Tam bilgi; hileli AI | Tutarlılık; AI hataları fırsat yaratır (Claude seçti) |
 | K20 | Kamu ağı + özel bağlantılar | NPC her şeyi kurar; kamu ağı büyür | NPC yol AI'ını basitleştirir |
-| K21 | Kamu ağı 4 türü içerir (karayolu, ray omurgası, liman, havalimanı) | Sadece karayolu | NPC'ler ilk günden 4 türü kullanabilir |
+| K21 | Kamu ağı 4 türü içerir (karayolu, ray omurgası, liman, havalimanı) **[→ K84]** | Sadece karayolu | NPC'ler ilk günden 4 türü kullanabilir |
 | K22 | Yoğunluk bazlı tıkanıklık | Yok; tam fiziksel | Darboğaz görünür, sinyal simülasyonu gerekmez |
-| K23 | Dinamik sevkiyat | Sabit hat; ikisi birden | NPC basitliği; sabit hat oyuncu katmanına park (Claude seçti) |
+| K23 | Dinamik sevkiyat **[K83 ile oyuncu kontrolü eklendi]** | Sabit hat; ikisi birden | NPC basitliği; sabit hat oyuncu katmanına park (Claude seçti) |
 | K24 | 1 karo = 250 m, ~2500² harita | 100 m/3000²; 500 m/2000²; ayarlanabilir | Küçük-orta ülke, makul detay |
 | K25 | Şehir otomatik büyür | İnşaat sektörü; sabit kapasite | Basit ve canlı |
 | K26 | Boş ekonomiyle başlar + ithalat güvenlik ağı | Hazır ekonomi; ayarlanabilir | Kullanıcı kararı; ekonominin kendi kendine kalkması testi |
@@ -38,7 +38,7 @@
 | K34 | Referans fiyat hanenin kendi geçmiş alımlarından | Şehir ortalaması; sabit değer | Zamlar önce talebi düşürür, zamanla kabullenilir |
 | K35 | Tüketim mallarında ev stoku | Sadece ihtiyaç kadar; + panik alımı | Fiyat şoklarına ve mevsime kendiliğinden tepki |
 | K36 | Mesafe = yakıt + zaman maliyeti | Sabit yarıçap; mesafe cezası | Kullanıcı kararı; alışveriş bölgeleri ve trafik bağlantısı |
-| K37 | Girdi maliyeti = stok ortalaması + yerine koyma maliyetinin kişiliğe göre karışımı | Sadece biri | Zamların zincirde farklı hızda yayılması |
+| K37 | Girdi maliyeti = stok ortalaması + yerine koyma maliyetinin kişiliğe göre karışımı **[→ K82]** | Sadece biri | Zamların zincirde farklı hızda yayılması |
 | K38 | Sabit gider normal kapasiteye (%80) bölünür | Gerçek üretim; fiyata katılmaz | Ölüm sarmalını önler; atıl kapasite stratejik sinyal olur |
 | K39 | Marj = konum + deneyerek öğrenme | Sabit kişilik marjı; sadece konum | Şehre özgü fiyatlar sınırlı bilgiyle keşfedilir |
 | K40 | Borsa günlük toplu eşleşme | Sürekli eşleşme; haftalık | Deterministik, okunur tek günlük fiyat |
@@ -48,17 +48,17 @@
 | K44 | Maaş haftalık boş kadro / işsizlik oranına göre değişir; artış hızlı, düşüş yavaş | İşgücü borsası; doğrudan denge formülü | Okunur, yapışkan, ucuz |
 | K45 | Şirketler şehir maaşı üstüne %0–20 prim verebilir | Orantılı dağılım; prim + işe gidiş süresi | İşgücü için rekabet, kritik tesis işçi bulabilir |
 | K46 | Maaş tabanı yaşam maliyeti sepetine bağlı | Sabit asgari ücret; taban yok | Fiyatlarla tutarlı; çöküşü önler |
-| K47 | Memnuniyet 8 kategori; faktör = karşılanan − beklenen | Bar ortalaması (K9) | Nedenleri açıklar, şirket etkilerini taşır |
-| K48 | 4 kademe Maslow birleşimi; olumsuzlar tam yansır | Ağırlıklı toplam; en zayıf halka | Temel ihtiyaç önceliği, telafi edilemezlik |
-| K49 | Beklenti = asimetrik alışkanlık + komşu kıyası | Gelire göre; sadece alışkanlık | Geçici mutluluk, kayıp acısı, eşitsizlik hissi |
-| K50 | Kamu hizmetleri vergiyle finanse; dengeli şehir bütçesi | Şehir büyüklüğüne bağlı sabit; + belediye kararları | Şirket kârı şehre döner; dren kalemleri ekonomiye geri akar |
-| K51 | Kirlilik ve gürültü memnuniyet + sağlığı etkiler | Sadece memnuniyet; + tarım/arazi değeri | Şirketin şehre zararı sistemik maliyet olur |
+| K47 | Memnuniyet 8 kategori; faktör = karşılanan − beklenen **[→ K79]** | Bar ortalaması (K9) | Nedenleri açıklar, şirket etkilerini taşır |
+| K48 | 4 kademe Maslow birleşimi; olumsuzlar tam yansır **[→ K79]** | Ağırlıklı toplam; en zayıf halka | Temel ihtiyaç önceliği, telafi edilemezlik |
+| K49 | Beklenti = asimetrik alışkanlık + komşu kıyası **[→ K79]** | Gelire göre; sadece alışkanlık | Geçici mutluluk, kayıp acısı, eşitsizlik hissi |
+| K50 | Kamu hizmetleri vergiyle finanse; dengeli şehir bütçesi **[→ K80]** | Şehir büyüklüğüne bağlı sabit; + belediye kararları | Şirket kârı şehre döner; dren kalemleri ekonomiye geri akar |
+| K51 | Kirlilik ve gürültü memnuniyet + sağlığı etkiler **[K80: sağlık bağı kaldırıldı]** | Sadece memnuniyet; + tarım/arazi değeri | Şirketin şehre zararı sistemik maliyet olur |
 | K52 | Prensip: dünya sistemi şirkete karar/fırsat/kriz doğurduğu kadar derinleştirilir | — | Oyun şehir simülasyonuna kaymasın |
 | K53 | Oyuncu başta elle yönetir, büyüdükçe yönetici atar | Her şey elle; politika + müdahale; sadece yönetici | Kullanıcı kararı; mikrodan makroya geçiş |
 | K54 | Kademe + yönetim puanı + yönetici (Song of Syx modeli); Ofis personeli 5. meslek | Kademe + slot; sadece yönetim puanı | Geçiş kendiliğinden zorunlu; ölçek verimsizliği tekele fren |
 | K55 | Capitalism'den: yetki ayarları, seçerek devretme, sektör uzmanlığı, tesis deneyimi (1–5) | Sadece Song of Syx modeli | Erken oyunda kısmi devretme, doğru yönetici seçimi, mikro büyüme hissi, işçi kapma stratejisi |
 | K56 | Finansman araçları: kredi, hisse/halka arz, hisse alımı/devralma | + tahvil ve kredi notu | Yeterli derinlik, daha az sistem |
-| K57 | Kredi NPC bankalardan; mevduat = hane birikimi | Dışsal merkez bankası; yatırım havuzu = banka | Kullanıcı kararı; kredi sıkışması ve banka iflası krizleri |
+| K57 | Kredi NPC bankalardan; mevduat = hane birikimi **[→ K81]** | Dışsal merkez bankası; yatırım havuzu = banka | Kullanıcı kararı; kredi sıkışması ve banka iflası krizleri |
 | K58 | Kural tabanlı merkez bankası; tam aracılık, para yaratılmaz | Yok; + son çare kredisi | Enflasyon sarmalına fren, para arzı izlenebilir |
 | K59 | Ulusal hisse borsası, günlük toplu eşleşme | Temel değer formülü; + spekülasyon | Dalgalanma ve devralma fırsatları, baloncuksuz |
 | K60 | %50+ hisse = bağlı şirket; oyuncu kontrolü kaybederse oyun biter | Doğrudan birleşme; oyun bitmez | Yönetim puanı patlamaz; halka açılma risk kararı olur |
@@ -80,3 +80,9 @@
 | K76 | Seviye kazancı %70–130 sapmalı; kilit süresi ±%20 | Kesin; başarısızlık riski | Patent yarışında belirsizlik, cezasız |
 | K77 | Göç bilgisi mesafeyle azalır; büyük şehirler her yerden görünür | Tam bilgi; sosyal ağ | Uzak bölgeye işçi çekmek stratejik maliyet |
 | K78 | Dış göç ulusal işgücü açığına bağlı | Yok; sabit akış | Yavaş güvenlik vanası; kronik kıtlığı önler |
+| K79 | Memnuniyet 4 şirket-etkili faktör (tüketim, iş ve gelir, kirlilik/gürültü, mağaza erişimi); temel ihtiyaç kuralı; beklenti sadece alışkanlık | K47–K49 tam model | K52 sözgeci: şirketin etkileyemediği faktörler çıktı |
+| K80 | Kamu hizmetleri kaldırıldı; bütçe = işsizlik desteği + arazi teklifleri + kamu istihdamı; kirlilik–sağlık bağı yok | K50/K51 tam model; tek hizmet seviyesi | K52 sözgeci: oyuncu kararı yok; para döngüsü korunur |
+| K81 | Tek toplu bankacılık sistemi (mevduat havuzu, sabit marj, risk primi, kredi sıkışması, rezerv) | K57 NPC bankalar | K52 sözgeci: aynı krizler, ayrı şirket türü yok |
+| K82 | Girdi maliyeti = yerine koyma maliyeti | K37 kişilik karışımı | K52 sözgeci: oyuncuya görünmez iç detay |
+| K83 | Oyuncu sevkiyat kontrolü çekirdekte: sabit hat, öncelik, filo kuralları, mod tercihi; NPC dinamik | Sadece dinamik (K23); sabit hat Aşama 2 | Lojistikte oyuncu karar yüzeyi |
+| K84 | Aşama 1 taşıma modları: karayolu + demiryolu | Dört mod (K21) | Kapsam kontrolü |

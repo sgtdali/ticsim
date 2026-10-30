@@ -21,7 +21,7 @@ Referans: Song of Syx'te yerleşim unvanları nüfusla açılır; Administration
 | Atölye | 0 | Temel tesisler, karayolu | 0 |
 | Firma | 50 | Genel Merkez | 2 |
 | Şirket | 300 | Ar-Ge tesisi, demiryolu terminali | 4 |
-| Holding | 1.500 | Liman ve havalimanı terminali, bölge müdürü rolü | 7 |
+| Holding | 1.500 | Bölge müdürü rolü (liman/havalimanı terminali sonraki aşamada) | 7 |
 | Konglomera | 6.000 | Yönetim verimi +%100 | 12 |
 
 **Yönetim puanı**

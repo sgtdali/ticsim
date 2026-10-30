@@ -3,7 +3,7 @@
 ## Karar verilmiş
 
 ### Metrikler
-- **Finans:** politika faizi, toplam kredi hacmi, banka sermaye oranları, banka iflasları, hisse endeksi
+- **Finans:** politika faizi, toplam kredi hacmi, kredi/mevduat oranı, temerrütler, hisse endeksi
 - **Para:** toplam para arzı, kaynak/dren dökümü (ithalat, dış göç birikim akışı, komisyon, altyapı ücretleri, maaşlar), fiyat endeksi
 - **Üretim:** toplam üretim değeri, yerli üretim / ithalat oranı
 - **Nüfus:** nüfus, memnuniyet dağılımı, bar karşılama oranları, meslek bazında işsizlik, göç akışları

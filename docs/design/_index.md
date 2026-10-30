@@ -9,11 +9,11 @@
 | `vision.md` | Vizyon, kapsam, varsayımlar, hedef dışı, geliştirme sırası |
 | `decision_log.md` | K1–K31 tüm kararlar, alternatifler, gerekçeler |
 | `goods.md` | Mallar, üretim zincirleri, kalite, marka, kargo sınıfı, bozulma |
-| `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi ve kamu hizmetleri, kirlilik, meslek, maaş, büyüme, göç |
+| `population.md` | Hane, ihtiyaç barları, memnuniyet, vergi ve kamu bütçesi, kirlilik, meslek, maaş, büyüme, göç |
 | `production.md` | Tesis kabuğu ve birimleri, bağlantılar, işgücü darboğazı, bakım/arıza, inşaat |
 | `market.md` | Mağaza (B2C), şehir borsaları (B2B), fiyat oluşumu |
 | `company_management.md` | Şirket kademeleri, yönetim puanı, yöneticiler, kontrol modeli (oyuncu + NPC) |
-| `finance.md` | Banka kredisi, NPC bankalar, merkez bankası, hisse borsası, devralma |
+| `finance.md` | Banka kredisi, bankacılık sistemi, merkez bankası, hisse borsası, devralma |
 | `company_ai.md` | NPC şirket karar katmanları, kişilik, iflas, girişim |
 | `logistics.md` | Kamu/özel altyapı, tıkanıklık, yol bulma, dinamik sevkiyat |
 | `world_gen.md` | Harita ölçeği, prosedürel üretim, şehir büyümesi, arazi, başlangıç ekonomisi |
@@ -31,19 +31,17 @@
 
 ## Çelişkiler / Gerilimler
 
-- NPC bankacılık sektörü (K57) kapsamı büyütüyor; K52 filtresine göre sınırlı tutulmalı.
-
 - Maaş tabanı (K46) fiyatlara bağlı olduğu için fiyat–maaş enflasyon sarmalı mümkün; para arzı alarmıyla izlenecek.
 
-- `AGENTS.md`, `docs/architecture.md` ve `docs/mechanics.md` hâlâ eski ortaçağ koduna ait. Yeni kod tabanı başladığında yeniden yazılmalı.
-- Dinamik sevkiyat (K23) oyuncu için "kur ve unut" riski taşır; core fantasy kriz yönetimi. Oyuncu katmanında sabit hat ve öncelik kontrolleriyle dengelenecek.
+- Sabit hatlar (K83) ve dinamik havuz aynı terminalleri paylaşır; kuyruk kuralları netleştirilmeli.
 - Sadece kendi ürününü satma (K15) nihai mal pazarına girişi pahalılaştırır; NPC girişim oranı izlenmeli.
 - Boş ekonomi (K26) ile başlamak ekonominin hiç kalkmama riskini taşır; ithalat güvenlik ağı ile çözülmesi bekleniyor, `observation.md` kriter 2 ile doğrulanacak.
 - Her yer tam detay (K28) ölçek büyürse performans riski.
 
 ## İleriye Park Edilenler
 
-- Oyuncu için sabit hat/rota tanımı (lojistik)
+- Denizyolu ve havayolu: liman, havalimanı, gemi, uçak (K84)
+- Reklam mekaniği (marka büyümesi; K3) — sonra konuşulacak
 - Yeni yerleşimlerin doğması
 - Eğitim tesisleri (meslek geçişini hızlandırır)
 - B2B uzun vadeli tedarik sözleşmeleri
